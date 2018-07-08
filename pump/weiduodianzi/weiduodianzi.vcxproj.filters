@@ -1,0 +1,982 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Form Files">
+      <UniqueIdentifier>{99349809-55BA-4b9d-BF79-8FDBB0286EB3}</UniqueIdentifier>
+      <Extensions>ui</Extensions>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
+      <Extensions>moc;h;cpp</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Generated Files\Debug">
+      <UniqueIdentifier>{c95af8fb-0f35-4cfb-9300-e61f9e56e9a2}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Generated Files\Release">
+      <UniqueIdentifier>{6684cda3-6b3b-4c6c-bd5f-cbe6a7c8e1c9}</UniqueIdentifier>
+      <Extensions>cpp;moc</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Translation Files">
+      <UniqueIdentifier>{639EADAA-A684-42e4-A9AD-28FC9BCB8F7C}</UniqueIdentifier>
+      <Extensions>ts</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Src">
+      <UniqueIdentifier>{9baa8b70-903a-43dc-8dbd-9ab6bbea4fa5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\COMMUNICATION">
+      <UniqueIdentifier>{8597f64a-b812-4c75-9853-8fe3b5eead41}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\UI">
+      <UniqueIdentifier>{f9823a9c-35aa-492f-b047-6ce3993f5d15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\UI\Header">
+      <UniqueIdentifier>{fc013bd1-763d-4673-b5e9-a57d81477adf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\UI\Source">
+      <UniqueIdentifier>{f4efb30a-fcbc-403d-93ad-0e5b68437fb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\COMMUNICATION\Header">
+      <UniqueIdentifier>{92880759-99fb-4cf7-b010-5f55c070204e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\COMMUNICATION\Source">
+      <UniqueIdentifier>{46c1876a-385a-47cd-ae65-5ab13b4066a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Logic">
+      <UniqueIdentifier>{63869500-410f-4d66-ad4a-286f5fe906f7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\UI\Source\ctrl">
+      <UniqueIdentifier>{226f0189-c37e-4295-ab76-f87839f57525}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\UI\Header\ctrl">
+      <UniqueIdentifier>{da5a8032-6fa4-44c2-817d-818b6fdf0d7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\UI\Header\ctrl\Table">
+      <UniqueIdentifier>{ec0dc30a-ddef-4954-b3ff-e217d5740f08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\UI\Source\ctrl\Table">
+      <UniqueIdentifier>{659fbc7c-00d7-41f8-8c13-77e15f84c1ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;cxx;c;def</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h</Extensions>
+      <ParseFiles>true</ParseFiles>
+    </Filter>
+    <Filter Include="Src\Logic\BugleCompensation">
+      <UniqueIdentifier>{e5e9f9a7-4567-4bfc-bef0-7704e03d7d42}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Logic\Base">
+      <UniqueIdentifier>{8553c4e2-5e6c-42a8-afd1-3a8192acfadb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\UIM">
+      <UniqueIdentifier>{db5c0eb9-a8b9-42e9-844e-3ad63a8c788f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\UIM\Header">
+      <UniqueIdentifier>{17eac01e-37c9-455b-9959-fa9738cacc25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\UIM\Source">
+      <UniqueIdentifier>{11085324-9fda-443c-b1fc-f000a3b007a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Src\Logic\Base\Machine">
+      <UniqueIdentifier>{cce407c4-3613-4eff-96bb-12b02ee48ee6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GeneratedFiles\Debug\moc_imgbutton.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_imgbutton.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_baseMainPage.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_baseMainPage.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_runpage.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_runpage.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_setuppage.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_setuppage.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_runconst.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_runconst.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_runparam.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_runparam.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_language.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_language.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_msgpage.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_msgpage.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_permitpage.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_permitpage.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_FixPage.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_FixPage.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_SensitivePage.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_SensitivePage.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_TimePage.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_TimePage.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_editctrl.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_editctrl.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_KeyboardDialog.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_KeyboardDialog.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_logopage.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_logopage.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_comboctrl.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_comboctrl.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_AdminPage.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_AdminPage.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_pwdpage.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_pwdpage.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qextserialbase.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qextserialbase.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_qextserialport.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_qextserialport.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_win_qextserialport.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_win_qextserialport.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_LogicThread.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_LogicThread.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_msgbox.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_msgbox.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="AdminPage.cpp">
+      <Filter>Src\UI\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="FixPage.cpp">
+      <Filter>Src\UI\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="imgbutton.cpp">
+      <Filter>Src\UI\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="language.cpp">
+      <Filter>Src\UI\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="logopage.cpp">
+      <Filter>Src\UI\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="msgpage.cpp">
+      <Filter>Src\UI\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="permitpage.cpp">
+      <Filter>Src\UI\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="pwdpage.cpp">
+      <Filter>Src\UI\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="runconst.cpp">
+      <Filter>Src\UI\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="runpage.cpp">
+      <Filter>Src\UI\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="runparam.cpp">
+      <Filter>Src\UI\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="SensitivePage.cpp">
+      <Filter>Src\UI\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="setuppage.cpp">
+      <Filter>Src\UI\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="TimePage.cpp">
+      <Filter>Src\UI\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="baseMainPage.cpp">
+      <Filter>Src\UIM\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Communication\LogicThread.cpp">
+      <Filter>Src\COMMUNICATION\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Communication\win_qextserialport.cpp">
+      <Filter>Src\COMMUNICATION\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Communication\posix_qextserialport.cpp">
+      <Filter>Src\COMMUNICATION\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Communication\Protocol.c">
+      <Filter>Src\COMMUNICATION\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Communication\Protocol_mcu.c">
+      <Filter>Src\COMMUNICATION\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Communication\qextserialbase.cpp">
+      <Filter>Src\COMMUNICATION\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Communication\qextserialport.cpp">
+      <Filter>Src\COMMUNICATION\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="comboctrl.cpp">
+      <Filter>Src\UI\Source\ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="editctrl.cpp">
+      <Filter>Src\UI\Source\ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="KeyboardDialog.cpp">
+      <Filter>Src\UI\Source\ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="msgbox.cpp">
+      <Filter>Src\UI\Source\ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_DebugMcuProtoPage.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_DebugMcuProtoPage.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="DebugMcuProtoPage.cpp">
+      <Filter>Src\UI\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_FlowFixPage.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_FlowFixPage.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="FlowFixPage.cpp">
+      <Filter>Src\UI\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_btnctrl.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_btnctrl.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="btnctrl.cpp">
+      <Filter>Src\UI\Source\ctrl</Filter>
+    </ClCompile>
+    <ClCompile Include="GradientPage.cpp">
+      <Filter>Src\UI\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_GradientPage.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_GradientPage.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_GradientTable.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_GradientTable.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GradientTable.cpp">
+      <Filter>Src\UI\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_tablectrl.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_tablectrl.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_lineuint.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_lineuint.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_mytablemodel.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_mytablemodel.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="mytablemodel.cpp">
+      <Filter>Src\UI\Source\ctrl\Table</Filter>
+    </ClCompile>
+    <ClCompile Include="tablectrl.cpp">
+      <Filter>Src\UI\Source\ctrl\Table</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_tableeditor.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_tableeditor.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="tableeditor.cpp">
+      <Filter>Src\UI\Source\ctrl\Table</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_editordelegate.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_editordelegate.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="editordelegate.cpp">
+      <Filter>Src\UI\Source\ctrl\Table</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_machinestat.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_machinestat.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_iomodule.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_iomodule.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_database.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_database.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_communicationcoupling.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_communicationcoupling.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_BasePage.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_BasePage.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_bottomwidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_bottomwidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="bottomwidget.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_topwidget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_topwidget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="topwidget.cpp">
+      <Filter>Src</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_buglecompensation.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_buglecompensation.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="buglecompensation.cpp">
+      <Filter>Src\Logic\BugleCompensation</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_timehelper.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_timehelper.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="BugleCompensationWithPID.cpp">
+      <Filter>Src\Logic\BugleCompensation</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_PressFixPage.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_PressFixPage.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="PressFixPage.cpp">
+      <Filter>Src\UI\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="communicationcoupling.cpp">
+      <Filter>Src\Logic\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="database.cpp">
+      <Filter>Src\Logic\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="iomodule.cpp">
+      <Filter>Src\Logic\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="lineuint.cpp">
+      <Filter>Src\Logic\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="timehelper.cpp">
+      <Filter>Src\Logic\Base</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_buglecompensationwithsection.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_buglecompensationwithsection.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="buglecompensationwithsection.cpp">
+      <Filter>Src\Logic\BugleCompensation</Filter>
+    </ClCompile>
+    <ClCompile Include="machinestat.cpp">
+      <Filter>Src\Logic\Base\Machine</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_flowctrl.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_flowctrl.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="flowctrl.cpp">
+      <Filter>Src\Logic\Base\Machine</Filter>
+    </ClCompile>
+    <ClCompile Include="netconfigpage.cpp">
+      <Filter>Src\UI\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_netconfigpage.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_netconfigpage.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="glpinfopage.cpp">
+      <Filter>Src\UI\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_glpinfopage.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_glpinfopage.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="BasePage.cpp">
+      <Filter>Src\UI\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_weiduodianzi.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="RunPage.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SetupPage.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="RunConstPage.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="LanguagePage.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="MsgPage.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="PermitPage.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="fixPage.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="sensitivePage.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="timePage.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="keyboardDialog.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="logpage.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="AdminPage.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="PwdPage.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="AdminPage.h">
+      <Filter>Src\UI\Header</Filter>
+    </CustomBuild>
+    <CustomBuild Include="FixPage.h">
+      <Filter>Src\UI\Header</Filter>
+    </CustomBuild>
+    <CustomBuild Include="imgbutton.h">
+      <Filter>Src\UI\Header</Filter>
+    </CustomBuild>
+    <CustomBuild Include="language.h">
+      <Filter>Src\UI\Header</Filter>
+    </CustomBuild>
+    <CustomBuild Include="logopage.h">
+      <Filter>Src\UI\Header</Filter>
+    </CustomBuild>
+    <CustomBuild Include="msgpage.h">
+      <Filter>Src\UI\Header</Filter>
+    </CustomBuild>
+    <CustomBuild Include="permitpage.h">
+      <Filter>Src\UI\Header</Filter>
+    </CustomBuild>
+    <CustomBuild Include="pwdpage.h">
+      <Filter>Src\UI\Header</Filter>
+    </CustomBuild>
+    <CustomBuild Include="runconst.h">
+      <Filter>Src\UI\Header</Filter>
+    </CustomBuild>
+    <CustomBuild Include="runpage.h">
+      <Filter>Src\UI\Header</Filter>
+    </CustomBuild>
+    <CustomBuild Include="runparam.h">
+      <Filter>Src\UI\Header</Filter>
+    </CustomBuild>
+    <CustomBuild Include="SensitivePage.h">
+      <Filter>Src\UI\Header</Filter>
+    </CustomBuild>
+    <CustomBuild Include="TimePage.h">
+      <Filter>Src\UI\Header</Filter>
+    </CustomBuild>
+    <CustomBuild Include="baseMainPage.h">
+      <Filter>Src\UIM\Header</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Communication\win_qextserialport.h">
+      <Filter>Src\COMMUNICATION\Header</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Communication\LogicThread.h">
+      <Filter>Src\COMMUNICATION\Header</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Communication\qextserialbase.h">
+      <Filter>Src\COMMUNICATION\Header</Filter>
+    </CustomBuild>
+    <CustomBuild Include="Communication\qextserialport.h">
+      <Filter>Src\COMMUNICATION\Header</Filter>
+    </CustomBuild>
+    <CustomBuild Include="comboctrl.h">
+      <Filter>Src\UI\Header\ctrl</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editctrl.h">
+      <Filter>Src\UI\Header\ctrl</Filter>
+    </CustomBuild>
+    <CustomBuild Include="KeyboardDialog.h">
+      <Filter>Src\UI\Header\ctrl</Filter>
+    </CustomBuild>
+    <CustomBuild Include="msgbox.h">
+      <Filter>Src\UI\Header\ctrl</Filter>
+    </CustomBuild>
+    <CustomBuild Include="DebugMcuProtoPage.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="DebugMcuProtoPage.h">
+      <Filter>Src\UI\Header</Filter>
+    </CustomBuild>
+    <CustomBuild Include="RunParamPage.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="FlowFixPage.h">
+      <Filter>Src\UI\Header</Filter>
+    </CustomBuild>
+    <CustomBuild Include="FlowFixPage.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="btnctrl.h">
+      <Filter>Src\UI\Header\ctrl</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GradientPage.h">
+      <Filter>Src\UI\Header</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GradientPage.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GradientTable.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="GradientTable.h">
+      <Filter>Src\UI\Header</Filter>
+    </CustomBuild>
+    <CustomBuild Include="mytablemodel.h">
+      <Filter>Src\UI\Header\ctrl\Table</Filter>
+    </CustomBuild>
+    <CustomBuild Include="tablectrl.h">
+      <Filter>Src\UI\Header\ctrl\Table</Filter>
+    </CustomBuild>
+    <CustomBuild Include="tableeditor.h">
+      <Filter>Src\UI\Header\ctrl\Table</Filter>
+    </CustomBuild>
+    <CustomBuild Include="editordelegate.h">
+      <Filter>Src\UI\Header\ctrl\Table</Filter>
+    </CustomBuild>
+    <CustomBuild Include="BasePage.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="BaseMainPage.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="bottomwidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="bottomwidget.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="topwidget.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="topwidget.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="buglecompensation.h">
+      <Filter>Src\Logic\BugleCompensation</Filter>
+    </CustomBuild>
+    <CustomBuild Include="PressFixPage.h">
+      <Filter>Src\UI\Header</Filter>
+    </CustomBuild>
+    <CustomBuild Include="pressFixPage.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="timehelper.h">
+      <Filter>Src\Logic\Base</Filter>
+    </CustomBuild>
+    <CustomBuild Include="communicationcoupling.h">
+      <Filter>Src\Logic\Base</Filter>
+    </CustomBuild>
+    <CustomBuild Include="database.h">
+      <Filter>Src\Logic\Base</Filter>
+    </CustomBuild>
+    <CustomBuild Include="iomodule.h">
+      <Filter>Src\Logic\Base</Filter>
+    </CustomBuild>
+    <CustomBuild Include="lineuint.h">
+      <Filter>Src\Logic\Base</Filter>
+    </CustomBuild>
+    <CustomBuild Include="buglecompensationwithsection.h">
+      <Filter>Src\Logic\BugleCompensation</Filter>
+    </CustomBuild>
+    <CustomBuild Include="machinestat.h">
+      <Filter>Src\Logic\Base\Machine</Filter>
+    </CustomBuild>
+    <CustomBuild Include="flowctrl.h">
+      <Filter>Src\Logic\Base\Machine</Filter>
+    </CustomBuild>
+    <CustomBuild Include="netconfigpage.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="setuppage.h">
+      <Filter>Src\UI\Header</Filter>
+    </CustomBuild>
+    <CustomBuild Include="netconfigpage.h">
+      <Filter>Src\UI\Header</Filter>
+    </CustomBuild>
+    <CustomBuild Include="glpinfopage.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="glpinfopage.h">
+      <Filter>Src\UI\Header</Filter>
+    </CustomBuild>
+    <CustomBuild Include="weiduodianzi.qrc">
+      <Filter>Resource Files</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GeneratedFiles\ui_RunPage.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_SetupPage.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_RunConstPage.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_LanguagePage.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_MsgPage.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_PermitPage.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_fixPage.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_sensitivePage.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_timePage.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_keyboardDialog.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_logpage.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_AdminPage.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_PwdPage.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Common.h">
+      <Filter>Src\UI\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Communication\Device.h">
+      <Filter>Src\COMMUNICATION\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Communication\plc_instruction.h">
+      <Filter>Src\COMMUNICATION\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Communication\posix_qextserialport.h">
+      <Filter>Src\COMMUNICATION\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="Communication\Protocol.h">
+      <Filter>Src\COMMUNICATION\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_DebugMcuProtoPage.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_RunParamPage.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_FlowFixPage.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_GradientPage.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_GradientTable.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_BaseMainPage.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_bottomwidget.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_topwidget.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BugleCompensationWithPID.h">
+      <Filter>Src\Logic\BugleCompensation</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_pressFixPage.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_netconfigpage.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_glpinfopage.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ui\activeNavigator.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\bk.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\btn.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\btnfocus.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\Calibration.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\CalibrationFocus.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\checked.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\chinese.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\chineseFocus.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\clock.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\clockFocus.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\connect_established.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\disconnect.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\down.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\down-arrow.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\english.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\englishFocus.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\focusNavigator.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\global.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\globalFocus.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\glpinfo.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\glpinfoFocus.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\grid.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\gridFocus.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\key.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\keyFocus.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\logo.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\message.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\messageFocus.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\netconfig.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\netconfigFocus.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\normalNavigator.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\Permission.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\PermissionFocus.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\setup.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\Thumbs.db">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\unchecked.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\uncheckedfocus.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\up.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="ui\user.png">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="weiduodianzi_zh.ts">
+      <Filter>Translation Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="weiduodianzi.rc" />
+  </ItemGroup>
+</Project>

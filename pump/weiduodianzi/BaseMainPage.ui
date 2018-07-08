@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>BaseMainPage</class>
+ <widget class="QMainWindow" name="BaseMainPage">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>640</width>
+    <height>480</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout" stretch="2,8,1">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="margin">
+     <number>0</number>
+    </property>
+    <item>
+     <widget class="TopWidget" name="topWidget" native="true">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(85, 170, 255);</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="CBasePage" name="midWidget" native="true"/>
+    </item>
+    <item>
+     <widget class="BottomWidget" name="bottomWidget" native="true"/>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CBasePage</class>
+   <extends>QWidget</extends>
+   <header>BasePage.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>BottomWidget</class>
+   <extends>QWidget</extends>
+   <header>bottomwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TopWidget</class>
+   <extends>QWidget</extends>
+   <header>topwidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>

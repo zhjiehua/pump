@@ -1,0 +1,24 @@
+#ifndef SETUPPAGE_H
+#define SETUPPAGE_H
+
+#include "BasePage.h"
+#include "ui_SetupPage.h"
+
+class SetupPage : public CBasePage
+{
+	Q_OBJECT
+
+public:
+	SetupPage(QWidget *parent = 0);
+	~SetupPage();
+
+
+private:
+	Ui::SetupPageClass ui;
+	
+
+private slots:
+	void gotoSetupPage();
+};
+
+#endif // SETUPPAGE_H

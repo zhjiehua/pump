@@ -1,0 +1,20 @@
+#include "SetupPage.h"
+#include <QDebug>
+
+SetupPage::SetupPage(QWidget *parent /*= 0*/)
+	: CBasePage(parent)
+{
+	ui.setupUi(this);
+}
+
+SetupPage::~SetupPage()
+{
+
+}
+
+
+void SetupPage::gotoSetupPage()
+{
+
+}
+

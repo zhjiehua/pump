@@ -1,0 +1,46 @@
+<RCC>
+    <qresource prefix="/weiduodianzi">
+        <file>ui/activeNavigator.png</file>
+        <file>ui/bk.png</file>
+        <file>ui/btn.png</file>
+        <file>ui/btnfocus.png</file>
+        <file>ui/Calibration.png</file>
+        <file>ui/CalibrationFocus.png</file>
+        <file>ui/checked.png</file>
+        <file>ui/chinese.png</file>
+        <file>ui/chineseFocus.png</file>
+        <file>ui/clock.png</file>
+        <file>ui/clockFocus.png</file>
+        <file>ui/connect_established.png</file>
+        <file>ui/disconnect.png</file>
+        <file>ui/down.png</file>
+        <file>ui/down-arrow.png</file>
+        <file>ui/english.png</file>
+        <file>ui/englishFocus.png</file>
+        <file>ui/focusNavigator.png</file>
+        <file>ui/global.png</file>
+        <file>ui/globalFocus.png</file>
+        <file>ui/glpinfo.png</file>
+        <file>ui/glpinfoFocus.png</file>
+        <file>ui/grid.png</file>
+        <file>ui/gridFocus.png</file>
+        <file>ui/key.png</file>
+        <file>ui/keyFocus.png</file>
+        <file>ui/logo.png</file>
+        <file>ui/message.png</file>
+        <file>ui/messageFocus.png</file>
+        <file>ui/netconfig.png</file>
+        <file>ui/netconfigFocus.png</file>
+        <file>ui/normalNavigator.png</file>
+        <file>ui/Permission.png</file>
+        <file>ui/PermissionFocus.png</file>
+        <file>ui/setup.png</file>
+        <file>ui/unchecked.png</file>
+        <file>ui/uncheckedfocus.png</file>
+        <file>ui/up.png</file>
+        <file>ui/user.png</file>
+        <file>weiduodianzi_zh.qm</file>
+        <file>weiduodianzi_zh.ts</file>
+        <file>ui/weeping.png</file>
+    </qresource>
+</RCC>
