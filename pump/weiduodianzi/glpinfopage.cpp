@@ -89,8 +89,8 @@ void GlpInfoPage::updateBugleDisp(quint32 cnt)
 	//double totalFluid = pumpVolume.at(pumpType) * cnt/1000;
 
 	//pumpVolume<<0.0608057<<0.2481608<<1<<1<<1<<1<<1; //单位uL
-	pumpVolume<<0.0608057<<0.2481608<<1<<1<<1<<1<<1<<1<<1<<1; //单位uL
-	double totalFluid = pumpVolume.at(pumpType) * cnt;
+	pumpVolume<<0.0608057<<0.2481608<<1<<1<<1<<1<<1<<1<<1<<1<<1; //单位uL
+	double totalFluid = pumpVolume.at(pumpType%11) * cnt;
     ui.bltUsedLbl->setText(QString::number(cnt));
 	ui.totalFluidLbl->setText(QString::number(totalFluid));
 }

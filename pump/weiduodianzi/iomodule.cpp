@@ -180,9 +180,11 @@ void IoModule::readingIO()
 
 	//Â©Òº¼ì²â
 #ifdef linux
-	temp_read = IO_DIN5_MASK;
-	ioctl(fd, PWM_IOCTL_GET_IO, (unsigned long*)(&temp_read));
-	weepRet = temp_read&IO_DIN5_MASK;
+	//temp_read = IO_DIN5_MASK;
+	//ioctl(fd, PWM_IOCTL_GET_IO, (unsigned long*)(&temp_read));
+	//weepRet = temp_read&IO_DIN5_MASK;
+
+	weepRet = 0;//È¥µôÂ©Òº¼ì²â
 #else
 	weepRet = 0;
 #endif

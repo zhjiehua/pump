@@ -27,6 +27,9 @@
 	2018-04-09		V1.05		clarity协议制备泵100ml~500ml改成2个小数点精度；
 												800ml~3000ml改成1个小数点精度；
 																		zhjiehua
+	2019-07-31		V1.06		修复Run页面的State从Pause状态手动切换成Running死机的bug；
+								去掉漏液检测
+																		zhjiehua
 */
 
 #include "baseMainPage.h"

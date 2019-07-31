@@ -370,8 +370,8 @@ void MachineStat::startMachine()
 		pDb->readGradientTableIntoList(which);			//读取梯度表格到内存;
 	clearStartupTime();
 
-	if( m_machineStat.oldMachineStat == PAUSE )
-		BugleCompensation::getInstance()->waitOutputStable();
+	//if( m_machineStat.oldMachineStat == PAUSE )
+	//	BugleCompensation::getInstance()->waitOutputStable();
 
 	sysError(OVERPRESS_ERR, false);//取消报警;
 }
