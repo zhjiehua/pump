@@ -12,22 +12,22 @@ public:
 	~BugleCompensation();
 	static BugleCompensation *getInstance();
 
-	virtual void updateOutput(quint32 output, double flow)=0;				//¸üĞÂÊä³ö;
-	virtual void adjustOutputByInput(qint32 inputData)=0;		//¸ù¾İÊäÈëµ÷½ÚÊä³ö;
-	virtual void stopOutput()=0;								//Í£Ö¹Êä³ö;
-	virtual void pauseOutput()=0;								//ÔİÍ£Êä³ö;
-	virtual void waitOutputStable()=0;							//µÈ´ıÊä³öÎÈ¶¨;
+	virtual void updateOutput(quint32 output, double flow)=0;				//æ›´æ–°è¾“å‡º;
+	virtual void adjustOutputByInput(qint32 inputData)=0;		//æ ¹æ®è¾“å…¥è°ƒèŠ‚è¾“å‡º;
+	virtual void stopOutput()=0;								//åœæ­¢è¾“å‡º;
+	virtual void pauseOutput()=0;								//æš‚åœè¾“å‡º;
+	virtual void waitOutputStable()=0;							//ç­‰å¾…è¾“å‡ºç¨³å®š;
 
-	virtual void bugleSignal()=0;								//³öÏÖÁËÍ¹ÂÖĞÅºÅ;
+	virtual void bugleSignal()=0;								//å‡ºç°äº†å‡¸è½®ä¿¡å·;
 
 protected:
-	bool m_bBugleSignal;										//Í¹ÂÖĞÅºÅ±êÖ¾;
-	bool m_bOutputStable;										//Êä³öÎÈ¶¨±êÖ¾;
-	quint32 m_nCurrentOutput;									//µ±Ç°Êä³öÁ¿;
-	virtual bool isOutputStable()=0;							//ÅĞ¶ÏÊä³öÊÇ·ñÒÑ¾­ÎÈ¶¨;
+	bool m_bBugleSignal;										//å‡¸è½®ä¿¡å·æ ‡å¿—;
+	bool m_bOutputStable;										//è¾“å‡ºç¨³å®šæ ‡å¿—;
+	quint32 m_nCurrentOutput;									//å½“å‰è¾“å‡ºé‡;
+	virtual bool isOutputStable()=0;							//åˆ¤æ–­è¾“å‡ºæ˜¯å¦å·²ç»ç¨³å®š;
 
 signals:
-	void outputUpdate(quint32 data);							//¸üĞÂÊä³ö;
+	void outputUpdate(quint32 data);							//æ›´æ–°è¾“å‡º;
 
 private:
 	

@@ -30,7 +30,7 @@ void LineUint::setRange( double x1, double y1, double x2, double y2 ,QString dis
 	this->x2 = x2;
 	this->y1 = y1;
 	this->y2 = y2;
-	//¼ÆËãkÖµ;
+	//è®¡ç®—kå€¼;
 	if(x1 > x2)
 	{
 		//qDebug()<<"LineUint::setRange x1 > x2!Please Check!";

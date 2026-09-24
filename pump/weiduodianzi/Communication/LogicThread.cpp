@@ -1,6 +1,7 @@
 #include "LogicThread.h"
 #include "Communication/Protocol.h"
 #include <QString>
+#include <QDebug>
 #include "baseMainPage.h"
 #include "timehelper.h"
 
@@ -17,20 +18,23 @@ static int fd = -1;
 static unsigned long temp_read = 0;
 #endif
 
-#define LOCAL_PORT	8080  //±¾µØ¶Ë¿Ú
-#define REMOTE_PORT	8090  //Ô¶³Ì¶Ë¿Ú
-#define REMOTE_IPADDRESS  "192.168.19.254"	//Ô¶³ÌIP
+#define LOCAL_PORT	8080  //æœ¬åœ°ç«¯å£
+#define REMOTE_PORT	8090  //è¿œç¨‹ç«¯å£
+#define REMOTE_IPADDRESS  "192.168.19.254"	//è¿œç¨‹IP
 
-//#define COMMUNICATION_NETWORK//ÍøÂçÍ¨Ñ¶;
-#define COMMUNICATION_SERIAL//´®¿ÚÍ¨Ñ¶;
-#define COMMUNICATION_WITH_MCU//ÊÇ·ñÓÃ´®¿ÚºÍMCUÍ¨Ñ¶;
+//#define COMMUNICATION_NETWORK//ç½‘ç»œé€šè®¯;
+#define COMMUNICATION_SERIAL//ä¸²å£é€šè®¯;
+#define COMMUNICATION_WITH_MCU//æ˜¯å¦ç”¨ä¸²å£å’ŒMCUé€šè®¯;
 
 #ifdef WIN32
-#define MAINCOMPORT		"COM6"//ÉÏÎ»»úÍ¨Ñ¶½Ó¿Ú
-#define MCUCOMPORT		"COM8"//µ¥Æ¬»úÍ¨Ñ¶½Ó¿Ú
-#elif linux
-#define MAINCOMPORT		"/dev/ttySAC2"//ÉÏÎ»»úÍ¨Ñ¶½Ó¿Ú
-#define MCUCOMPORT		"/dev/ttySAC1"//µ¥Æ¬»úÍ¨Ñ¶½Ó¿Ú
+#define MAINCOMPORT		"COM6"//ä¸Šä½æœºé€šè®¯æ¥å£
+#define MCUCOMPORT		"COM8"//å•ç‰‡æœºé€šè®¯æ¥å£
+#elif defined(DESKTOP_HMI)
+#define MAINCOMPORT		"/dev/ttyUSB0"//PC è°ƒè¯•ï¼šCDS/ä¸Šä½æœºä¸²å£
+#define MCUCOMPORT		"/dev/ttyUSB1"//PC è°ƒè¯•ï¼šMCU ä¸²å£
+#elif defined(linux)
+#define MAINCOMPORT		"/dev/ttySAC2"//ä¸Šä½æœºé€šè®¯æ¥å£
+#define MCUCOMPORT		"/dev/ttySAC1"//å•ç‰‡æœºé€šè®¯æ¥å£
 #endif
 
 
@@ -45,17 +49,17 @@ quint16 remotePort;
 #ifdef WIN32
 Win_QextSerialPort *myCom = 0;
 #ifdef COMMUNICATION_WITH_MCU
-Win_QextSerialPort *mcuCom = 0;//Óëµ×°åMCUÍ¨Ñ¶;
+Win_QextSerialPort *mcuCom = 0;//ä¸åº•æ¿MCUé€šè®¯;
 #endif
 #elif linux
 Posix_QextSerialPort *myCom = 0;
 #ifdef COMMUNICATION_WITH_MCU
-Posix_QextSerialPort *mcuCom = 0;//Óëµ×°åMCUÍ¨Ñ¶;
+Posix_QextSerialPort *mcuCom = 0;//ä¸åº•æ¿MCUé€šè®¯;
 #endif
 #endif
 
 
-//Í¨Ñ¶×¼±¸;
+//é€šè®¯å‡†å¤‡;
 #define PC_COMMUNICATION_PORT_UART  0
 #define PC_COMMUNICATION_PORT_NET   1
 
@@ -65,9 +69,9 @@ qint16 writeFunc( quint8* data, uint16 sz )
 	qint16 ret = -1;
 	if(g_pWorker->getConnectPortType() == PC_COMMUNICATION_PORT_UART)
 	{
-		if(myCom)
+		if(myCom && myCom->isOpen())
 		{
-			ret = myCom->write((const char*)data, sz);//ÕÅ½Ü»ªĞŞ¸Ä@2016-06-23
+			ret = myCom->write((const char*)data, sz);//å¼ æ°åä¿®æ”¹@2016-06-23
 		}
 	}
 	else
@@ -106,12 +110,12 @@ void processFunc4Clarity(  mbyte hID, mbyte hAI, mbyte hPFC, uint32 nVal )
 }
 
 
-//*****************MCUÍ¨Ñ¶********************************/
+//*****************MCUé€šè®¯********************************/
 qint16 writeFunc4Mcu( quint8* data, uint16 sz )
 {
 	qint16 ret = -1;
 #ifdef COMMUNICATION_WITH_MCU
-	if(mcuCom)
+	if(mcuCom && mcuCom->isOpen())
 		ret = mcuCom->write((const char*)data, sz);
 #endif
 	return ret;
@@ -135,7 +139,7 @@ Worker::Worker(QObject *parent /*= 0*/)
 {
 	setupCommunication();
 	m_pTimer = new QTimer(this);
-	QObject::connect(m_pTimer, SIGNAL(timeout()), this, SLOT(timeoutFunc()) );//¶¨Ê±¶ÁÈ¡Êı¾İ;
+	QObject::connect(m_pTimer, SIGNAL(timeout()), this, SLOT(timeoutFunc()) );//å®šæ—¶è¯»å–æ•°æ®;
 	startTimer();
 	//connect(mcuCom, SIGNAL(readyRead()), this, SLOT(timeoutFunc()));
 	moveToThread(&m_workerThread);
@@ -190,7 +194,7 @@ void Worker::timeoutFunc()
 
 
 
-	//·¢ËÍ¶ÁÈ¡Ñ¹Á¦ÖµÃüÁî;
+	//å‘é€è¯»å–å‹åŠ›å€¼å‘½ä»¤;
 	static int nReadPressPeriod = 0;
 	if(nReadPressPeriod++ > 7 )
 	{
@@ -205,12 +209,12 @@ void Worker::timeoutFunc()
 
 	if(getConnectPortType() == PC_COMMUNICATION_PORT_UART)
 	{
-		if(myCom)
+		if(myCom && myCom->isOpen())
 			data  = myCom->readAll();
 	}
 
 #ifdef COMMUNICATION_WITH_MCU
-	if(mcuCom)
+	if(mcuCom && mcuCom->isOpen())
 		data2 = mcuCom->readAll();
 #endif
 
@@ -244,19 +248,19 @@ void Worker::timeoutFunc()
 #endif
 
 #if 1
-	//½âÎöĞ­Òé;
+	//è§£æåè®®;
 	if(data.size() > 0)
 	{
 		if(m_nPcProtocol == 0)
-			API_Protocol((mbyte *)data.data(), data.size());			//½âÎö¾ÉĞ­Òé;
+			API_Protocol((mbyte *)data.data(), data.size());			//è§£ææ—§åè®®;
 		else
-			API_ClarityProtocol((mbyte *)data.data(), data.size());	//½âÎöĞÂĞ­Òé;
+			API_ClarityProtocol((mbyte *)data.data(), data.size());	//è§£ææ–°åè®®;
 	}
 #endif
 
 #if 1
 	if(data2.size() > 0)
-		API_McuProtocol((mbyte *)data2.data(), data2.size());//MCUĞ­Òé½âÊÍ;
+		API_McuProtocol((mbyte *)data2.data(), data2.size());//MCUåè®®è§£é‡Š;
 #endif
 
 }
@@ -290,7 +294,7 @@ void Worker::CmdSend(quint8 type, quint32 cmd, quint32 arg)
 {
 	if(type == PROTOCL_LOCAL_USE_CHANGE_PUMPTYPE)
 	{
-		//¸Ä±ä±ÃĞÍ,´Ó¶ø¸Ä±äÉÏÎ»»úÁ÷ËÙÃüÁî×Ö½Ú³¤¶ÈµÄÊ¶±ğ;
+		//æ”¹å˜æ³µå‹,ä»è€Œæ”¹å˜ä¸Šä½æœºæµé€Ÿå‘½ä»¤å­—èŠ‚é•¿åº¦çš„è¯†åˆ«;
 		API_SetPumpType(cmd);
 	}
 	else
@@ -301,7 +305,7 @@ void Worker::CmdSend(quint8 type, quint32 cmd, quint32 arg)
 
 
 
-//¼ÓÈë·¢ËÍ¶ÓÁĞ;
+//åŠ å…¥å‘é€é˜Ÿåˆ—;
 void Worker::CmdSend4Mcu(quint8 type, quint32 cmd, quint32 arg)
 {
 	QList<quint32>list;
@@ -334,27 +338,27 @@ void Worker::check4Mcu( uint32 cmd )
 	}
 }
 
-//Í¨Ñ¶×¼±¸;
+//é€šè®¯å‡†å¤‡;
 void Worker::setupCommunication()
 {
 	m_nConnectPort = DataBase::getInstance()->queryData("connect_port").toUInt();
-	//! ÅĞ¶ÏÊ¹ÓÃ´®¿Ú»¹ÊÇÍø¿ÚºÍPCÍ¨Ñ¶;
+	//! åˆ¤æ–­ä½¿ç”¨ä¸²å£è¿˜æ˜¯ç½‘å£å’ŒPCé€šè®¯;
 	if( m_nConnectPort == PC_COMMUNICATION_PORT_UART )
 		setupSerialCommunication();
 	else
-		setupNetworkCommunication();//ÕÅ½Ü»ªÌí¼Ó@2016-06-23
+		setupNetworkCommunication();//å¼ æ°åæ·»åŠ @2016-06-23
 
 	setupMCUCommunication();
 
-	//×¢²áÍ¨Ñ¶º¯Êı;
+	//æ³¨å†Œé€šè®¯å‡½æ•°;
 	ProtocolConf proConf;
-	proConf.write = writeFunc;								//ÊµÏÖ´Ëº¯Êı!!!!!!!!!!!!!!!!!!!!!;
-	proConf.process = processFunc;							//ÊµÏÖ´Ëº¯Êı!!!!!!!!!!!!!!!!!½øĞĞÃüÁî´¦Àí;
-	proConf.processClarity = processFunc4Clarity;			//»ùÓÚĞÂĞ­Òé½øĞĞÊı¾İ´¦Àí;
+	proConf.write = writeFunc;								//å®ç°æ­¤å‡½æ•°!!!!!!!!!!!!!!!!!!!!!;
+	proConf.process = processFunc;							//å®ç°æ­¤å‡½æ•°!!!!!!!!!!!!!!!!!è¿›è¡Œå‘½ä»¤å¤„ç†;
+	proConf.processClarity = processFunc4Clarity;			//åŸºäºæ–°åè®®è¿›è¡Œæ•°æ®å¤„ç†;
 	SetProtocolConf( &proConf, PROTOCOL_CONF_WRITEFUN|PROTOCOL_CONF_PROCESSFUN|PROTOCOL_CONF_PROCESSFUNCLARITY);
 
 #ifdef COMMUNICATION_WITH_MCU
-	//×¢²áMCUÍ¨Ñ¶º¯Êı;
+	//æ³¨å†ŒMCUé€šè®¯å‡½æ•°;
 	Protocol4McuConf mcuProConf;
 	mcuProConf.write = writeFunc4Mcu;
 	mcuProConf.process = processFunc4Mcu;
@@ -366,7 +370,7 @@ void Worker::setupCommunication()
 
 
 
-//ÕÅ½Ü»ªÌí¼Ó@2016-06-22£¬Ìí¼ÓsocketÍ¨ĞÅ
+//å¼ æ°åæ·»åŠ @2016-06-22ï¼Œæ·»åŠ socketé€šä¿¡
 void Worker::acceptConnection()
 {
 	tcpSocketClientConnection = tcpSocketServer->nextPendingConnection();
@@ -376,7 +380,7 @@ void Worker::acceptConnection()
 void Worker::readClient()
 {
 	QString str = tcpSocketClientConnection->readAll();
-	//»òÕß
+	//æˆ–è€…
 	char buf[1024];
 	tcpSocketClientConnection->read(buf,1024);
 }
@@ -393,23 +397,23 @@ void Worker::processPendingDatagrams()
 		//QString messages = QString::fromUtf8(datagram); 
 
 		if(m_nPcProtocol == 0)
-			API_Protocol((mbyte *)datagram.data(), datagram.size());			//½âÎö¾ÉĞ­Òé;
+			API_Protocol((mbyte *)datagram.data(), datagram.size());			//è§£ææ—§åè®®;
 		else
-			API_ClarityProtocol((mbyte *)datagram.data(), datagram.size());		//½âÎöĞÂµÄĞ­Òé;
+			API_ClarityProtocol((mbyte *)datagram.data(), datagram.size());		//è§£ææ–°çš„åè®®;
 	}  
 } 
 
-//ÕÅ½Ü»ªÌí¼Ó@2016-06-22£¬Ìí¼ÓsocketÍ¨ĞÅ
+//å¼ æ°åæ·»åŠ @2016-06-22ï¼Œæ·»åŠ socketé€šä¿¡
 void Worker::setupNetworkCommunication()
 {
 	//tcpSocketServer = new QTcpServer();
 	//tcpSocketServer->listen(QHostAddress::Any, 6665);
 	//connect(server, SIGNAL(newConnection()), this, SLOT(acceptConnection()));
 
-	//! ¶ÁÈ¡ÍøÂç²ÎÊı;
-	//! ±¾µØ¶Ë¿ÚºÅ;
+	//! è¯»å–ç½‘ç»œå‚æ•°;
+	//! æœ¬åœ°ç«¯å£å·;
 	m_nLocalPort = DataBase::getInstance()->queryData("port").toUInt();
-	//! Ô¶³Ì¶Ë¿ÚºÍIP;
+	//! è¿œç¨‹ç«¯å£å’ŒIP;
 	m_nRemotePort = DataBase::getInstance()->queryData("remote_port").toUInt();
 	m_strRemoteIp =  QString("%1.%2.%3.%4").arg(DataBase::getInstance()->queryData("remote_ip1")).arg(DataBase::getInstance()->queryData("remote_ip2")).arg(DataBase::getInstance()->queryData("remote_ip3")).arg(DataBase::getInstance()->queryData("remote_ip4"));
 	
@@ -418,7 +422,7 @@ void Worker::setupNetworkCommunication()
 
 	udpSocket = new QUdpSocket(this);  
 	//udpSocket->bind (QHostAddress("192.168.19.254"), LOCAL_PORT, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);  
-	udpSocket->bind (m_nLocalPort, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);   //×¢Òâ£ºbindµÄÊÇ±¾µØIPºÍ±¾µØ¶Ë¿Ú£¬·¢ËÍµÄÊÇÔ¶¶ËIPºÍÔ¶¶Ë¶Ë¿Ú
+	udpSocket->bind (m_nLocalPort, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);   //æ³¨æ„ï¼šbindçš„æ˜¯æœ¬åœ°IPå’Œæœ¬åœ°ç«¯å£ï¼Œå‘é€çš„æ˜¯è¿œç«¯IPå’Œè¿œç«¯ç«¯å£
 	connect (udpSocket, SIGNAL(readyRead()), this, SLOT(processPendingDatagrams()));  
 }
 
@@ -455,61 +459,61 @@ void Worker::l_setLocalPort()
 		udpSocket->deleteLater();
 
 	udpSocket = new QUdpSocket(this); 
-	udpSocket->bind (m_nLocalPort, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);   //×¢Òâ£ºbindµÄÊÇ±¾µØIPºÍ±¾µØ¶Ë¿Ú£¬·¢ËÍµÄÊÇÔ¶¶ËIPºÍÔ¶¶Ë¶Ë¿Ú
+	udpSocket->bind (m_nLocalPort, QUdpSocket::ShareAddress | QUdpSocket::ReuseAddressHint);   //æ³¨æ„ï¼šbindçš„æ˜¯æœ¬åœ°IPå’Œæœ¬åœ°ç«¯å£ï¼Œå‘é€çš„æ˜¯è¿œç«¯IPå’Œè¿œç«¯ç«¯å£
 	connect (udpSocket, SIGNAL(readyRead()), this, SLOT(processPendingDatagrams()));  
 }
 
 void Worker::setupSerialCommunication()
 {
-	//¶¨ÒåÒ»¸ö½á¹¹Ìå£¬ÓÃÀ´´æ·Å´®¿Ú¸÷¸ö²ÎÊı;
 	struct PortSettings myComSetting = {BAUD9600,DATA_8,PAR_NONE,STOP_1,FLOW_OFF,500};
-	//¶¨Òå´®¿Ú¶ÔÏó£¬²¢´«µİ²ÎÊı£¬ÔÚ¹¹Ôìº¯ÊıÀï¶ÔÆä½øĞĞ³õÊ¼»¯;
 #ifdef WIN32
 #ifdef COMMUNICATION_SERIAL
 	myCom = new Win_QextSerialPort(MAINCOMPORT);
 #endif
-
-#elif linux
+#elif defined(linux)
 #ifdef COMMUNICATION_SERIAL
-	myCom = new Posix_QextSerialPort(MAINCOMPORT,myComSetting,QextSerialBase::Polling);//LINUXÏÂ´®¿ÚÎŞ·¨Ê¹ÓÃÊÂ¼şÇı¶¯;
+	myCom = new Posix_QextSerialPort(MAINCOMPORT,myComSetting,QextSerialBase::Polling);//LINUXä¸‹ä¸²å£æ— æ³•ä½¿ç”¨äº‹ä»¶é©±åŠ¨;
 #endif
 #endif
 
 #ifdef COMMUNICATION_SERIAL
-	//ÒÔ¿É¶ÁĞ´·½Ê½´ò¿ª´®¿Ú;
-	myCom ->open(QIODevice::ReadWrite);	
-	myCom->setTimeout(10);
-	myCom->setBaudRate(BAUD9600);
-	myCom->setDataBits(DATA_8);
-	myCom->setStopBits(STOP_1);
-	myCom->setParity(PAR_NONE);
-	myCom->setFlowControl(FLOW_OFF);
+	if (myCom && myCom->open(QIODevice::ReadWrite)) {
+		myCom->setTimeout(10);
+		myCom->setBaudRate(BAUD9600);
+		myCom->setDataBits(DATA_8);
+		myCom->setStopBits(STOP_1);
+		myCom->setParity(PAR_NONE);
+		myCom->setFlowControl(FLOW_OFF);
+	} else {
+		qWarning("PC serial open failed: %s", MAINCOMPORT);
+	}
 #endif
 }
+
 void Worker::setupMCUCommunication()
 {
-	//¶¨ÒåÒ»¸ö½á¹¹Ìå£¬ÓÃÀ´´æ·Å´®¿Ú¸÷¸ö²ÎÊı;
 	struct PortSettings myComSetting = {BAUD9600,DATA_8,PAR_NONE,STOP_1,FLOW_OFF,500};
-	//¶¨Òå´®¿Ú¶ÔÏó£¬²¢´«µİ²ÎÊı£¬ÔÚ¹¹Ôìº¯ÊıÀï¶ÔÆä½øĞĞ³õÊ¼»¯;
 #ifdef WIN32
 #ifdef COMMUNICATION_WITH_MCU
 	mcuCom = new Win_QextSerialPort(MCUCOMPORT);
 #endif
-
-#elif linux
+#elif defined(linux)
 #ifdef COMMUNICATION_WITH_MCU
 	mcuCom = new Posix_QextSerialPort(MCUCOMPORT,myComSetting,QextSerialBase::Polling);
 #endif
 #endif
 
 #ifdef COMMUNICATION_WITH_MCU
-	mcuCom->open(QIODevice::ReadWrite);
-	mcuCom->setTimeout(10);
-	mcuCom->setBaudRate(BAUD9600);
-	mcuCom->setDataBits(DATA_8);
-	mcuCom->setStopBits(STOP_1);
-	mcuCom->setParity(PAR_NONE);
-	mcuCom->setFlowControl(FLOW_OFF);
+	if (mcuCom && mcuCom->open(QIODevice::ReadWrite)) {
+		mcuCom->setTimeout(10);
+		mcuCom->setBaudRate(BAUD9600);
+		mcuCom->setDataBits(DATA_8);
+		mcuCom->setStopBits(STOP_1);
+		mcuCom->setParity(PAR_NONE);
+		mcuCom->setFlowControl(FLOW_OFF);
+	} else {
+		qWarning("MCU serial open failed: %s", MCUCOMPORT);
+	}
 #endif
 }
 

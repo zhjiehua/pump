@@ -21,98 +21,98 @@
 #endif
 
 #if 0
-//ÒÔÏÂÎª·µ»Ø16×Ö½ÚÍêÕûÊı¾İµÄÃüÁî;
-#define PFC_READ_PRODUCT_ID			0x01//¶ÁÈ¡²úÆ·ID;
-#define PFC_READ_LICENSE_H			0x02//¶ÁÈ¡ĞòÁĞºÅ¸ßÎ»;
-#define PFC_READ_LICENSE_L			0x03//¶ÁÈ¡ĞòÁĞºÅµÍÎ»;
-#define PFC_READ_STATUS_1			0x04//¶ÁÈ¡¼ì²âÆ÷×´Ì¬1(µÆ×´Ì¬Óëµ±Ç°²¨³¤);
-#define PFC_READ_STATUS_2			0x05//¶ÁÈ¡¼ì²âÆ÷×´Ì¬2£¨Ê±¼ä³£ÊıÓëÊä³ö·¶Î§);
-#define PFC_READ_VERSION			0x06//¶ÁÈ¡¼ì²âÆ÷Èí¼ş°æ±¾ºÅ;
-#define PFC_READ_REF				0x07//¶ÁÈ¡ref*;
-#define PFC_READ_SIG				0x08//¶ÁÈ¡sig*;
+//ä»¥ä¸‹ä¸ºè¿”å›16å­—èŠ‚å®Œæ•´æ•°æ®çš„å‘½ä»¤;
+#define PFC_READ_PRODUCT_ID			0x01//è¯»å–äº§å“ID;
+#define PFC_READ_LICENSE_H			0x02//è¯»å–åºåˆ—å·é«˜ä½;
+#define PFC_READ_LICENSE_L			0x03//è¯»å–åºåˆ—å·ä½ä½;
+#define PFC_READ_STATUS_1			0x04//è¯»å–æ£€æµ‹å™¨çŠ¶æ€1(ç¯çŠ¶æ€ä¸å½“å‰æ³¢é•¿);
+#define PFC_READ_STATUS_2			0x05//è¯»å–æ£€æµ‹å™¨çŠ¶æ€2ï¼ˆæ—¶é—´å¸¸æ•°ä¸è¾“å‡ºèŒƒå›´);
+#define PFC_READ_VERSION			0x06//è¯»å–æ£€æµ‹å™¨è½¯ä»¶ç‰ˆæœ¬å·;
+#define PFC_READ_REF				0x07//è¯»å–ref*;
+#define PFC_READ_SIG				0x08//è¯»å–sig*;
 
-//ÒÔÏÂÎª·µ»ØACK£¬NACKµÄÃüÁî;
-#define PFC_WAVE_LENGTH				0x10//²¨³¤;
-#define PFC_TIME_CONST				0x11//Ê±¼ä³£Êı;
-#define PFC_OUTPUT_EXTENT			0x12//Êä³ö·¶Î§;
-#define PFC_SYNC_TIME				0X13//Éè¶¨Í¬²½Ê±¼ä;
-#define PFC_LIGHT_TURN_ON			0x14//¿ªµÆ;
-#define PFC_LIGHT_TURN_OFF			0x15//¹ØµÆ;
-#define PFC_WAVE_LEN_INI			0x16//²¨³¤³õÊ¼»¯;
-#define PFC_AUTO_RESET				0x17//×Ô¶¯ÇåÁãÃüÁî;
-#define PFC_SET_AU_FREQ				0x18//Éè¶¨AuÖµ·¢ËÍÆµÂÊÃüÁî;
-#define PFC_SET_OUTPUT_EVENT		0x19//Éè¶¨Êä³öÊÂ¼ş;
-#define PFC_LIGHT_SEL				0x20//ë®µÆÓëÎÙµÆÑ¡Ôñ;
+//ä»¥ä¸‹ä¸ºè¿”å›ACKï¼ŒNACKçš„å‘½ä»¤;
+#define PFC_WAVE_LENGTH				0x10//æ³¢é•¿;
+#define PFC_TIME_CONST				0x11//æ—¶é—´å¸¸æ•°;
+#define PFC_OUTPUT_EXTENT			0x12//è¾“å‡ºèŒƒå›´;
+#define PFC_SYNC_TIME				0X13//è®¾å®šåŒæ­¥æ—¶é—´;
+#define PFC_LIGHT_TURN_ON			0x14//å¼€ç¯;
+#define PFC_LIGHT_TURN_OFF			0x15//å…³ç¯;
+#define PFC_WAVE_LEN_INI			0x16//æ³¢é•¿åˆå§‹åŒ–;
+#define PFC_AUTO_RESET				0x17//è‡ªåŠ¨æ¸…é›¶å‘½ä»¤;
+#define PFC_SET_AU_FREQ				0x18//è®¾å®šAuå€¼å‘é€é¢‘ç‡å‘½ä»¤;
+#define PFC_SET_OUTPUT_EVENT		0x19//è®¾å®šè¾“å‡ºäº‹ä»¶;
+#define PFC_LIGHT_SEL				0x20//æ°˜ç¯ä¸é’¨ç¯é€‰æ‹©;
 
-//ÒÔÏÂÎªÏÂÎ»»úÖ÷¶¯·¢ËÍµÄÃüÁî;
-#define PFC_READ_AU					0x90//¶ÁAuÖµÃüÁî;
-#define PFC_INPUT_EVENT				0x91//·¢ËÍÊäÈëÊÂ¼ş;
-#define PFC_SYS_ERR					0x92//·¢ËÍÏµÍ³¹ÊÕÏ;
-#define PFC_STAT_CHANGE_1			0x93//ÒÇÆ÷¼üÅÌÊäÈëµ¼ÖÂ¼ì²âÆ÷¼ì²âÆ÷×´Ì¬±ä»¯1(µÆ×´Ì¬Óëµ±Ç°²¨³¤);
-#define PFC_STAT_CHANGE_2			0x94//ÒÇÆ÷¼üÅÌÊäÈëµ¼ÖÂ¼ì²âÆ÷¼ì²âÆ÷×´Ì¬±ä»¯2(Ê±¼ä³£ÊıÓëÊä³ö·¶Î§);
+//ä»¥ä¸‹ä¸ºä¸‹ä½æœºä¸»åŠ¨å‘é€çš„å‘½ä»¤;
+#define PFC_READ_AU					0x90//è¯»Auå€¼å‘½ä»¤;
+#define PFC_INPUT_EVENT				0x91//å‘é€è¾“å…¥äº‹ä»¶;
+#define PFC_SYS_ERR					0x92//å‘é€ç³»ç»Ÿæ•…éšœ;
+#define PFC_STAT_CHANGE_1			0x93//ä»ªå™¨é”®ç›˜è¾“å…¥å¯¼è‡´æ£€æµ‹å™¨æ£€æµ‹å™¨çŠ¶æ€å˜åŒ–1(ç¯çŠ¶æ€ä¸å½“å‰æ³¢é•¿);
+#define PFC_STAT_CHANGE_2			0x94//ä»ªå™¨é”®ç›˜è¾“å…¥å¯¼è‡´æ£€æµ‹å™¨æ£€æµ‹å™¨çŠ¶æ€å˜åŒ–2(æ—¶é—´å¸¸æ•°ä¸è¾“å‡ºèŒƒå›´);
 #endif
 
-#define PFCC_READ_PRODUCT_ID		0x01//¶ÁÈ¡²úÆ·ID;
-#define PFCC_READ_LICENSE_H			0x02//¶ÁÈ¡ĞòÁĞºÅ¸ßÎ»;
-#define PFCC_READ_LICENSE_L			0x03//¶ÁÈ¡ĞòÁĞºÅµÍÎ»;
-#define PFCC_READ_PUMPSTATUS		0x04//¶ÁÈ¡±ÃÔËĞĞ×´Ì¬;
-#define PFCC_READ_PUMPFIX			0x05//¶ÁÈ¡±ÃÁ÷Á¿Ğ£Õı²ÎÊı;
-#define PFCC_READ_PUMPTIME			0x06//¶ÁÈ¡±ÃÔËĞĞ×ÜÊ±¼ä;
+#define PFCC_READ_PRODUCT_ID		0x01//è¯»å–äº§å“ID;
+#define PFCC_READ_LICENSE_H			0x02//è¯»å–åºåˆ—å·é«˜ä½;
+#define PFCC_READ_LICENSE_L			0x03//è¯»å–åºåˆ—å·ä½ä½;
+#define PFCC_READ_PUMPSTATUS		0x04//è¯»å–æ³µè¿è¡ŒçŠ¶æ€;
+#define PFCC_READ_PUMPFIX			0x05//è¯»å–æ³µæµé‡æ ¡æ­£å‚æ•°;
+#define PFCC_READ_PUMPTIME			0x06//è¯»å–æ³µè¿è¡Œæ€»æ—¶é—´;
 
 
-//ÒÔÏÂÎª·µ»ØACK£¬NACKµÄÃüÁî;
-#define PFCC_SET_FLOW				0x10//Éè¶¨±ÃÁ÷Á¿;
-#define PFCC_SET_FLOWPERCENT		0x11//Éè¶¨±ÃÁ÷Á¿°Ù·Ö±È;
-#define PFCC_SYNCTIME				0x12//Éè¶¨Í¬²½Ê±¼ä;
-#define PFCC_MAX_PRESS				0X13//Éè¶¨×î´óÑ¹Á¦;
-#define PFCC_MIN_PRESS				0x14//Éè¶¨×îĞ¡Ñ¹Á¦;
-#define PFCC_PUMPSTART				0x15//±ÃÆô¶¯ÃüÁî;
-#define PFCC_PUMPSTOP				0x16//±ÃÍ£Ö¹ÃüÁî;
-#define PFCC_PRESSCLEAR				0x17//Ñ¹Á¦×Ô¶¯ÇåÁãÃüÁî;
-#define PFCC_READ_PRESS				0x18//¶ÁÈ¡Ñ¹Á¦²¢Éè¶¨Ñ¹Á¦·¢ËÍÆµÂÊÃüÁî
-#define PFCC_SET_MODE				0x19//Éè¶¨±ÃÄ£Ê½;
-#define PFCC_SET_FLOWFIX			0x40//Éè¶¨±ÃĞ£Á÷Á¿Õı²ÎÊı;
+//ä»¥ä¸‹ä¸ºè¿”å›ACKï¼ŒNACKçš„å‘½ä»¤;
+#define PFCC_SET_FLOW				0x10//è®¾å®šæ³µæµé‡;
+#define PFCC_SET_FLOWPERCENT		0x11//è®¾å®šæ³µæµé‡ç™¾åˆ†æ¯”;
+#define PFCC_SYNCTIME				0x12//è®¾å®šåŒæ­¥æ—¶é—´;
+#define PFCC_MAX_PRESS				0X13//è®¾å®šæœ€å¤§å‹åŠ›;
+#define PFCC_MIN_PRESS				0x14//è®¾å®šæœ€å°å‹åŠ›;
+#define PFCC_PUMPSTART				0x15//æ³µå¯åŠ¨å‘½ä»¤;
+#define PFCC_PUMPSTOP				0x16//æ³µåœæ­¢å‘½ä»¤;
+#define PFCC_PRESSCLEAR				0x17//å‹åŠ›è‡ªåŠ¨æ¸…é›¶å‘½ä»¤;
+#define PFCC_READ_PRESS				0x18//è¯»å–å‹åŠ›å¹¶è®¾å®šå‹åŠ›å‘é€é¢‘ç‡å‘½ä»¤
+#define PFCC_SET_MODE				0x19//è®¾å®šæ³µæ¨¡å¼;
+#define PFCC_SET_FLOWFIX			0x40//è®¾å®šæ³µæ ¡æµé‡æ­£å‚æ•°;
 
-//ÒÔÏÂÎªÏÂÎ»»úÖ÷¶¯·¢ËÍµÄÃüÁî;
-#define PFCC_SEND_PRESS					0x90//¶ÁAuÖµÃüÁî;
-#define PFCC_INPUT_EVENT				0x91//·¢ËÍÊäÈëÊÂ¼ş;
-#define PFCC_SYS_ERR					0x92//·¢ËÍÏµÍ³¹ÊÕÏ;
-
-
-
+//ä»¥ä¸‹ä¸ºä¸‹ä½æœºä¸»åŠ¨å‘é€çš„å‘½ä»¤;
+#define PFCC_SEND_PRESS					0x90//è¯»Auå€¼å‘½ä»¤;
+#define PFCC_INPUT_EVENT				0x91//å‘é€è¾“å…¥äº‹ä»¶;
+#define PFCC_SYS_ERR					0x92//å‘é€ç³»ç»Ÿæ•…éšœ;
 
 
 
 
-#define PFC_SET_FLOW1				0x08//ÉèÖÃ³åÏ´Á÷ËÙ; 
-#define PFC_SET_MAXPRESS			0x09//ÉèÖÃ×î´óÑ¹Á¦;
-#define PFC_SET_MINPRESS			0x0A//ÉèÖÃ×îĞ¡Ñ¹Á¦;
-#define PFC_SET_PUMPMOD				0x0C//ÉèÖÃ±Ã¹¤×÷Ä£Ê½;
-#define PFC_PRESS_FIX				0x0D//Ñ¹Á¦Ğ£Õı;
-#define PFC_TIME_SYNC				0x0E//Ê±¼äÍ¬²½ÃüÁî;
-#define PFC_PRESS_FIXW				0x0F//Ñ¹Á¦Ğ£×¼Ğ´Èë;
-#define PFC_FLOW_FIXW				0x0B//Á÷Á¿Ğ£×¼²ÎÊıÎüÈë;
+
+
+
+#define PFC_SET_FLOW1				0x08//è®¾ç½®å†²æ´—æµé€Ÿ; 
+#define PFC_SET_MAXPRESS			0x09//è®¾ç½®æœ€å¤§å‹åŠ›;
+#define PFC_SET_MINPRESS			0x0A//è®¾ç½®æœ€å°å‹åŠ›;
+#define PFC_SET_PUMPMOD				0x0C//è®¾ç½®æ³µå·¥ä½œæ¨¡å¼;
+#define PFC_PRESS_FIX				0x0D//å‹åŠ›æ ¡æ­£;
+#define PFC_TIME_SYNC				0x0E//æ—¶é—´åŒæ­¥å‘½ä»¤;
+#define PFC_PRESS_FIXW				0x0F//å‹åŠ›æ ¡å‡†å†™å…¥;
+#define PFC_FLOW_FIXW				0x0B//æµé‡æ ¡å‡†å‚æ•°å¸å…¥;
 
 #define PFC_PUMP					0x0//Pump;
 #define PFC_PURGE					0x01//Purge
 #define PFC_START					0x0//Start
 #define PFC_HOLD					0x05//Hold
 #define PFC_STOP					0x02//Stop
-#define PFC_READ_PRESS				0x03//¶ÁÈ¡Ñ¹Á¦ÃüÃû2;
-#define PFC_SET_FLOW2				0x06//ÉèÖÃ³åÏ´Á÷Á¿2;
-#define PFC_DOWNLOAD_PROGRAM		0x07//ÏÂÔØ³ÌĞò;
+#define PFC_READ_PRESS				0x03//è¯»å–å‹åŠ›å‘½å2;
+#define PFC_SET_FLOW2				0x06//è®¾ç½®å†²æ´—æµé‡2;
+#define PFC_DOWNLOAD_PROGRAM		0x07//ä¸‹è½½ç¨‹åº;
 
 
 
-/******************************MUCÍ¨Ñ¶ÃüÁîÊ¶±ğ**********************************/
-#define MCU_SET_PARAM				0x01//ÉèÖÃ²ÎÊı;
-#define MCU_MOTOR_INI				0x02//Âí´ï³õÊ¼»¯;
-#define MCU_WAVEADD_MOTOR			0x04//²¨³¤Ôö¼Ó·½Ïò×ª¶¯Âí´ï;
-#define MCU_WAVEDEC_MOTOR			0x05//²¨³¤¼õĞ¡·½Ïò×ª¶¯Âí´ï;
-#define MCU_READ_PARAM				0x09//¶ÁÈ¡²ÎÊı;
-#define MCU_READ_VERSION			0x0a//¶ÁÈ¡·Ö¿Ø°æ±¾ºÅ;
-#define MCU_READ_AU_VAL				0x0b//¶ÁÈ¡AUÖµ;
-#define MCU_READ_AU_VALB			0x0c//¶ÁÈ¡AUÖµ;
+/******************************MUCé€šè®¯å‘½ä»¤è¯†åˆ«**********************************/
+#define MCU_SET_PARAM				0x01//è®¾ç½®å‚æ•°;
+#define MCU_MOTOR_INI				0x02//é©¬è¾¾åˆå§‹åŒ–;
+#define MCU_WAVEADD_MOTOR			0x04//æ³¢é•¿å¢åŠ æ–¹å‘è½¬åŠ¨é©¬è¾¾;
+#define MCU_WAVEDEC_MOTOR			0x05//æ³¢é•¿å‡å°æ–¹å‘è½¬åŠ¨é©¬è¾¾;
+#define MCU_READ_PARAM				0x09//è¯»å–å‚æ•°;
+#define MCU_READ_VERSION			0x0a//è¯»å–åˆ†æ§ç‰ˆæœ¬å·;
+#define MCU_READ_AU_VAL				0x0b//è¯»å–AUå€¼;
+#define MCU_READ_AU_VALB			0x0c//è¯»å–AUå€¼;
 
 
 
@@ -124,7 +124,7 @@ struct SendMcuData{
 
 
 
-/*¸ºÔğºóÌ¨Âß¼­´¦Àí;*/
+/*è´Ÿè´£åå°é€»è¾‘å¤„ç†;*/
 class Worker : public QObject
 {
 
@@ -137,16 +137,16 @@ public:
 	void setPcProtocol(const int &nPro){ m_nPcProtocol = nPro; };
 	int getPcProtocol(){return m_nPcProtocol;};
 
-	//! ÍøÂçÏà¹Ø½Ó¿Ú;
-	//! »ñÈ¡PCÍ¨Ñ¶¶Ë¿ÚÀàĞÍ(´®¿Ú»òÍø¿Ú);
+	//! ç½‘ç»œç›¸å…³æ¥å£;
+	//! è·å–PCé€šè®¯ç«¯å£ç±»å‹(ä¸²å£æˆ–ç½‘å£);
 	quint32 getConnectPortType(){return m_nConnectPort;}
-	//! »ñÈ¡Ô¶¶ËIP;
+	//! è·å–è¿œç«¯IP;
 	QString getRemoteIP(){return m_strRemoteIp;}
-	//! »ñÈ¡Ô¶¶Ë¶Ë¿Ú;
+	//! è·å–è¿œç«¯ç«¯å£;
 	quint32 getRemotePort(){return m_nRemotePort;}
 
 	//tcp
-	QTcpServer *tcpSocketServer;				//ÕÅ½Ü»ªÌí¼Ó@2016-06-22£¬ÉèÖÃÍø¿ÚÍ¨ĞÅ
+	QTcpServer *tcpSocketServer;				//å¼ æ°åæ·»åŠ @2016-06-22ï¼Œè®¾ç½®ç½‘å£é€šä¿¡
 	QTcpSocket *tcpSocketClientConnection;
 	void setupNetworkCommunication();
 	//udp
@@ -154,28 +154,28 @@ public:
 	void setupMCUCommunication();
 
 private:
-	int m_nPcProtocol;							//ÉÏÎ»»úÍ¨Ñ¶Ğ­ÒéÑ¡Ôñ(0 ¾ÉĞ­Òé£¬ 1ĞÂĞ­Òé);
+	int m_nPcProtocol;							//ä¸Šä½æœºé€šè®¯åè®®é€‰æ‹©(0 æ—§åè®®ï¼Œ 1æ–°åè®®);
 	QThread m_workerThread;
-	QTimer *m_pTimer;								//ÓÃÓÚ¶¨Ê±¶ÁÈ¡Í¨Ñ¶Êı¾İµÄ¶¨Ê±Æ÷;
+	QTimer *m_pTimer;								//ç”¨äºå®šæ—¶è¯»å–é€šè®¯æ•°æ®çš„å®šæ—¶å™¨;
 	quint8 abc;
-	QList< QList<quint32> >sendList4Mcu;			//·¢ËÍÁĞ±í;
-	QList< QList<quint32> >sendList4Pc;				//·¢ËÍÁĞ±í;
-	quint32 m_nResendTimeout;						//ÖØ·¢¼ÆÊ±;
-	quint32 m_nResendCnt;							//ÖØ·¢¼ÆÊı;
+	QList< QList<quint32> >sendList4Mcu;			//å‘é€åˆ—è¡¨;
+	QList< QList<quint32> >sendList4Pc;				//å‘é€åˆ—è¡¨;
+	quint32 m_nResendTimeout;						//é‡å‘è®¡æ—¶;
+	quint32 m_nResendCnt;							//é‡å‘è®¡æ•°;
 
-	//! ÉÏÎ»»úµÄÍ¨Ñ¶½Ó¿Ú(´®¿Ú¡¢Íø¿Ú);
+	//! ä¸Šä½æœºçš„é€šè®¯æ¥å£(ä¸²å£ã€ç½‘å£);
 	quint32 m_nConnectPort;
 
-	//! ±¾µØÍøÂç²ÎÊı;
+	//! æœ¬åœ°ç½‘ç»œå‚æ•°;
 	quint32 m_nLocalPort;
 
-	//! Ô¶³ÌÍøÂç²ÎÊı;
+	//! è¿œç¨‹ç½‘ç»œå‚æ•°;
 	quint32 m_nRemotePort;
 	QString m_strRemoteIp;
 
 
-	void setupCommunication();						//ÉèÖÃÍ¨Ñ¶£¬¿ÉÒÔÊÇ´®¿Ú»òÕßÍø¿Ú;
-	void setupSerialCommunication();				//ÉèÖÃ´®¿ÚÍ¨Ñ¶;
+	void setupCommunication();						//è®¾ç½®é€šè®¯ï¼Œå¯ä»¥æ˜¯ä¸²å£æˆ–è€…ç½‘å£;
+	void setupSerialCommunication();				//è®¾ç½®ä¸²å£é€šè®¯;
 
 signals:
 	void process4Mcu( quint8 type, quint32 cmd, quint32 arg, quint32 add);
@@ -194,12 +194,12 @@ private slots:
 
 public slots:
 	void timeoutFunc();
-	void processCmd4Pc( mbyte type, uint32 cmd, uint32 arg, uint32 add);				//¶Ô½ÓÊÕµ½µÄÊı¾İ½øĞĞ´¦Àí;
-	void processCmd4Clarity(mbyte hID, mbyte hAI, mbyte hPFC, uint32 nVal);		//¶Ô½ÓÊÕµ½µÄÊı¾İ½øĞĞ´¦Àí£¬»ùÓÚClarityĞ­Òé;
-	void processCmd4Mcu( mbyte type, uint32 cmd, uint32 arg, uint32 add);			//¶Ô½ÓÊÕµ½µÄÊı¾İ½øĞĞ´¦Àí;
-	void check4Mcu(uint32 cmd);														//Ğ£Ñé;
+	void processCmd4Pc( mbyte type, uint32 cmd, uint32 arg, uint32 add);				//å¯¹æ¥æ”¶åˆ°çš„æ•°æ®è¿›è¡Œå¤„ç†;
+	void processCmd4Clarity(mbyte hID, mbyte hAI, mbyte hPFC, uint32 nVal);		//å¯¹æ¥æ”¶åˆ°çš„æ•°æ®è¿›è¡Œå¤„ç†ï¼ŒåŸºäºClarityåè®®;
+	void processCmd4Mcu( mbyte type, uint32 cmd, uint32 arg, uint32 add);			//å¯¹æ¥æ”¶åˆ°çš„æ•°æ®è¿›è¡Œå¤„ç†;
+	void check4Mcu(uint32 cmd);														//æ ¡éªŒ;
 
-	//ÕÅ½Ü»ªÌí¼Ó@2016-06-22£¬Ìí¼ÓsocketÍ¨ĞÅ
+	//å¼ æ°åæ·»åŠ @2016-06-22ï¼Œæ·»åŠ socketé€šä¿¡
 	//tcp
 	void acceptConnection();
 	void readClient();

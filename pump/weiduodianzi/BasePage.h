@@ -6,7 +6,7 @@
 #include "Common.h"
 
 
-#define BTNGLOBALSTYLE "QPushButton{outline: 0px;}""QPushButton:focus{border: 2px solid blue;outline: 5px;}" //张杰华修改@2016-06-23
+#define BTNGLOBALSTYLE "QPushButton{outline: 0px;}""QPushButton:focus{border: 2px solid blue;outline: 5px;}" //寮犳澃鍗庝慨鏀笯2016-06-23
 //#define BTNGLOBALSTYLE "QPushButton{outline: 0px;}""QPushButton:focus{border: 2px solid green;outline: 0px;}"
 
 class CBasePage;
@@ -24,9 +24,9 @@ class CBasePage : public QWidget
 	Q_OBJECT
 
 protected:
-	QString m_strTitle;		//标题;
-	quint8 m_nPageIndex;		//页面ID;
-	quint8 m_nPrevPageIndex;	//下个页面ID;
+	QString m_strTitle;		//鏍囬;
+	quint8 m_nPageIndex;		//椤甸潰ID;
+	quint8 m_nPrevPageIndex;	//涓嬩釜椤甸潰ID;
 	quint32 m_nAdd;
 	CBasePage *m_pCurrentPage;
 	QList<StructPageMethod>pageMethod;
@@ -50,7 +50,7 @@ public:
 	quint8 GetPrevPageIndex()	{ return m_nPrevPageIndex; }
 	CBasePage* changePage(int index, quint32 addData = 0);
 
-	//控件焦点列表;
+	//鎺т欢鐒︾偣鍒楄〃;
 	QObjectList xList;
 	QObjectList yList;
 };

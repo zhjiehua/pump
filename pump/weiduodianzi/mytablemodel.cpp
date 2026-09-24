@@ -26,7 +26,7 @@ QVariant MyTableModel::data( const QModelIndex &index, int role ) const
 	if (role == Qt::TextAlignmentRole) {
 		return int(Qt::AlignLeft | Qt::AlignVCenter);
 	}
-	else if(role == Qt::DisplayRole)//ÏÔÊ¾ÄÚÈİ;
+	else if(role == Qt::DisplayRole)//æ˜¾ç¤ºå†…å®¹;
 	{
 		return tableData.at(index.row()).at(index.column());
 	}
@@ -113,16 +113,16 @@ void MyTableModel::readDataFromTable(int which)
 {
 	m_nWhichTable = which;
 
-	//¶ÁÈ¡Êı¾İ¿â×ÊÁÏ;
-	if(which < TABLE_FLOW_FIX)//¶ÁÈ¡Ìİ¶È±í;
+	//è¯»å–æ•°æ®åº“èµ„æ–™;
+	if(which < TABLE_FLOW_FIX)//è¯»å–æ¢¯åº¦è¡¨;
 	{
 		tableData = DataBase::getInstance()->readGradientTable(which);
 	}
-	else if(which == TABLE_FLOW_FIX)//¶ÁÈ¡Á÷Á¿²¹³¥±í¸ñ;
+	else if(which == TABLE_FLOW_FIX)//è¯»å–æµé‡è¡¥å¿è¡¨æ ¼;
 	{
 		tableData = DataBase::getInstance()->readCompensationTable();
 	}
-	else if(which == TABLE_PRESS_FIX)//¶ÁÈ¡Ñ¹Á¦²¹³¥±í¸ñ;
+	else if(which == TABLE_PRESS_FIX)//è¯»å–å‹åŠ›è¡¥å¿è¡¨æ ¼;
 	{
 		tableData = DataBase::getInstance()->readCompensationTable(1);
 	}
@@ -152,7 +152,7 @@ void MyTableModel::insertRowsWithCopyMode(int row, int count)
 			tableData.insert(row+i, list);
 		}
 	}
-	else//²åÈëĞÂµÄĞĞ;
+	else//æ’å…¥æ–°çš„è¡Œ;
 	{
 		QStringList list;
 		for (int i = 0; i < m_nColumnCnt; i++)

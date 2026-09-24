@@ -1,7 +1,7 @@
 #ifndef WEIDUODIANZI_H
 #define WEIDUODIANZI_H
 
-#include <QtGui/QMainWindow>
+#include <QMainWindow>
 #include <QTranslator>
 #include <QVBoxLayout>
 #include "ui_BaseMainPage.h"
@@ -27,41 +27,41 @@ public:
 	BaseMainPage(QString strTitle, QWidget *parent = 0);
 	~BaseMainPage();
 
-	void changePage(quint8 id, quint32 add = 0);				//Ò³ÃæÇĞ»»;
-	void changeLanguage(const int nLang);						//ÇĞ»»ÓïÑÔ;
-	void setShortCutDisable(bool disable);						//½ûÖ¹¿ì½İ¼ü;
-	void navigatorPageAt(int index, bool force = false);		//¸Ä±äµ¼º½Ò³;
+	void changePage(quint8 id, quint32 add = 0);				//é¡µé¢åˆ‡æ¢;
+	void changeLanguage(const int nLang);						//åˆ‡æ¢è¯­è¨€;
+	void setShortCutDisable(bool disable);						//ç¦æ­¢å¿«æ·é”®;
+	void navigatorPageAt(int index, bool force = false);		//æ”¹å˜å¯¼èˆªé¡µ;
 	quint8 GetPageIndex()		{ return m_nPageIndex; }
 
 private:
 	Ui::BaseMainPage ui;
-	QString m_strTitle;						//±êÌâ;
-	int m_nPageIndex;						//Ò³ÃæID;
-	CBasePage *m_pCtrlPage;					//¿Ø¼şÒ³ÃæÖ¸Õë;
-	QTranslator *m_pTranslator;				//·­Òë;
+	QString m_strTitle;						//æ ‡é¢˜;
+	int m_nPageIndex;						//é¡µé¢ID;
+	CBasePage *m_pCtrlPage;					//æ§ä»¶é¡µé¢æŒ‡é’ˆ;
+	QTranslator *m_pTranslator;				//ç¿»è¯‘;
 
 	bool adminFlag;
 	QTimer *pAdminTimer;
 	MachineStat *m_pMachine;
 
 	bool m_bNavigatorMode;
-	int m_nNavigatorCnt;				//±êÇ©Ò³ÊıÄ¿;
-	int m_nCurrentNavigator;			//µ±Ç°µ¼º½Ò³;
-	QList<QShortcut *>shortCutList;		//¿ì½İ¼üÁĞ±í;
+	int m_nNavigatorCnt;				//æ ‡ç­¾é¡µæ•°ç›®;
+	int m_nCurrentNavigator;			//å½“å‰å¯¼èˆªé¡µ;
+	QList<QShortcut *>shortCutList;		//å¿«æ·é”®åˆ—è¡¨;
 
-	void initMachine();					//³õÊ¼»¯»úÆ÷×´Ì¬;
-	void initTimer();					//³õÊ¼»¯¶¨Ê±¹¦ÄÜ;
-	void initTranslation();				//³õÊ¼»¯·­Òë¹¦ÄÜ;
-	void initPage();					//³õÊ¼»¯Ò³Ãæ;
-	void initShotCut();					//³õÊ¼»¯°´¼üÂß¼­;
+	void initMachine();					//åˆå§‹åŒ–æœºå™¨çŠ¶æ€;
+	void initTimer();					//åˆå§‹åŒ–å®šæ—¶åŠŸèƒ½;
+	void initTranslation();				//åˆå§‹åŒ–ç¿»è¯‘åŠŸèƒ½;
+	void initPage();					//åˆå§‹åŒ–é¡µé¢;
+	void initShotCut();					//åˆå§‹åŒ–æŒ‰é”®é€»è¾‘;
 
-	bool checkPermission();				//¼ì²éÊÇ·ñÔÊĞíÇĞ»»Ò³Ãæ;
+	bool checkPermission();				//æ£€æŸ¥æ˜¯å¦å…è®¸åˆ‡æ¢é¡µé¢;
 	void installLanguage(const int nLang);
 
-	//µ¼º½¹¦ÄÜ;
+	//å¯¼èˆªåŠŸèƒ½;
 	bool isNavigatorMode(){return m_bNavigatorMode;}
 	void setNavigatorMode(bool mode);
-	inline void changeNavigator(quint8 index);							//¸Ä±äµ¼º½Ë÷Òı;
+	inline void changeNavigator(quint8 index);							//æ”¹å˜å¯¼èˆªç´¢å¼•;
 	
 	
 	
@@ -70,16 +70,16 @@ private slots:
 	void machineStatChanged(MachineStat::MachineStatment stat);
 
 public slots:
-	//°´¼ü²Ù×÷;
-	void focusNextLeftChild();					//Ïò×óÇĞ»»½¹µã;
-	void focusNextRightChild();					//ÏòÓÒÇĞ»»½¹µã;
-	void focusNextUpChild();					//ÏòÉÏÇĞ»»½¹µã;
-	void focusNextDownChild();					//ÏòÏÂÇĞ»»½¹µã;
-	void shortCutPumpStop();					//PUMP/STOP¿ì½İ¼ü;
-	void shortCutStartHold();					//START/HOLD¿ì½İ¼ü;
-	void shortCutPurge();						//Purge¿ì½İ¼ü;
-	void shortCutSuper();						//Super¿ì½İ¼üÌøÖÁ¸ß¼¶Ò³Ãæ;
-	void backToPage();							//·µ»ØÉÏÒ»Ò³;
+	//æŒ‰é”®æ“ä½œ;
+	void focusNextLeftChild();					//å‘å·¦åˆ‡æ¢ç„¦ç‚¹;
+	void focusNextRightChild();					//å‘å³åˆ‡æ¢ç„¦ç‚¹;
+	void focusNextUpChild();					//å‘ä¸Šåˆ‡æ¢ç„¦ç‚¹;
+	void focusNextDownChild();					//å‘ä¸‹åˆ‡æ¢ç„¦ç‚¹;
+	void shortCutPumpStop();					//PUMP/STOPå¿«æ·é”®;
+	void shortCutStartHold();					//START/HOLDå¿«æ·é”®;
+	void shortCutPurge();						//Purgeå¿«æ·é”®;
+	void shortCutSuper();						//Superå¿«æ·é”®è·³è‡³é«˜çº§é¡µé¢;
+	void backToPage();							//è¿”å›ä¸Šä¸€é¡µ;
 	
 
 

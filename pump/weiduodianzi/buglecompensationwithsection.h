@@ -13,12 +13,12 @@ public:
 	BugleCompensationWithSection(QObject *parent = 0);
 	~BugleCompensationWithSection();
 
-	void updateOutput(quint32 output, double flow);				//¸üĞÂÊä³ö;
-	void adjustOutputByInput(qint32 inputData);	//¸ù¾İÊäÈëµ÷½ÚÊä³ö(´Ëº¯ÊıÓ¦¸ÃÔÚ²É¼¯ÊäÈëÊ±ºò±»µ÷ÓÃ);
-	void stopOutput();								//Í£Ö¹Êä³ö;
-	void pauseOutput();								//ÔİÍ£Êä³ö;	
-	void waitOutputStable();						//µÈ´ıÊä³öÎÈ¶¨;
-	void bugleSignal();								//³öÏÖÁËÍ¹ÂÖĞÅºÅ;
+	void updateOutput(quint32 output, double flow);				//æ›´æ–°è¾“å‡º;
+	void adjustOutputByInput(qint32 inputData);	//æ ¹æ®è¾“å…¥è°ƒèŠ‚è¾“å‡º(æ­¤å‡½æ•°åº”è¯¥åœ¨é‡‡é›†è¾“å…¥æ—¶å€™è¢«è°ƒç”¨);
+	void stopOutput();								//åœæ­¢è¾“å‡º;
+	void pauseOutput();								//æš‚åœè¾“å‡º;	
+	void waitOutputStable();						//ç­‰å¾…è¾“å‡ºç¨³å®š;
+	void bugleSignal();								//å‡ºç°äº†å‡¸è½®ä¿¡å·;
 
 private:
 	int m_nTimeoutIndex;
@@ -27,7 +27,7 @@ private:
 	QTimer *m_pTimer;
 	bool isOutputStable();
 	void addTimeoutAndFactor(int timeout, double factor);
-	void updateTimeoutList(double flow);						//¸üĞÂ²¹³¥±í¸ñ;
+	void updateTimeoutList(double flow);						//æ›´æ–°è¡¥å¿è¡¨æ ¼;
 	
 
 private slots:

@@ -9,8 +9,8 @@
 #include <stdlib.h>
 #endif
 
-//#define TIME_UNIT_BASE 1//µ¥Î»ÊÇs£¬²âÊÔÓÃ;
-#define TIME_UNIT_BASE 3600//µ¥Î»Ğ¡Ê±£¬ÕæÕıÓÃ;
+//#define TIME_UNIT_BASE 1//å•ä½æ˜¯sï¼Œæµ‹è¯•ç”¨;
+#define TIME_UNIT_BASE 3600//å•ä½å°æ—¶ï¼ŒçœŸæ­£ç”¨;
 
 
 TimePage::TimePage(QWidget *parent /*= 0*/, quint8 index, quint8 previndex, quint32 add)
@@ -67,7 +67,7 @@ bool TimePage::eventFilter(QObject *o, QEvent *e)
 				{	
 					m_bModify = false;
 					//saveDateTime();
-#if 1//ÆÁ±Î£¬²»ĞŞ¸ÄRTCÊ±ÖÓ;
+#if 1//å±è”½ï¼Œä¸ä¿®æ”¹RTCæ—¶é’Ÿ;
 					QString temp = QString("%1.").arg(ui.yearEdit->text().toInt(), 4, 10, QChar('0'));
 					temp += QString("%1.").arg(ui.monthEdit->text().toInt(), 2, 10, QChar('0'));
 					temp += QString("%1-").arg(ui.dayEdit->text().toInt(), 2, 10, QChar('0'));
@@ -113,7 +113,7 @@ void TimePage::updateTime()
 	if(m_bModify)
 		return;
 
-	QDateTime ttime = QDateTime::currentDateTime();//»ñÈ¡ÏµÍ³ÏÖÔÚµÄÊ±¼ä;
+	QDateTime ttime = QDateTime::currentDateTime();//è·å–ç³»ç»Ÿç°åœ¨çš„æ—¶é—´;
 	int offset = DataBase::getInstance()->queryData("datetimeoffset").toInt();
 	uint temp = ttime.toTime_t();
 	temp +=offset;
@@ -162,7 +162,7 @@ void TimePage::initDisplay()
 
 	updateTime();
 
-	//¶¨Ê±¸üĞÂÊ±¼ä;
+	//å®šæ—¶æ›´æ–°æ—¶é—´;
 	QTimer *pTimer = new QTimer(this);
 	connect(pTimer, SIGNAL(timeout()), this, SLOT(updateTime()));
 	pTimer->start(1000);

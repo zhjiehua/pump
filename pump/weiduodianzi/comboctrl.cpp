@@ -12,7 +12,7 @@
 
 #define COMBOSTYLE "QComboBox::drop-down{width:20px;height:20px;border-image:url(:/weiduodianzi/ui/down-arrow.png);}"\
 	"QComboBox::drop-down:focus{width:15px;height:15px;border-image:url(:/weiduodianzi/ui/down-arrow.png);}"\
-	"QComboBox:focus{border: 2px solid blue;outline: 5px;}"//�Žܻ��޸�@2016-06-23
+	"QComboBox:focus{border: 2px solid blue;outline: 5px;}"//张杰华修改@2016-06-23
 
 
 ComboCtrl::ComboCtrl(QWidget *parent)

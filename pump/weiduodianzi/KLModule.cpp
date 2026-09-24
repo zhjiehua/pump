@@ -42,7 +42,7 @@ bool KLModule::eventFilter(QObject *obj, QEvent *event)
 
 
 
-//******************************************************¶ÔÍâ½Ó¿Ú*******************************************************
+//******************************************************å¯¹å¤–æ¥å£*******************************************************
 void KLModule::logic_key_filter(QWidget *obj, int operationMold/* = 0*/, int navigatorCnt /*= 5*/)
 {
 	if(!obj)
@@ -58,25 +58,25 @@ void KLModule::logic_key_filter(QWidget *obj, int operationMold/* = 0*/, int nav
 
 
 
-//*****************************************************Âß¼­¸Ä¶¯*********************************************************
+//*****************************************************é€»è¾‘æ”¹åŠ¨*********************************************************
 #define LOGIC_KEY_LEFT		Qt::Key_F1
 #define LOGIC_KEY_UP		Qt::Key_F2
 #define LOGIC_KEY_RIGHT		Qt::Key_F3
 #define LOGIC_KEY_DOWN		Qt::Key_F5
-/*ËµÃ÷:
- *1¡¢Ãæ°å¿ª»úÊ±ºò´¦ÓÚÇĞ»»±êÇ©Ò³ÃæÄ£Ê½£¬°´Âß¼­×ó¡¢ÓÒ¼ü¿ÉÒÔÇĞ»»±êÇ©Ò³;
- *2¡¢µ±ÔÚ²½Öè1ÖĞ£¬°´ÏÂÂß¼­ÉÏ¼ü£¬Ãæ°å´¦ÓÚÇĞ»»½¹µãÄ£Ê½;
- *3¡¢ÔÚÇĞ»»½¹µãÄ£Ê½ÖĞ,°´ÉÏÏÂ×óÓÒÊµÏÖ½¹µãÇĞ»»;
- *4¡¢µ±ĞèÒªÖØĞÂ»Øµ½ÇĞ»»±êÇ©Ò³Ä£Ê½£¬ÇëÊ¹ÓÃvoid logic_navigator_mold();
+/*è¯´æ˜:
+ *1ã€é¢æ¿å¼€æœºæ—¶å€™å¤„äºåˆ‡æ¢æ ‡ç­¾é¡µé¢æ¨¡å¼ï¼ŒæŒ‰é€»è¾‘å·¦ã€å³é”®å¯ä»¥åˆ‡æ¢æ ‡ç­¾é¡µ;
+ *2ã€å½“åœ¨æ­¥éª¤1ä¸­ï¼ŒæŒ‰ä¸‹é€»è¾‘ä¸Šé”®ï¼Œé¢æ¿å¤„äºåˆ‡æ¢ç„¦ç‚¹æ¨¡å¼;
+ *3ã€åœ¨åˆ‡æ¢ç„¦ç‚¹æ¨¡å¼ä¸­,æŒ‰ä¸Šä¸‹å·¦å³å®ç°ç„¦ç‚¹åˆ‡æ¢;
+ *4ã€å½“éœ€è¦é‡æ–°å›åˆ°åˆ‡æ¢æ ‡ç­¾é¡µæ¨¡å¼ï¼Œè¯·ä½¿ç”¨void logic_navigator_mold();
 */
 bool KLModule::logic_key_deal_mold0(QKeyEvent *ke)
 {
 	int keyVal = ke->key();
 	switch(keyVal)
 	{
-		case LOGIC_KEY_LEFT://×ó
+		case LOGIC_KEY_LEFT://å·¦
 		{
-			if(m_bLogicKeyMod)//×óÓÒ¼ü´¦ÓÚµ¼º½Ä£Ê½;
+			if(m_bLogicKeyMod)//å·¦å³é”®å¤„äºå¯¼èˆªæ¨¡å¼;
 			{
 				if(m_nNavigatorCnt <= 0)
 					return false;
@@ -84,13 +84,13 @@ bool KLModule::logic_key_deal_mold0(QKeyEvent *ke)
 				m_nCurrentNavigator == 0 ? m_nCurrentNavigator = m_nNavigatorCnt-1 : m_nCurrentNavigator--;
 				emit(logic_navigator_at(m_nCurrentNavigator));
 			}
-			else//×óÓÒ¼ü´¦ÓÚÇĞ»»¿Ø¼ş½¹µãÄ£Ê½;
+			else//å·¦å³é”®å¤„äºåˆ‡æ¢æ§ä»¶ç„¦ç‚¹æ¨¡å¼;
 				emit(logic_focus_next_left());
 		}
 		break;
-		case LOGIC_KEY_RIGHT://ÓÒ
+		case LOGIC_KEY_RIGHT://å³
 		{
-			if(m_bLogicKeyMod)//×óÓÒ¼ü´¦ÓÚµ¼º½Ä£Ê½;
+			if(m_bLogicKeyMod)//å·¦å³é”®å¤„äºå¯¼èˆªæ¨¡å¼;
 			{
 				if(m_nNavigatorCnt > 0)
 				{
@@ -101,11 +101,11 @@ bool KLModule::logic_key_deal_mold0(QKeyEvent *ke)
 					return false;
 				
 			}
-			else//×óÓÒ¼ü´¦ÓÚÇĞ»»¿Ø¼ş½¹µãÄ£Ê½;
+			else//å·¦å³é”®å¤„äºåˆ‡æ¢æ§ä»¶ç„¦ç‚¹æ¨¡å¼;
 				emit(logic_focus_next_right());
 		}
 		break;
-		case LOGIC_KEY_UP://ÉÏ
+		case LOGIC_KEY_UP://ä¸Š
 		{
 			if(m_bLogicKeyMod)
 			{
@@ -114,7 +114,7 @@ bool KLModule::logic_key_deal_mold0(QKeyEvent *ke)
 			emit(logic_focus_next_up());
 		}
 		break;
-		case LOGIC_KEY_DOWN://ÏÂ
+		case LOGIC_KEY_DOWN://ä¸‹
 		{
 			if(m_bLogicKeyMod)
 			{

@@ -56,7 +56,7 @@ QString DataBase::queryData(QString name)
 
 void DataBase::initDb()
 {
-	m_ret = sqlite3_open("wda.db", &m_db);//´ò¿ªÖ¸¶¨µÄÊı¾İ¿âÎÄ¼ş,Èç¹û²»´æÔÚ½«´´½¨Ò»¸öÍ¬ÃûµÄÊı¾İ¿âÎÄ¼ş;
+	m_ret = sqlite3_open("wda.db", &m_db);//æ‰“å¼€æŒ‡å®šçš„æ•°æ®åº“æ–‡ä»¶,å¦‚æœä¸å­˜åœ¨å°†åˆ›å»ºä¸€ä¸ªåŒåçš„æ•°æ®åº“æ–‡ä»¶;
 	if( m_ret )
 	{
 		fprintf(stderr, "Can't open database: %s\n", sqlite3_errmsg(m_db));
@@ -65,7 +65,7 @@ void DataBase::initDb()
 	else 
 		qDebug()<<"You have opened a sqlite3 database ";
 
-	//´´½¨È«¾Ö²ÎÊı±í¸ñ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!;
+	//åˆ›å»ºå…¨å±€å‚æ•°è¡¨æ ¼!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!;
 	char *sql = "DROP TABLE WDA;" ;
 	//sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
 	//sql = "CREATE TABLE IF NOT EXISTS WDA(ID INTEGER PRIMARY KEY,NAME TEXT ,VALUE TEXT);" ;
@@ -73,8 +73,8 @@ void DataBase::initDb()
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
 	//  	sql = "DELETE FROM SensorData;" ;
 	//  	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
-	//²åÈëÊı¾İ; 
-	//²ÎÊıÒ³ÃæÊı¾İ;
+	//æ’å…¥æ•°æ®; 
+	//å‚æ•°é¡µé¢æ•°æ®;
 	sql = "INSERT INTO WDA VALUES('language' , '0');";
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
 	sql = "INSERT INTO WDA VALUES('pumptype' , '0');";
@@ -93,7 +93,7 @@ void DataBase::initDb()
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
 	sql = "INSERT INTO WDA VALUES('gradientTable' , '0');";
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
-	sql = "INSERT INTO WDA VALUES('currentGradient' , '0');";//µ±Ç°ÔËĞĞÌİ¶È;
+	sql = "INSERT INTO WDA VALUES('currentGradient' , '0');";//å½“å‰è¿è¡Œæ¢¯åº¦;
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
 	sql = "INSERT INTO WDA VALUES('coefficient' , '1');";
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
@@ -108,7 +108,7 @@ void DataBase::initDb()
 	sql = "INSERT INTO WDA VALUES('pumpPurgeFlowVal', 0)";
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
 
-	//ÄêÔÂÈÕÊ±·ÖÃë;
+	//å¹´æœˆæ—¥æ—¶åˆ†ç§’;
 	sql = "INSERT INTO WDA VALUES('year' , '2015');";
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
 	sql = "INSERT INTO WDA VALUES('month' , '10');";
@@ -121,12 +121,12 @@ void DataBase::initDb()
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
 	sql = "INSERT INTO WDA VALUES('second' , '5');";
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
-	sql = "INSERT INTO WDA VALUES('datetimeoffset' , '0');";//ÈÕÆÚÆ«ÒÆÁ¿;
+	sql = "INSERT INTO WDA VALUES('datetimeoffset' , '0');";//æ—¥æœŸåç§»é‡;
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
-	sql = "INSERT INTO WDA VALUES('firstTryDateTime' , '0');";//¿ªÊ¼ÊÔÓÃµÄÈÕÆÚÊ±¼ä;
+	sql = "INSERT INTO WDA VALUES('firstTryDateTime' , '0');";//å¼€å§‹è¯•ç”¨çš„æ—¥æœŸæ—¶é—´;
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
 
-	//ÉÏ´ÎÎ¬ĞŞÈÕÆÚ
+	//ä¸Šæ¬¡ç»´ä¿®æ—¥æœŸ
 	sql = "INSERT INTO WDA VALUES('repairYear' , '0000');";
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
 	sql = "INSERT INTO WDA VALUES('repairMonth' , '00');";
@@ -134,7 +134,7 @@ void DataBase::initDb()
 	sql = "INSERT INTO WDA VALUES('repairDay' , '0');";
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
 
-	//Éú²úÈÕÆÚ
+	//ç”Ÿäº§æ—¥æœŸ
 	sql = "INSERT INTO WDA VALUES('manufYear' , '2015');";
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
 	sql = "INSERT INTO WDA VALUES('manufMonth' , '10');";
@@ -142,7 +142,7 @@ void DataBase::initDb()
 	sql = "INSERT INTO WDA VALUES('manufDay' , '1');";
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
 
-	//°²×°ÈÕÆÚ
+	//å®‰è£…æ—¥æœŸ
 	sql = "INSERT INTO WDA VALUES('instYear' , '2015');";
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
 	sql = "INSERT INTO WDA VALUES('instMonth' , '10');";
@@ -150,7 +150,7 @@ void DataBase::initDb()
 	sql = "INSERT INTO WDA VALUES('instDay' , '1');";
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
 
-	//Ğí¿ÉÖ¤ĞòÁĞºÅ;
+	//è®¸å¯è¯åºåˆ—å·;
 	sql = "INSERT INTO WDA VALUES('lic' , '123456');";
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
 	sql = "INSERT INTO WDA VALUES('license' , '1111111111');";
@@ -162,27 +162,27 @@ void DataBase::initDb()
 	sql = "INSERT INTO WDA VALUES('activeCode' , '0000000000');";
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
 
-	//ÓÃ»§ÃÜÂë;
+	//ç”¨æˆ·å¯†ç ;
 	sql = "INSERT INTO WDA VALUES('pwd' , '173895');";
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
 	sql = "INSERT INTO WDA VALUES('usrpwd' , '222222');";
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
 
 
-	//Ê±¼äÒ³Ãæ;
-	sql = "INSERT INTO WDA VALUES('usedTime' , '0');";//ÀÛ¼Æ¿ª»úÊ±¼ä;
+	//æ—¶é—´é¡µé¢;
+	sql = "INSERT INTO WDA VALUES('usedTime' , '0');";//ç´¯è®¡å¼€æœºæ—¶é—´;
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
-	sql = "INSERT INTO WDA VALUES('pumpUsedTime' , '0');";//Ë¨ÈûÀÛ¼ÆÊ¹ÓÃÊ±¼ä;
-	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
-
-
-	//¼¤»î×´Ì¬;
-	sql = "INSERT INTO WDA VALUES('bActive' , '0');";//Éè±¸ÊÇ·ñÓÀ¾Ã¼¤»î;
-	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
-	sql = "INSERT INTO WDA VALUES('bTryDay' , '0');";//Éè±¸ÊÇ·ñµ½´ïÊÔÓÃÊ±¼ä;
+	sql = "INSERT INTO WDA VALUES('pumpUsedTime' , '0');";//æ “å¡ç´¯è®¡ä½¿ç”¨æ—¶é—´;
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
 
-	//IPµØÖ·
+
+	//æ¿€æ´»çŠ¶æ€;
+	sql = "INSERT INTO WDA VALUES('bActive' , '0');";//è®¾å¤‡æ˜¯å¦æ°¸ä¹…æ¿€æ´»;
+	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
+	sql = "INSERT INTO WDA VALUES('bTryDay' , '0');";//è®¾å¤‡æ˜¯å¦åˆ°è¾¾è¯•ç”¨æ—¶é—´;
+	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
+
+	//IPåœ°å€
 	sql = "INSERT INTO WDA VALUES('ip1' , '192');";
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
 	sql = "INSERT INTO WDA VALUES('ip2' , '168');";
@@ -209,7 +209,7 @@ void DataBase::initDb()
 	sql = "INSERT INTO WDA VALUES('last_time' , '0');";
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
 
-	//! ¶Ë¿Ú(Íø¿Ú»ò´®¿Ú)
+	//! ç«¯å£(ç½‘å£æˆ–ä¸²å£)
 	sql = "INSERT INTO WDA VALUES('connect_port' , '0');";
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
 
@@ -225,7 +225,7 @@ void DataBase::initDb()
 		i = i+2;
 	}
 
-	//½«Êı¾İ¿â¶Á½øÄÚ´æ;
+	//å°†æ•°æ®åº“è¯»è¿›å†…å­˜;
 	QMap<QString, QString>::const_iterator i;
 	for (i = dataBase.constBegin(); i != dataBase.constEnd(); ++i) {
 		qDebug() << i.key() << ":" << i.value();
@@ -240,7 +240,7 @@ void DataBase::saveDb()
 
 void DataBase::createGradientTable()
 {
-	//´´½¨Ìİ¶È±í¸ñ;
+	//åˆ›å»ºæ¢¯åº¦è¡¨æ ¼;
 	QString tableName;
 	QString temp;
 	for(int i=0; i < 12; i++)
@@ -250,7 +250,7 @@ void DataBase::createGradientTable()
 		temp = QString("CREATE TABLE IF NOT EXISTS %1(ID INTEGER PRIMARY KEY, TIME TEXT,VALUE TEXT, ABENG TEXT, BBENG TEXT);").arg(tableName) ;
 		sqlite3_exec( m_db , temp.toLatin1().data() , 0 , 0 , &m_zErrMsg );
 
-		//²åÈëÄ¬ÈÏÊı¾İ;
+		//æ’å…¥é»˜è®¤æ•°æ®;
 		temp = QString("INSERT INTO %1 VALUES(0,'0' , '0.5', '100','0');").arg(tableName);
 		sqlite3_exec( m_db , temp.toLatin1().data() , 0 , 0 , &m_zErrMsg );
 
@@ -273,27 +273,27 @@ void DataBase::createCompensationTable()
 	char *sql = 0;
 	int ret = 0;
 
-	//²éÑ¯Ä¿Ç°Ê¹ÓÃµÄ±ÃÍ·ÀàĞÍ;
+	//æŸ¥è¯¢ç›®å‰ä½¿ç”¨çš„æ³µå¤´ç±»å‹;
 	int pumpType = queryData("pumptype").toInt();
 
-	//´´½¨Á÷Á¿²¹³¥±í,µ±ÉÕÂ¼³ÌĞòµ½ºËĞÄ°å£¬µÚÒ»´Î´´½¨±í¸ñÊ±ºò,ret·µ»ØSQLITE_OK,·ñÔò·µ»Ø´íÎó;
-	//µ±µÚÒ»´Î´´½¨¸Ã±í¸ñÊ±ºò£¬ĞèÒªÉèÎª³ö³§Ä¬ÈÏ²ÎÊı;
+	//åˆ›å»ºæµé‡è¡¥å¿è¡¨,å½“çƒ§å½•ç¨‹åºåˆ°æ ¸å¿ƒæ¿ï¼Œç¬¬ä¸€æ¬¡åˆ›å»ºè¡¨æ ¼æ—¶å€™,retè¿”å›SQLITE_OK,å¦åˆ™è¿”å›é”™è¯¯;
+	//å½“ç¬¬ä¸€æ¬¡åˆ›å»ºè¯¥è¡¨æ ¼æ—¶å€™ï¼Œéœ€è¦è®¾ä¸ºå‡ºå‚é»˜è®¤å‚æ•°;
 	sql = "DROP TABLE COMPENSATIONTABLE0";
 	//ret = sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
 	sql = "CREATE TABLE COMPENSATIONTABLE0(FLOW TEXT PRIMARY KEY, VALUE TEXT);";
 	ret = sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
-	if(ret == SQLITE_OK)//»Ö¸´Ä¬ÈÏÊı¾İ;
+	if(ret == SQLITE_OK)//æ¢å¤é»˜è®¤æ•°æ®;
 		restoreDefFlowCompenTable(pumpType);
 	
 
 
-	//´´½¨Ñ¹Á¦²¹³¥±í,µ±ÉÕÂ¼³ÌĞòµ½ºËĞÄ°å£¬µÚÒ»´Î´´½¨±í¸ñÊ±ºò,ret·µ»ØSQLITE_OK,·ñÔò·µ»Ø´íÎó;
-	//µ±µÚÒ»´Î´´½¨¸Ã±í¸ñÊ±ºò£¬ĞèÒªÉèÎª³ö³§Ä¬ÈÏ²ÎÊı;
+	//åˆ›å»ºå‹åŠ›è¡¥å¿è¡¨,å½“çƒ§å½•ç¨‹åºåˆ°æ ¸å¿ƒæ¿ï¼Œç¬¬ä¸€æ¬¡åˆ›å»ºè¡¨æ ¼æ—¶å€™,retè¿”å›SQLITE_OK,å¦åˆ™è¿”å›é”™è¯¯;
+	//å½“ç¬¬ä¸€æ¬¡åˆ›å»ºè¯¥è¡¨æ ¼æ—¶å€™ï¼Œéœ€è¦è®¾ä¸ºå‡ºå‚é»˜è®¤å‚æ•°;
 	sql = "DROP TABLE COMPENSATIONTABLE1";
 	//ret = sqlite3_exec( m_db , sql, 0 , 0 , &m_zErrMsg );
 	sql = "CREATE TABLE COMPENSATIONTABLE1(PRESS TEXT PRIMARY KEY, VALUE TEXT);";
 	ret = sqlite3_exec( m_db , sql, 0 , 0 , &m_zErrMsg );
-	if(ret == SQLITE_OK)//»Ö¸´³ö³§Ä¬ÈÏÊı¾İ;
+	if(ret == SQLITE_OK)//æ¢å¤å‡ºå‚é»˜è®¤æ•°æ®;
 		restoreDefPressCompenTable(pumpType);
 }
 
@@ -301,10 +301,10 @@ void DataBase::readGradientTableIntoList(int which /*= 0*/)
 {
 	QString tableName = QString("GRADIENTTABLE%1").arg(which);
 
-	//ÅĞ¶ÏÊÇÄÄ¸öÌİ¶È±í¸ñ;
-	QStringList timeList;//Ê±¼ä×ø±êµã;
-	QStringList valueList;//Öµ×ø±êµã;
-	QStringList percentList;//°Ù·Ö±È;
+	//åˆ¤æ–­æ˜¯å“ªä¸ªæ¢¯åº¦è¡¨æ ¼;
+	QStringList timeList;//æ—¶é—´åæ ‡ç‚¹;
+	QStringList valueList;//å€¼åæ ‡ç‚¹;
+	QStringList percentList;//ç™¾åˆ†æ¯”;
 	QString temp;
 	temp = QString("SELECT TIME FROM %1 ").arg(tableName);
 	sqlite3_get_table( m_db , temp.toLatin1().data() , &m_azResult , &m_nrow , &m_ncolumn , &m_zErrMsg );
@@ -336,18 +336,18 @@ void DataBase::readGradientTableIntoList(int which /*= 0*/)
 	}
 	
 
-	//·ÖÖÓ×ª»»³ÉÃë;
-	//Á÷ËÙ×ª³ÉÊıÖµ;
+	//åˆ†é’Ÿè½¬æ¢æˆç§’;
+	//æµé€Ÿè½¬æˆæ•°å€¼;
 
-	//ÅĞ¶ÏµãµÄ¸öÊı;
+	//åˆ¤æ–­ç‚¹çš„ä¸ªæ•°;
 	int len = timeList.count();
-	//Çé¿ö1:0¸öµã;//Î´ÊµÏÖ!!!!!!!!!!!!!!!!!!
-	//Çé¿ö2:1¸öµã://Î´ÊµÏÖ!!!!!!!!!!!!!!!!
+	//æƒ…å†µ1:0ä¸ªç‚¹;//æœªå®ç°!!!!!!!!!!!!!!!!!!
+	//æƒ…å†µ2:1ä¸ªç‚¹://æœªå®ç°!!!!!!!!!!!!!!!!
 
-	//Çé¿ö3:2¸öµãÒÔÉÏ;//Õı³£!!!!!!!!!!!!!!!!!!!
+	//æƒ…å†µ3:2ä¸ªç‚¹ä»¥ä¸Š;//æ­£å¸¸!!!!!!!!!!!!!!!!!!!
 	if(len >= 2 )
 	{
-		//Çå¿ÕgradientList
+		//æ¸…ç©ºgradientList
 		gradientList.clear();
 		for(int i = 0; i < len-1; i++)
 		{
@@ -393,13 +393,13 @@ QList<QStringList> DataBase::readGradientTable(int which /*= 0*/)
 
 void DataBase::updateGradientTable(int which, QList<QStringList>data)
 {
-	//Çå¿Õ±í¸ñ;
+	//æ¸…ç©ºè¡¨æ ¼;
 	QString tableName = QString("GRADIENTTABLE%1").arg(which);
 	QString temp;
 	temp = QString("DELETE FROM %1;").arg(tableName);
 	sqlite3_exec( m_db , temp.toLatin1().data() , 0 , 0 , &m_zErrMsg );
 
-	//²åÈëÊı¾İ;
+	//æ’å…¥æ•°æ®;
 	for ( int i = 0; i < data.count(); i++)
 	{
 		temp = QString("INSERT INTO %1 VALUES(%2,'%3' , '%4', '%5','%6');")
@@ -421,7 +421,7 @@ QList<QStringList> DataBase::readCompensationTable(int which /*= 0*/)
 	temp = QString("SELECT * FROM %1").arg(tableName);
 	sqlite3_get_table( m_db , temp.toLatin1().data() , &m_azResult , &m_nrow , &m_ncolumn , &m_zErrMsg );
 
-	//¶ÁÈ¡Êı¾İ¿â±í¸ñ;
+	//è¯»å–æ•°æ®åº“è¡¨æ ¼;
 	QList<QStringList>ret;
 	for(int i=1 ; i<( m_nrow + 1 ) ; i++ )
 	{
@@ -442,12 +442,12 @@ void DataBase::updateFlowCompensationTable(QList<QStringList>data)
 {
 	int row = data.count();
 
-	//Çå¿Õ±í¸ñ;
+	//æ¸…ç©ºè¡¨æ ¼;
 	QString temp;
 	temp = QString("DELETE FROM COMPENSATIONTABLE0;");
 	sqlite3_exec( m_db , temp.toLatin1().data() , 0 , 0 , &m_zErrMsg );
 
-	//²åÈëÊı¾İ;
+	//æ’å…¥æ•°æ®;
 	for ( int i = 0; i < row; i++)
 	{
 		temp = QString("INSERT INTO COMPENSATIONTABLE0 VALUES('%1' , '%2');")
@@ -463,12 +463,12 @@ void DataBase::updatePressCompensationTable(QList<QStringList>data)
 {
 	int row = data.count();
 
-	//Çå¿Õ±í¸ñ;
+	//æ¸…ç©ºè¡¨æ ¼;
 	QString temp;
 	temp = QString("DELETE FROM COMPENSATIONTABLE1;");
 	sqlite3_exec( m_db , temp.toLatin1().data() , 0 , 0 , &m_zErrMsg );
 
-	//²åÈëÊı¾İ;
+	//æ’å…¥æ•°æ®;
 	for ( int i = 0; i < data.count(); i++)
 	{
 		temp = QString("INSERT INTO COMPENSATIONTABLE1 VALUES('%1' , '%2');")
@@ -486,7 +486,7 @@ void DataBase::readFlowCompensationTableIntoList()
 	sqlite3_get_table( m_db , temp.toLatin1().data() , &m_azResult , &m_nrow , &m_ncolumn , &m_zErrMsg );
 	//qDebug()<<( "The result of querying is :" );
 	QList<QStringList>list;
-	for(int i=2 ; i<( m_nrow + 1 ) * m_ncolumn ; )//0¡¢1¸öÊÇ±êÌâ;
+	for(int i=2 ; i<( m_nrow + 1 ) * m_ncolumn ; )//0ã€1ä¸ªæ˜¯æ ‡é¢˜;
 	{
 		//qDebug( "azResult[%d] = %s", i , m_azResult[i] );
 		QString flow(m_azResult[i]);
@@ -504,20 +504,20 @@ void DataBase::readFlowCompensationTableIntoList(QList<QStringList> &list)
 {
 	reOrderList(list);
 	QList<QStringList> &data = list;
-	QStringList flowList;//Á÷Á¿×ø±êµã;
-	QStringList valueList;//Ğ£ÕıÖµ×ø±êµã;
+	QStringList flowList;//æµé‡åæ ‡ç‚¹;
+	QStringList valueList;//æ ¡æ­£å€¼åæ ‡ç‚¹;
 	for (int i = 0; i < data.count(); i++)
 	{
 		QStringList list = data.at(i);
 		flowList.append(list.at(0));
 		valueList.append(list.at(1));
 	}
-	//ÅĞ¶ÏµãµÄ¸öÊı;
+	//åˆ¤æ–­ç‚¹çš„ä¸ªæ•°;
 	int len = data.count();
-	//Çé¿ö1:0¸öµã;//Î´ÊµÏÖ!!!!!!!!!!!!!!!!!!
-	//Çé¿ö2:1¸öµã://Î´ÊµÏÖ!!!!!!!!!!!!!!!!
+	//æƒ…å†µ1:0ä¸ªç‚¹;//æœªå®ç°!!!!!!!!!!!!!!!!!!
+	//æƒ…å†µ2:1ä¸ªç‚¹://æœªå®ç°!!!!!!!!!!!!!!!!
 
-	//Çé¿ö3:2¸öµãÒÔÉÏ;//Õı³£!!!!!!!!!!!!!!!!!!!
+	//æƒ…å†µ3:2ä¸ªç‚¹ä»¥ä¸Š;//æ­£å¸¸!!!!!!!!!!!!!!!!!!!
 	if(len >= 2 )
 	{
 		flowCompensationList.clear();
@@ -558,11 +558,11 @@ void DataBase::readPressCompensationTableIntoList()
 
 void DataBase::readPressCompensationTableIntoList(QList<QStringList> &list)
 {
-	//ÅÅĞò;
+	//æ’åº;
 	reOrderList(list);
 	QList<QStringList> &data = list;
-	QStringList pressList;//Á÷Á¿×ø±êµã;
-	QStringList valueList;//Ğ£ÕıÖµ×ø±êµã;
+	QStringList pressList;//æµé‡åæ ‡ç‚¹;
+	QStringList valueList;//æ ¡æ­£å€¼åæ ‡ç‚¹;
 	//qDebug()<<"after reorder!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!";
 	for (int i = 0; i < data.count(); i++)
 	{
@@ -571,12 +571,12 @@ void DataBase::readPressCompensationTableIntoList(QList<QStringList> &list)
 		pressList.append(list.at(0));
 		valueList.append(list.at(1));
 	}
-	//ÅĞ¶ÏµãµÄ¸öÊı;
+	//åˆ¤æ–­ç‚¹çš„ä¸ªæ•°;
 	int len = data.count();
-	//Çé¿ö1:0¸öµã;//Î´ÊµÏÖ!!!!!!!!!!!!!!!!!!
-	//Çé¿ö2:1¸öµã://Î´ÊµÏÖ!!!!!!!!!!!!!!!!
+	//æƒ…å†µ1:0ä¸ªç‚¹;//æœªå®ç°!!!!!!!!!!!!!!!!!!
+	//æƒ…å†µ2:1ä¸ªç‚¹://æœªå®ç°!!!!!!!!!!!!!!!!
 
-	//Çé¿ö3:2¸öµãÒÔÉÏ;//Õı³£!!!!!!!!!!!!!!!!!!!
+	//æƒ…å†µ3:2ä¸ªç‚¹ä»¥ä¸Š;//æ­£å¸¸!!!!!!!!!!!!!!!!!!!
 	if(len >= 2 )
 	{
 		pressCompensationList.clear();
@@ -646,7 +646,7 @@ void DataBase::saveToDataBase()
 
 void DataBase::restoreDefPressCompenTable(int pumpType)
 {
-	//±ÃµÄÑ¹Á¦Ğ£Õı±í;
+	//æ³µçš„å‹åŠ›æ ¡æ­£è¡¨;
 	QMap<double, double>tbl;
 	tbl.clear();
 	switch( pumpType )
@@ -711,11 +711,11 @@ void DataBase::restoreDefPressCompenTable(int pumpType)
 	if(pumpType == -1)
 		return;
 
-	//ÏÈÉ¾³ıÖ®Ç°µÄ±í¸ñ
+	//å…ˆåˆ é™¤ä¹‹å‰çš„è¡¨æ ¼
 	char *sql = "DELETE FROM COMPENSATIONTABLE1";
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
 
-	//²åÈë³ö³§Ä¬ÈÏÖµ;
+	//æ’å…¥å‡ºå‚é»˜è®¤å€¼;
 	QMap<double, double>::const_iterator it;
 	for (it = tbl.constBegin(); it != tbl.constEnd(); ++it) {
 		QString temp = QString("INSERT INTO COMPENSATIONTABLE1 VALUES('%1', '%2');").arg(it.key()).arg(it.value());
@@ -726,7 +726,7 @@ void DataBase::restoreDefPressCompenTable(int pumpType)
 
 void DataBase::restoreDefFlowCompenTable(int pumpType)
 {
-	//±ÃµÄÑ¹Á¦Ğ£Õı±í;
+	//æ³µçš„å‹åŠ›æ ¡æ­£è¡¨;
 	QMap<double, double>tbl;
 	tbl.clear();
 	switch( pumpType )
@@ -892,11 +892,11 @@ void DataBase::restoreDefFlowCompenTable(int pumpType)
 	if(pumpType == -1)
 		return;
 
-	//ÏÈÉ¾³ıÖ®Ç°µÄ±í¸ñ
+	//å…ˆåˆ é™¤ä¹‹å‰çš„è¡¨æ ¼
 	char *sql = "DELETE FROM COMPENSATIONTABLE0";
 	sqlite3_exec( m_db , sql , 0 , 0 , &m_zErrMsg );
 
-	//²åÈë³ö³§Ä¬ÈÏÖµ;
+	//æ’å…¥å‡ºå‚é»˜è®¤å€¼;
 	QMap<double, double>::const_iterator it;
 	for (it = tbl.constBegin(); it != tbl.constEnd(); ++it) {
 		QString temp = QString("INSERT INTO COMPENSATIONTABLE0 VALUES('%1', '%2');").arg(it.key()).arg(it.value());
@@ -906,11 +906,11 @@ void DataBase::restoreDefFlowCompenTable(int pumpType)
 
 void DataBase::restoreCompensationTable()
 {
-	//²éÑ¯Ä¿Ç°µÄ±ÃÍ·ĞÍºÅ;
+	//æŸ¥è¯¢ç›®å‰çš„æ³µå¤´å‹å·;
 	int pumpType = queryData("pumptype").toInt();
-	//»Ö¸´³ö³§Ä¬ÈÏÑ¹Á¦Ğ£Õı±í¸ñ
+	//æ¢å¤å‡ºå‚é»˜è®¤å‹åŠ›æ ¡æ­£è¡¨æ ¼
 	restoreDefPressCompenTable(pumpType);
-	//»Ö¸´³ö³§Ä¬ÈÏÁ÷Á¿Ğ£Õı±í¸ñ
+	//æ¢å¤å‡ºå‚é»˜è®¤æµé‡æ ¡æ­£è¡¨æ ¼
 	restoreDefFlowCompenTable(pumpType);
 }
 

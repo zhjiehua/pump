@@ -42,7 +42,7 @@ static int Asiic2Hex( mbyte* pstr,uint16 sz,uint32* phex )
 	return 1;
 }
 
-//asciiÂë×ª10½øÖÆ;
+//asciiç è½¬10è¿›åˆ¶;
 static int Asiic2Int( mbyte* pstr,uint16 sz,uint32* phex )
 {
 	mbyte* pc,*pEnd;
@@ -82,9 +82,9 @@ static mbyte hex2Ascii(mbyte data_hex)
 	char  ASCII_Data;
 	ASCII_Data=data_hex & 0x0F;
 	if(ASCII_Data<10) 
-		ASCII_Data=ASCII_Data+0x30; //¡®0--9¡¯
+		ASCII_Data=ASCII_Data+0x30; //â€˜0--9â€™
 	else  
-		ASCII_Data=ASCII_Data+0x37;       //¡®A--F¡¯
+		ASCII_Data=ASCII_Data+0x37;       //â€˜A--Fâ€™
 	return ASCII_Data;
 }
 
@@ -163,7 +163,7 @@ void API_McuCmdSend( mbyte type, uint32 cmd, uint32 arg )
 
 
 
-//ĞèÒª½«quintµÈ¸Ä³Éºê¶¨Òå;
+//éœ€è¦å°†quintç­‰æ”¹æˆå®å®šä¹‰;
 static void ProcessData()
 {
 	int i;
@@ -218,7 +218,7 @@ int API_McuProtocol( mbyte* pData, uint16 sz )
 				g_protocol_mcu.revBuf[ g_protocol_mcu.revIndex++] = *pData;
 				g_protocol_mcu.eType = eProtocolCmd;
 
-				//´¦Àí´ğÓ¦ĞÅÏ¢;
+				//å¤„ç†ç­”åº”ä¿¡æ¯;
 				if(g_protocol_mcu.conf.checkCompare )
 					g_protocol_mcu.conf.checkCompare(*pData);
 
@@ -279,7 +279,7 @@ int API_McuProtocol( mbyte* pData, uint16 sz )
 				}
 			}else
 			{
-				//´¦Àí´ğÓ¦ĞÅÏ¢;
+				//å¤„ç†ç­”åº”ä¿¡æ¯;
 				if(g_protocol_mcu.conf.checkCompare )
 					g_protocol_mcu.conf.checkCompare(*pData);
 
@@ -297,7 +297,7 @@ protocol_reset:
 		g_protocol_mcu.eType = eProtocolNull;
 		continue;
 	}
-	return 1;//·µ»Ø1±íÊ¾ÒÑ¾­ÓÉ¸Ãº¯ÊıÊ¶±ğ²¢´¦Àí
+	return 1;//è¿”å›1è¡¨ç¤ºå·²ç»ç”±è¯¥å‡½æ•°è¯†åˆ«å¹¶å¤„ç†
 }
 
 void API_InitMcuProtocol( void )

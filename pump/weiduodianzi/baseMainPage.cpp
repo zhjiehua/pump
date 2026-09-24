@@ -76,7 +76,7 @@ BaseMainPage::~BaseMainPage()
 
 
 
-//********************************************************³õÊ¼»¯********************************************************
+//********************************************************åˆå§‹åŒ–********************************************************
 void BaseMainPage::initMachine()
 {
 	m_pMachine = MachineStat::getInstance();
@@ -174,17 +174,17 @@ void BaseMainPage::initPage()
 
 
 
-//***************************************************************Âß¼­´¦Àí******************************************************
+//***************************************************************é€»è¾‘å¤„ç†******************************************************
 #define CHECK_TRYOUT
 void BaseMainPage::changePage(quint8 id, quint32 add)
 {
-	//ÅĞ¶Ïid·¶Î§£¬ÓĞĞ§ĞÔ¼ì²é;
+	//åˆ¤æ–­idèŒƒå›´ï¼Œæœ‰æ•ˆæ€§æ£€æŸ¥;
 
 	if(id < RUNPAGE_INDEX || id > MAXPAGEINDEX)
 		return;
 
 #ifdef 	CHECK_TRYOUT
-	//¼ì²éÊÇ·ñÒÑ¾­µ½´ïÊÔÓÃÊ±¼ä;
+	//æ£€æŸ¥æ˜¯å¦å·²ç»åˆ°è¾¾è¯•ç”¨æ—¶é—´;
 	if( MachineStat::getInstance()->isTryDone() )
 	{
 		/*if(m_pCtrlPage)
@@ -233,12 +233,12 @@ void BaseMainPage::changePage(quint8 id, quint32 add)
 
 void BaseMainPage::backToPage()
 {
-	//ÕÅ½Ü»ªÌí¼Ó@2016-06-28£¬Èç¹ûÔÚPCCTRLÄ£Ê½£¬Ôò²»ÄÜÇĞ»»
+	//å¼ æ°åæ·»åŠ @2016-06-28ï¼Œå¦‚æœåœ¨PCCTRLæ¨¡å¼ï¼Œåˆ™ä¸èƒ½åˆ‡æ¢
 	if(bSyncFlag)
 		return;
 
 	int idNext;
-	//Çå³ıµ±Ç°Ò³Ãæ;
+	//æ¸…é™¤å½“å‰é¡µé¢;
 	if(m_pCtrlPage)
 	{
 		idNext = m_pCtrlPage->GetPrevPageIndex();
@@ -263,7 +263,7 @@ void BaseMainPage::changeLanguage(const int nLang)
 
 void BaseMainPage::machineStatChanged(MachineStat::MachineStatment stat)
 {
-	//ÇĞ»»¶ÔÓ¦Ò³Ãæ;
+	//åˆ‡æ¢å¯¹åº”é¡µé¢;
 	if(m_pCtrlPage)
 	{
 		if(m_pCtrlPage->GetPageIndex() != RUNPAGE_INDEX)
@@ -275,7 +275,7 @@ void BaseMainPage::machineStatChanged(MachineStat::MachineStatment stat)
 
 
 
-/*********************************************°´¼üÂß¼­Ïà¹Ø*********************************************/
+/*********************************************æŒ‰é”®é€»è¾‘ç›¸å…³*********************************************/
 
 bool BaseMainPage::checkPermission()
 {
@@ -285,7 +285,7 @@ bool BaseMainPage::checkPermission()
 
 void BaseMainPage::focusNextLeftChild()
 {
-	//ÕÅ½Ü»ªÌí¼Ó@2016-06-28£¬Èç¹ûÔÚPCCTRLÄ£Ê½£¬Ôò²»ÄÜÇĞ»»
+	//å¼ æ°åæ·»åŠ @2016-06-28ï¼Œå¦‚æœåœ¨PCCTRLæ¨¡å¼ï¼Œåˆ™ä¸èƒ½åˆ‡æ¢
 	if(bSyncFlag)
 		return;
 
@@ -322,7 +322,7 @@ void BaseMainPage::focusNextLeftChild()
 
 void BaseMainPage::focusNextRightChild()
 {
-	//ÕÅ½Ü»ªÌí¼Ó@2016-06-28£¬Èç¹ûÔÚPCCTRLÄ£Ê½£¬Ôò²»ÄÜÇĞ»»
+	//å¼ æ°åæ·»åŠ @2016-06-28ï¼Œå¦‚æœåœ¨PCCTRLæ¨¡å¼ï¼Œåˆ™ä¸èƒ½åˆ‡æ¢
 	if(bSyncFlag)
 		return;
 
@@ -357,7 +357,7 @@ void BaseMainPage::focusNextRightChild()
 
 void BaseMainPage::focusNextUpChild()
 {
-	//ÕÅ½Ü»ªÌí¼Ó@2016-06-28£¬Èç¹ûÔÚPCCTRLÄ£Ê½£¬Ôò²»ÄÜÇĞ»»
+	//å¼ æ°åæ·»åŠ @2016-06-28ï¼Œå¦‚æœåœ¨PCCTRLæ¨¡å¼ï¼Œåˆ™ä¸èƒ½åˆ‡æ¢
 	if(bSyncFlag)
 		return;
 
@@ -387,7 +387,7 @@ void BaseMainPage::focusNextUpChild()
 
 void BaseMainPage::focusNextDownChild()
 {
-	//ÕÅ½Ü»ªÌí¼Ó@2016-06-28£¬Èç¹ûÔÚPCCTRLÄ£Ê½£¬Ôò²»ÄÜÇĞ»»
+	//å¼ æ°åæ·»åŠ @2016-06-28ï¼Œå¦‚æœåœ¨PCCTRLæ¨¡å¼ï¼Œåˆ™ä¸èƒ½åˆ‡æ¢
 	if(bSyncFlag)
 		return;
 
@@ -438,7 +438,7 @@ void BaseMainPage::setShortCutDisable(bool disable)
 
 void BaseMainPage::shortCutPumpStop()
 {
-	//ÕÅ½Ü»ªÌí¼Ó@2016-06-21£¬Èç¹ûÔÚPCCTRLÄ£Ê½£¬Ôò²»ÄÜÇĞ»»
+	//å¼ æ°åæ·»åŠ @2016-06-21ï¼Œå¦‚æœåœ¨PCCTRLæ¨¡å¼ï¼Œåˆ™ä¸èƒ½åˆ‡æ¢
 	if(bSyncFlag)
 		return;
 
@@ -453,27 +453,27 @@ void BaseMainPage::shortCutPumpStop()
 
 void BaseMainPage::shortCutStartHold()
 {
-	//ÕÅ½Ü»ªÌí¼Ó@2016-06-21£¬Èç¹ûÔÚPCCTRLÄ£Ê½£¬Ôò²»ÄÜÇĞ»»
+	//å¼ æ°åæ·»åŠ @2016-06-21ï¼Œå¦‚æœåœ¨PCCTRLæ¨¡å¼ï¼Œåˆ™ä¸èƒ½åˆ‡æ¢
 	if(bSyncFlag)
 		return;
 
 	//MachineStat::MachineStatment stat;
 	//if(MachineStat::getInstance()->getCurrentStat() == MachineStat::STOP)
-	//	stat = MachineStat::RUNNING;//ÔËĞĞ;
+	//	stat = MachineStat::RUNNING;//è¿è¡Œ;
 	//else if(MachineStat::getInstance()->getCurrentStat() != MachineStat::PAUSE)
-	//	stat = MachineStat::PAUSE;//ÔİÍ£;
-	//else//Èç¹ûµ±Ç°×´Ì¬ÎªÔİÍ££¬Ôò»Ø¸´Ö®Ç°×´Ì¬;
+	//	stat = MachineStat::PAUSE;//æš‚åœ;
+	//else//å¦‚æœå½“å‰çŠ¶æ€ä¸ºæš‚åœï¼Œåˆ™å›å¤ä¹‹å‰çŠ¶æ€;
 	//{
-	//	//»Ö¸´ ÔËĞĞ¡¢±ÃÒ¹»òÇåÏ´;
+	//	//æ¢å¤ è¿è¡Œã€æ³µå¤œæˆ–æ¸…æ´—;
 	//	MachineStat::getInstance()->restoreOldStat();
 	//	return;
 	//}
 	MachineStat::MachineStatment stat, current_state;
 	current_state = MachineStat::getInstance()->getCurrentStat();
-	if(current_state == MachineStat::STOP || current_state == MachineStat::PAUSE)//ÕÅ½Ü»ªĞŞ¸Ä@2016-06-25
-		stat = MachineStat::RUNNING;//ÔËĞĞ;
+	if(current_state == MachineStat::STOP || current_state == MachineStat::PAUSE)//å¼ æ°åä¿®æ”¹@2016-06-25
+		stat = MachineStat::RUNNING;//è¿è¡Œ;
 	else if(current_state == MachineStat::RUNNING)
-		stat = MachineStat::PAUSE;//ÔİÍ£;
+		stat = MachineStat::PAUSE;//æš‚åœ;
 	else
 		return;
 
@@ -482,11 +482,11 @@ void BaseMainPage::shortCutStartHold()
 
 void BaseMainPage::shortCutPurge()
 {
-	//ÕÅ½Ü»ªÌí¼Ó@2016-06-21£¬Èç¹ûÔÚPCCTRLÄ£Ê½£¬Ôò²»ÄÜÇĞ»»
+	//å¼ æ°åæ·»åŠ @2016-06-21ï¼Œå¦‚æœåœ¨PCCTRLæ¨¡å¼ï¼Œåˆ™ä¸èƒ½åˆ‡æ¢
 	if(bSyncFlag)
 		return;
 
-	//ÕÅ½Ü»ªĞŞ¸Ä@2016-06-25
+	//å¼ æ°åä¿®æ”¹@2016-06-25
 	MachineStat::MachineStatment stat, current_state;
 	current_state = MachineStat::getInstance()->getCurrentStat();
 	if(current_state != MachineStat::PURGE && current_state == MachineStat::STOP)
@@ -515,7 +515,7 @@ void  BaseMainPage::navigatorPageAt(int index, bool force)
 	navigatorPageIndex.append(SETUPPAGE_INDEX);
 	navigatorPageIndex.append(DEBUGPRESS_INDEX);
 
-	ui.bottomWidget->changeNavigatorDisp(index);//¸Ä±äµ¼º½À¸ÏÔÊ¾;
+	ui.bottomWidget->changeNavigatorDisp(index);//æ”¹å˜å¯¼èˆªæ æ˜¾ç¤º;
 	changePage(navigatorPageIndex.at(index));
 
 }

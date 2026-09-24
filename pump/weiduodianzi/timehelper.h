@@ -15,7 +15,7 @@ public:
 	static void mDelay(const quint32 mSec);
 	static QSemaphore* getComSem();
 
-	static quint32 getRandom();					//»ñÈ¡Ëæ»úÊı;
+	static quint32 getRandom();					//è·å–éšæœºæ•°;
 };
 
 #endif // TIMEHELPER_H

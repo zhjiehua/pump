@@ -74,7 +74,7 @@ void CommunicationCoupling::sendClarityNAK()
 void CommunicationCoupling::sendMcuCmd(quint8 cmd, quint32 arg, quint32 add)
 {
 	emit(mcuCmdSend(cmd, arg, add));
-	qDebug() << "sendMcuCmd() cmd = " << arg << ";arg = " << add;//ÕÅ½Ü»ªµ÷ÊÔÌí¼Ó@2016-06-26
+	qDebug() << "sendMcuCmd() cmd = " << arg << ";arg = " << add;//å¼ æ°åè°ƒè¯•æ·»åŠ @2016-06-26
 }
 
 
@@ -103,13 +103,13 @@ void CommunicationCoupling::processCmd4Pc(quint8 type, quint32 cmd, quint32 arg,
 
 	if(cmd != 3 && cmd != 8)
 		int i = 1;
-	//ÃüÁî´¦Àí;
+	//å‘½ä»¤å¤„ç†;
 	switch( cmd )
 	{
-		//ÒÔÏÂĞèÒª»Ø¸´Êı¾İ;
+		//ä»¥ä¸‹éœ€è¦å›å¤æ•°æ®;
 	case PFC_SET_FLOW1:
 		{
-			//ÕÅ½Ü»ªµ÷ÊÔÌí¼Ó@2016-06-26
+			//å¼ æ°åè°ƒè¯•æ·»åŠ @2016-06-26
 			static quint32 last_arg = 0;
 			if(last_arg != arg)
 			{
@@ -118,7 +118,7 @@ void CommunicationCoupling::processCmd4Pc(quint8 type, quint32 cmd, quint32 arg,
 			}
 
 			int pumpType = m_pMachine->getPumpType();
-			//arg = arg & 0x3fff;				//ÕÅ½Ü»ªÉ¾³ı@2016-06-14
+			//arg = arg & 0x3fff;				//å¼ æ°ååˆ é™¤@2016-06-14
 			double val=0;
 			switch(pumpType)
 			{
@@ -145,7 +145,7 @@ void CommunicationCoupling::processCmd4Pc(quint8 type, quint32 cmd, quint32 arg,
 			m_pMachine->updateFlowPercent(add, MachineStat::PC_MODE);
 			m_pMachine->updateFlow(val, MachineStat::PC_MODE);
 
-			//ÕÅ½Ü»ªÌí¼Ó@2016-07-26
+			//å¼ æ°åæ·»åŠ @2016-07-26
 			//if(m_pMachine->getMachineStat() == MachineStat::PCCTRL || m_pMachine->getMachineStat() == MachineStat::PURGE)
 			if(pumpState == 1)
 			{
@@ -171,7 +171,7 @@ void CommunicationCoupling::processCmd4Pc(quint8 type, quint32 cmd, quint32 arg,
 		break;
 	case PFC_TIME_SYNC:
 		{
-			bSyncFlag = true; //ÕÅ½Ü»ªÌí¼Ó@2016-06-22
+			bSyncFlag = true; //å¼ æ°åæ·»åŠ @2016-06-22
 
 			strDisp = QString("time sync");
 			m_pMachine->syncTime(arg);
@@ -185,13 +185,13 @@ void CommunicationCoupling::processCmd4Pc(quint8 type, quint32 cmd, quint32 arg,
 
 			if(m_pMachine->getMachineStat() != MachineStat::PCCTRL)
 			{
-				m_pMachine->setMachineStat(MachineStat::PURGE); //ÕÅ½Ü»ªĞŞ¸Ä@2016-06-25
+				m_pMachine->setMachineStat(MachineStat::PURGE); //å¼ æ°åä¿®æ”¹@2016-06-25
 #ifdef WIN32
 				Sleep(5);
 #else
-				usleep(5000);//¼ÓÒ»µãÑÓÊ±£¬·ÀÖ¹MCUÊÕ²»µ½ÏÂÃæµÄÁ÷ËÙÖ¸Áî
+				usleep(5000);//åŠ ä¸€ç‚¹å»¶æ—¶ï¼Œé˜²æ­¢MCUæ”¶ä¸åˆ°ä¸‹é¢çš„æµé€ŸæŒ‡ä»¤
 #endif
-				m_pMachine->syncFlowFromPc();//modified by wjf@2016-06-22;  //ÆäÊµÕâÀï»á²»Ì«ÑÏ½÷£¬ÉÏÒ»¾äÒÑ¾­ÏòMCU·¢ËÍÊı¾İ¿âµÄÁ÷ËÙ£¬Õâ¾äÊÇ·¢PC·¢¹ıÀ´µÄÁ÷ËÙ¸øMCU
+				m_pMachine->syncFlowFromPc();//modified by wjf@2016-06-22;  //å…¶å®è¿™é‡Œä¼šä¸å¤ªä¸¥è°¨ï¼Œä¸Šä¸€å¥å·²ç»å‘MCUå‘é€æ•°æ®åº“çš„æµé€Ÿï¼Œè¿™å¥æ˜¯å‘PCå‘è¿‡æ¥çš„æµé€Ÿç»™MCU
 			}
 		}
 		qDebug() << "CommunicationCoupling::processCmd4Pc()" << strDisp;
@@ -222,7 +222,7 @@ void CommunicationCoupling::processCmd4Pc(quint8 type, quint32 cmd, quint32 arg,
 
 void CommunicationCoupling::processCmd4PcClarity( quint8 hID, quint32 hAI, quint32 hPFC,quint32 hVal )
 {
-	//0x01ÊÇ¶ÁÈ¡²úÆ·ID£¬Òò´Ë²»ĞèÒªÆ¥ÅäID;
+	//0x01æ˜¯è¯»å–äº§å“IDï¼Œå› æ­¤ä¸éœ€è¦åŒ¹é…ID;
 	if(hPFC != PFCC_READ_PRODUCT_ID && hID != m_pMachine->getMachineCode())
 		return;
 
@@ -233,10 +233,10 @@ void CommunicationCoupling::processCmd4PcClarity( quint8 hID, quint32 hAI, quint
 	remoteAddr = remoteAddrTemp;
 	remotePort = remotePortTemp;
 
-	//ÃüÁî´¦Àí;
+	//å‘½ä»¤å¤„ç†;
 	switch( hPFC )
 	{
-		//ÒÔÏÂĞèÒª»Ø¸´Êı¾İ;
+		//ä»¥ä¸‹éœ€è¦å›å¤æ•°æ®;
 	case PFCC_READ_PRODUCT_ID:
 		{
 			strDisp = QString("read ID");
@@ -278,13 +278,13 @@ void CommunicationCoupling::processCmd4PcClarity( quint8 hID, quint32 hAI, quint
 			strDisp = QString("read pump time");
 		}
 		break;
-		//ÒÔÏÂĞèÒª»Ø¸´ACK»òÕßNACK
+		//ä»¥ä¸‹éœ€è¦å›å¤ACKæˆ–è€…NACK
 	case PFCC_SET_FLOW:
 		{
 			strDisp = QString("set flow");
 
 			int pumpType = m_pMachine->getPumpType();
-			//arg = arg & 0x3fff;				//ÕÅ½Ü»ªÉ¾³ı@2016-06-14
+			//arg = arg & 0x3fff;				//å¼ æ°ååˆ é™¤@2016-06-14
 			double val=0;
 			switch(pumpType)
 			{
@@ -311,7 +311,7 @@ void CommunicationCoupling::processCmd4PcClarity( quint8 hID, quint32 hAI, quint
 
 			m_pMachine->updateFlow(val, MachineStat::PC_MODE);
 
-			//ÕÅ½Ü»ªÌí¼Ó@2016-07-26
+			//å¼ æ°åæ·»åŠ @2016-07-26
 			//if(m_pMachine->getMachineStat() == MachineStat::PCCTRL || m_pMachine->getMachineStat() == MachineStat::PURGE)
 			if(pumpState == 1)
 			{
@@ -331,7 +331,7 @@ void CommunicationCoupling::processCmd4PcClarity( quint8 hID, quint32 hAI, quint
 
 	case PFCC_SYNCTIME:
 		{
-			bSyncFlag = true; //ÕÅ½Ü»ªÌí¼Ó@2016-06-22
+			bSyncFlag = true; //å¼ æ°åæ·»åŠ @2016-06-22
 
 			strDisp = QString("time sync;");
 			m_pMachine->syncTime(hVal);
@@ -361,18 +361,18 @@ void CommunicationCoupling::processCmd4PcClarity( quint8 hID, quint32 hAI, quint
 			pumpState = 1;
 
 			////m_pMachine->setMachineStat(MachineStat::PCCTRL);
-			//m_pMachine->setMachineStat(MachineStat::PURGE);//ÕÅ½Ü»ªĞŞ¸Ä@2016-07-01
-			//m_pMachine->syncFlowFromPc();//ÕÅ½Ü»ªĞŞ¸Ä@2016-07-01
+			//m_pMachine->setMachineStat(MachineStat::PURGE);//å¼ æ°åä¿®æ”¹@2016-07-01
+			//m_pMachine->syncFlowFromPc();//å¼ æ°åä¿®æ”¹@2016-07-01
 			
 			if(m_pMachine->getMachineStat() != MachineStat::PCCTRL)
 			{
-				m_pMachine->setMachineStat(MachineStat::PURGE); //ÕÅ½Ü»ªĞŞ¸Ä@2016-06-25
+				m_pMachine->setMachineStat(MachineStat::PURGE); //å¼ æ°åä¿®æ”¹@2016-06-25
 #ifdef WIN32
 				Sleep(5);
 #else
-				usleep(5000);//¼ÓÒ»µãÑÓÊ±£¬·ÀÖ¹MCUÊÕ²»µ½ÏÂÃæµÄÁ÷ËÙÖ¸Áî
+				usleep(5000);//åŠ ä¸€ç‚¹å»¶æ—¶ï¼Œé˜²æ­¢MCUæ”¶ä¸åˆ°ä¸‹é¢çš„æµé€ŸæŒ‡ä»¤
 #endif
-				m_pMachine->syncFlowFromPc();//modified by wjf@2016-06-22;  //ÆäÊµÕâÀï»á²»Ì«ÑÏ½÷£¬ÉÏÒ»¾äÒÑ¾­ÏòMCU·¢ËÍÊı¾İ¿âµÄÁ÷ËÙ£¬Õâ¾äÊÇ·¢PC·¢¹ıÀ´µÄÁ÷ËÙ¸øMCU
+				m_pMachine->syncFlowFromPc();//modified by wjf@2016-06-22;  //å…¶å®è¿™é‡Œä¼šä¸å¤ªä¸¥è°¨ï¼Œä¸Šä¸€å¥å·²ç»å‘MCUå‘é€æ•°æ®åº“çš„æµé€Ÿï¼Œè¿™å¥æ˜¯å‘PCå‘è¿‡æ¥çš„æµé€Ÿç»™MCU
 			}
 
 			sendClarityACK();
@@ -415,7 +415,7 @@ void CommunicationCoupling::processCmd4PcClarity( quint8 hID, quint32 hAI, quint
 			sendClarityACK();
 		}
 		break;
-		//Ö÷¶¯·¢ËÍ;
+		//ä¸»åŠ¨å‘é€;
 	case PFCC_SEND_PRESS:
 		{
 			strDisp = QString("send press;");

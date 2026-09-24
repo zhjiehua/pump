@@ -33,7 +33,7 @@ private slots:
 	void changeMachineStat(int);
 	void updatePercentVal(QString disp);
 
-	void changeFlow(QString str);//Á÷ËÙ±à¼­À¸¸Ä±äÁË£¬ĞèÒªÖ´ĞĞÏàÓ¦±ä»¯;
+	void changeFlow(QString str);//æµé€Ÿç¼–è¾‘æ æ”¹å˜äº†ï¼Œéœ€è¦æ‰§è¡Œç›¸åº”å˜åŒ–;
 };
 
 #endif // RUNPAGE_H

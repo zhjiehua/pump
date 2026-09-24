@@ -5,11 +5,11 @@ class BugleCompensationWithPID :
 {
 	typedef struct PID
 	{
-		qint32 nSetPoint;		//Éè¶¨Ä¿±ê
-		qint32 nInteError;		//Îó²îÀÛ¼Æ(»ı·Ö)
-		double dKp;				//±ÈÀı³£ÊıProportional Const
-		double dKi;				//»ı·Ö³£Êı IntegralConst
-		double dKd;				//Î¢·Ö³£ÊıDerivative Const
+		qint32 nSetPoint;		//è®¾å®šç›®æ ‡
+		qint32 nInteError;		//è¯¯å·®ç´¯è®¡(ç§¯åˆ†)
+		double dKp;				//æ¯”ä¾‹å¸¸æ•°Proportional Const
+		double dKi;				//ç§¯åˆ†å¸¸æ•° IntegralConst
+		double dKd;				//å¾®åˆ†å¸¸æ•°Derivative Const
 		qint32 nLastError;		//E[k]
 		qint32 nPrevError;		//E[k-1]
 	} PID;
@@ -19,18 +19,18 @@ public:
 	~BugleCompensationWithPID();
 
 public:
-	void updateOutput(quint32 output, double flow);				//¸üĞÂÊä³ö;
-	void adjustOutputByInput(qint32 inputData);	//¸ù¾İÊäÈëµ÷½ÚÊä³ö(´Ëº¯ÊıÓ¦¸ÃÔÚ²É¼¯ÊäÈëÊ±ºò±»µ÷ÓÃ);
-	void stopOutput();								//Í£Ö¹Êä³ö;
-	void pauseOutput();								//ÔİÍ£Êä³ö;	
-	void waitOutputStable();						//µÈ´ıÊä³öÎÈ¶¨;
-	void bugleSignal();								//³öÏÖÁËÍ¹ÂÖĞÅºÅ;
+	void updateOutput(quint32 output, double flow);				//æ›´æ–°è¾“å‡º;
+	void adjustOutputByInput(qint32 inputData);	//æ ¹æ®è¾“å…¥è°ƒèŠ‚è¾“å‡º(æ­¤å‡½æ•°åº”è¯¥åœ¨é‡‡é›†è¾“å…¥æ—¶å€™è¢«è°ƒç”¨);
+	void stopOutput();								//åœæ­¢è¾“å‡º;
+	void pauseOutput();								//æš‚åœè¾“å‡º;	
+	void waitOutputStable();						//ç­‰å¾…è¾“å‡ºç¨³å®š;
+	void bugleSignal();								//å‡ºç°äº†å‡¸è½®ä¿¡å·;
 	double pidRealize(qint32 input);
 
 private:
 	bool m_bSetPointIsSet;
-	PID m_pidData;									//PIDÊı¾İ;
-	bool isOutputStable();							//ÅĞ¶ÏÊä³öÊÇ·ñÒÑ¾­ÎÈ¶¨;
-	void initPIDData();								//³õÊ¼»¯PIDÊı¾İ;
+	PID m_pidData;									//PIDæ•°æ®;
+	bool isOutputStable();							//åˆ¤æ–­è¾“å‡ºæ˜¯å¦å·²ç»ç¨³å®š;
+	void initPIDData();								//åˆå§‹åŒ–PIDæ•°æ®;
 };
 

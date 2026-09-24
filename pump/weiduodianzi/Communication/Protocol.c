@@ -9,7 +9,7 @@ extern "C" {
 int bAutoAck = 0;
 int bAutoRead = 0;
 
-//Éè±¸Âë£¬²»Í¬±ÃĞÍ¶ÔÓ¦²»Í¬µÄÉè±¸Âë;
+//è®¾å¤‡ç ï¼Œä¸åŒæ³µå‹å¯¹åº”ä¸åŒçš„è®¾å¤‡ç ;
 uint32 g_MachineCode = 0;
 
 
@@ -54,7 +54,7 @@ int Asiic2Hex( mbyte* pstr,uint16 sz,uint32* phex )
 	return 1;
 }
 
-//asciiÂë×ª10½øÖÆ;
+//asciiç è½¬10è¿›åˆ¶;
 int Asiic2Int( mbyte* pstr,uint16 sz,uint32* phex )
 {
 	mbyte* pc,*pEnd;
@@ -96,9 +96,9 @@ int int2Ascii(uint16 num, mbyte *aBuf)
 //	char  ASCII_Data;
 //	ASCII_Data=data_hex & 0x0F;
 //	if(ASCII_Data<10) 
-//		ASCII_Data=ASCII_Data+0x30; //¡®0--9¡¯
+//		ASCII_Data=ASCII_Data+0x30; //â€˜0--9â€™
 //	else  
-//		ASCII_Data=ASCII_Data+0x37;       //¡®A--F¡¯
+//		ASCII_Data=ASCII_Data+0x37;       //â€˜A--Fâ€™
 //	return ASCII_Data;
 //}
 
@@ -111,14 +111,14 @@ mbyte hex2Ascii(uint32 data_hex, mbyte *data, int len, int bsp)
 		ASCII_Data=data_hex & 0x0F;
 		if(ASCII_Data<10) 
 		{
-			ASCII_Data=ASCII_Data+0x30; //¡®0--9¡¯
+			ASCII_Data=ASCII_Data+0x30; //â€˜0--9â€™
 		}
 		else  
-			ASCII_Data=ASCII_Data+0x37;       //¡®A--F¡¯
+			ASCII_Data=ASCII_Data+0x37;       //â€˜A--Fâ€™
 		data[len-1-i] = ASCII_Data;
 		data_hex = data_hex>>4;
 	}
-	if(bsp)//Ç°ÖÃ0¸ÄÎª0x20;
+	if(bsp)//å‰ç½®0æ”¹ä¸º0x20;
 	{
 		for (i=0; i<len; i++)
 		{
@@ -244,14 +244,14 @@ void API_CmdSendClarity(uint32 hAI, uint32 hPFC, uint32 hVal)
 
 
 
-//ĞèÒª½«quintµÈ¸Ä³Éºê¶¨Òå;
+//éœ€è¦å°†quintç­‰æ”¹æˆå®å®šä¹‰;
 static void ProcessData(int flowcmd)
 {
 	int i;
 	uint32 arg = 0;
 	mbyte type = 0;
 	uint32 cmd = 0;
-	uint32 add = 0;//¸½¼Ó²ÎÊı;
+	uint32 add = 0;//é™„åŠ å‚æ•°;
 
 	if ( g_protocol.eType == eProtocolStr )
 	{
@@ -267,7 +267,7 @@ static void ProcessData(int flowcmd)
 		type = PROTOCL_CMD;
 		if(flowcmd)
 		{
-			//0-10¿´g_protocol.nPumpTypeµÄ¶¨Òå;
+			//0-10çœ‹g_protocol.nPumpTypeçš„å®šä¹‰;
 			switch(g_protocol.nPumpType)
 			{
 			case 0:
@@ -303,7 +303,7 @@ static void ProcessData(int flowcmd)
 			default:
 				return;
 			}
-			//·¢ËÍ»Ø¸´ÃüÁî;
+			//å‘é€å›å¤å‘½ä»¤;
 			g_protocol.conf.write( g_protocol.revBuf, 1 );
 		}
 		else
@@ -321,7 +321,7 @@ static void ProcessData(int flowcmd)
 		
 	}
 
-	//ÕÅ½Ü»ªµ÷ÊÔÌí¼Ó@2016-06-26
+	//å¼ æ°åè°ƒè¯•æ·»åŠ @2016-06-26
 	//if(cmd == 0x08)
 	//{
 	//	static uint32 last_arg = 0;
@@ -342,10 +342,10 @@ static void ProcessData(int flowcmd)
 }
 
 
-//ĞèÒª½«quintµÈ¸Ä³Éºê¶¨Òå;
+//éœ€è¦å°†quintç­‰æ”¹æˆå®å®šä¹‰;
 void ProcessData4Clarity()
 {
-	//¼ì²âĞ£ÑéºÍ;
+	//æ£€æµ‹æ ¡éªŒå’Œ;
 	quint8 senBuf[ MAX_PROTOCL_BUF_SZ ];
 	mbyte hID;
 	mbyte hAI;
@@ -358,13 +358,13 @@ void ProcessData4Clarity()
 	quint8* pc;
 	int i;
 	uint32 recvCheckSum;
-	mbyte checksum = STX;			//ĞèÒª¼ÓÉÏSTX;
+	mbyte checksum = STX;			//éœ€è¦åŠ ä¸ŠSTX;
 
-	//CRCĞ£Ñé;
+	//CRCæ ¡éªŒ;
 	for ( i =0; i < g_protocol.revIndex - 3; i++ )
 		checksum += g_protocol.revBuf[i];
 
-	//±ä»»ASCiiÂë±íÊ¾µÄCRCÂë×ª»»ÎªÊ®½øÖÆ;
+	//å˜æ¢ASCiiç è¡¨ç¤ºçš„CRCç è½¬æ¢ä¸ºåè¿›åˆ¶;
 	Asiic2Int(&g_protocol.revBuf[g_protocol.revIndex - 3], 3, &recvCheckSum);
 	if((recvCheckSum & 0xff) != checksum)
 	{
@@ -418,7 +418,7 @@ int API_Protocol( mbyte* pData, uint16 sz )
 				g_protocol.eType = eProtocolCmd;
 				if(*pData == 0x88)
 				{
-					flowcmd = 1;//5/4¸ö×Ö½Ú;
+					flowcmd = 1;//5/4ä¸ªå­—èŠ‚;
 				}
 
 			}else if( *pData == 'S' )
@@ -482,7 +482,7 @@ int API_Protocol( mbyte* pData, uint16 sz )
 			goto protocol_reset;*/
 			if(flowcmd)
 			{
-				int addLen = 0;//¶îÍâ³¤¶È£¬²»Í¬Á÷ËÙÃüÁî£¬Ğ­Òé³¤¶È²»Í¬;
+				int addLen = 0;//é¢å¤–é•¿åº¦ï¼Œä¸åŒæµé€Ÿå‘½ä»¤ï¼Œåè®®é•¿åº¦ä¸åŒ;
 				switch(g_protocol.nPumpType)
 				{
 				case 0:
@@ -551,11 +551,11 @@ protocol_reset:
 		g_protocol.eType = eProtocolNull;
 		continue;
 	}
-	return 1;//·µ»Ø1±íÊ¾ÒÑ¾­ÓÉ¸Ãº¯ÊıÊ¶±ğ²¢´¦Àí
+	return 1;//è¿”å›1è¡¨ç¤ºå·²ç»ç”±è¯¥å‡½æ•°è¯†åˆ«å¹¶å¤„ç†
 }
 
 
-//ClarityĞ­Òé½âÎö;
+//Clarityåè®®è§£æ;
 int API_ClarityProtocol( mbyte* pData, uint16 sz )
 {
 	static int stxFlag = 0;
@@ -570,7 +570,7 @@ int API_ClarityProtocol( mbyte* pData, uint16 sz )
 			switch( *pData )
 			{
 			case STX:
-				if( g_protocol.bESCGet )	//Êı¾İ;
+				if( g_protocol.bESCGet )	//æ•°æ®;
 				{
 					g_protocol.revBuf[ g_protocol.revIndex++] = *pData;
 					g_protocol.bESCGet = 0;
@@ -613,7 +613,7 @@ int API_ClarityProtocol( mbyte* pData, uint16 sz )
 		}
 		++pData;
 	}
-	return 1;//·µ»Ø1±íÊ¾ÒÑ¾­ÓÉ¸Ãº¯ÊıÊ¶±ğ²¢´¦Àí
+	return 1;//è¿”å›1è¡¨ç¤ºå·²ç»ç”±è¯¥å‡½æ•°è¯†åˆ«å¹¶å¤„ç†
 }
 
 

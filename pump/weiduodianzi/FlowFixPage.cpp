@@ -52,9 +52,9 @@ void FlowFixPage::initDisplay()
 	ui.tableView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	ui.tableView->setEditTriggers(QAbstractItemView::AnyKeyPressed);
 
-	//ÎªÃ¿Ò»ÁÐÉèÖÃ´úÀí;
- 	ui.tableView->setItemDelegateForColumn(0, new EditorDelegate("0000.0000"));//Á÷ËÙ;
- 	ui.tableView->setItemDelegateForColumn(1, new EditorDelegate("000.0000"));//Ð£×¼;
+	//ä¸ºæ¯ä¸€åˆ—è®¾ç½®ä»£ç†;
+ 	ui.tableView->setItemDelegateForColumn(0, new EditorDelegate("0000.0000"));//æµé€Ÿ;
+ 	ui.tableView->setItemDelegateForColumn(1, new EditorDelegate("000.0000"));//æ ¡å‡†;
 	ui.tableView->initIndex();
   
  	connect(ui.tableView, SIGNAL(getOutFocus(int)), this, SLOT(getOutTableFocus(int)));
@@ -63,7 +63,7 @@ void FlowFixPage::initDisplay()
 	pTimer = new QTimer(this);
 	connect(pTimer, SIGNAL(timeout()), this, SLOT(timeoutFunc()));
 
-	//¸ù¾Ý±ÃÍ·µÄÑ¡Ôñ£¬ÉèÖÃÁ÷ËÙ×î´óÖµ;
+	//æ ¹æ®æ³µå¤´çš„é€‰æ‹©ï¼Œè®¾ç½®æµé€Ÿæœ€å¤§å€¼;
 	/*int array[7]={42, 25 , 20, 20, 15, 10, 10};
 	int pumpType = DataBase::getInstance()->queryData("pumptype").toInt();
 	if(pumpType > 6)
@@ -71,8 +71,8 @@ void FlowFixPage::initDisplay()
 	double maxFlow = array[pumpType];*/
 	double maxFlow = MachineStat::getInstance()->getMaxFlow();
 	//ui.flowEdit->setValRange("flowRate", 0, maxFlow, 4);
-	if(DataBase::getInstance()->queryData("pumptype").toInt() == 0)//10ml±Ã
-		ui.flowEdit->setValRange("pumpPurgeFlowVal", 0, maxFlow, 4);//ÕÅ½Ü»ªÐÞ¸Ä@2016-06-28£¬½«Ð¡ÊýµãÎ»Êý¸Ä³É1¸ö£¬ÎÞÐ§£¿£¿
+	if(DataBase::getInstance()->queryData("pumptype").toInt() == 0)//10mlæ³µ
+		ui.flowEdit->setValRange("pumpPurgeFlowVal", 0, maxFlow, 4);//å¼ æ°åŽä¿®æ”¹@2016-06-28ï¼Œå°†å°æ•°ç‚¹ä½æ•°æ”¹æˆ1ä¸ªï¼Œæ— æ•ˆï¼Ÿï¼Ÿ
 	else
 		ui.flowEdit->setValRange("pumpPurgeFlowVal", 0, maxFlow, 3);
 }
@@ -105,7 +105,7 @@ void FlowFixPage::on_startBtn_clicked()
 
 		pTimer->start(60000*timeMin[index]);
 
-		MachineStat::getInstance()->updateFlow(ui.flowEdit->text().toDouble(), MachineStat::DEBUG_MODE);//¿ªÊ¼
+		MachineStat::getInstance()->updateFlow(ui.flowEdit->text().toDouble(), MachineStat::DEBUG_MODE);//å¼€å§‹
 		ui.startBtn->setText(tr("Stop"));
 		MachineStat::getInstance()->setFixMode(true);
 		MachineStat::getInstance()->clearPressWarn();
@@ -127,13 +127,13 @@ void FlowFixPage::updatePresVal(QString disp, quint8 warning)
 
 void FlowFixPage::getOutTableFocus( int dir )
 {
-	if(dir == 0)//ÉÏ
+	if(dir == 0)//ä¸Š
 		ui.backBtn->setFocus();
-	else if(dir == 1)//ÏÂ;
+	else if(dir == 1)//ä¸‹;
 		ui.saveBtn->setFocus();
-	else if(dir == 2)//×ó
+	else if(dir == 2)//å·¦
 		ui.backBtn->setFocus();
-	else if(dir == 3)//ÓÒ
+	else if(dir == 3)//å³
 		ui.flowEdit->setFocus();
 	updateFlowList();
 }

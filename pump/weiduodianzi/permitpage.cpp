@@ -40,7 +40,7 @@ void PermitPage::initFocusList()
 	
 	
 
-	ui.licenseEdit->setValRange("lic", 0, 9999999999);//张杰华修改@2016-06-18
+	ui.licenseEdit->setValRange("lic", 0, 9999999999);//寮犳澃鍗庝慨鏀笯2016-06-18
 	ui.licenseEdit->setTextMode();
 	
 
@@ -82,7 +82,7 @@ void PermitPage::on_serialBtn_clicked()
 	str += DataBase::getInstance()->queryData("serial");
 	str += "\n";
 	str += tr("Rand:");
-	//再加上一个随机数;
+	//鍐嶅姞涓婁竴涓殢鏈烘暟;
 	str += QString::number(serialId);
 	MachineStat::getInstance()->updateSerialId(serialId);
 	MsgBox msg(this, tr("tips"), str);

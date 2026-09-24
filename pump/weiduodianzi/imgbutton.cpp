@@ -21,7 +21,7 @@ void ImgButton::paintEvent(QPaintEvent * event)
 		 painter.setPen(Qt::white);
 		 painter.drawText(0, 0, width(), height(), Qt::AlignCenter, text());
 	 }
-	 else//Èç¹ûÓÐ±³¾°Í¼Æ¬ÏÔÊ¾;
+	 else//å¦‚æžœæœ‰èƒŒæ™¯å›¾ç‰‡æ˜¾ç¤º;
 	 {
 		 QPixmap pixmap(m_bkPath);
 		 painter.drawPixmap(0,0,width(),height(),pixmap );

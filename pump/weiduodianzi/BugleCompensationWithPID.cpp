@@ -24,26 +24,26 @@ BugleCompensationWithPID::~BugleCompensationWithPID()
 
 void BugleCompensationWithPID::updateOutput(quint32 output, double flow)
 {
-	//¸üĞÂµ±Ç°Êä³öÁ¿;
+	//æ›´æ–°å½“å‰è¾“å‡ºé‡;
 	m_nCurrentOutput = output;
-	//¸´Î»Éè¶¨Öµ±»Éè±êÖ¾Î»;
+	//å¤ä½è®¾å®šå€¼è¢«è®¾æ ‡å¿—ä½;
 	m_bSetPointIsSet = false;
-	//¸´Î»Êä³öÎÈ¶¨;
+	//å¤ä½è¾“å‡ºç¨³å®š;
 	m_bOutputStable = false;
-	//Çå¿ÕPIDÊı¾İ;
+	//æ¸…ç©ºPIDæ•°æ®;
 	initPIDData();
-	//µÈ´ıÊä³öÎÈ¶¨;
+	//ç­‰å¾…è¾“å‡ºç¨³å®š;
 	waitOutputStable();
 
 }
 
 void BugleCompensationWithPID::adjustOutputByInput(qint32 inputData)
 {
-	//Èç¹ûÊä³öÄ¿Ç°Î´ÎÈ¶¨£¬µ÷½ÚÃ»ÓĞÒâÒå;
+	//å¦‚æœè¾“å‡ºç›®å‰æœªç¨³å®šï¼Œè°ƒèŠ‚æ²¡æœ‰æ„ä¹‰;
 	if( !isOutputStable() )
 		return;
 
-	//Ê²Ã´Ìõ¼şÊ±ºò½«inputDataÑ¡¶¨Îª±ê×¼²Î¿¼Öµ;
+	//ä»€ä¹ˆæ¡ä»¶æ—¶å€™å°†inputDataé€‰å®šä¸ºæ ‡å‡†å‚è€ƒå€¼;
 	if(!m_bSetPointIsSet)
 	{
 		m_pidData.nSetPoint = inputData;
@@ -51,10 +51,10 @@ void BugleCompensationWithPID::adjustOutputByInput(qint32 inputData)
 		return;
 	}
 
-	//¸ù¾İPIDÊı¾İÓë±ê×¼²Î¿¼Öµ½øĞĞ¼ÆËãÊä³ö;
+	//æ ¹æ®PIDæ•°æ®ä¸æ ‡å‡†å‚è€ƒå€¼è¿›è¡Œè®¡ç®—è¾“å‡º;
 	quint32 ret = pidRealize(inputData);
 
-	//¸üĞÂÊä³öµ½MCU;
+	//æ›´æ–°è¾“å‡ºåˆ°MCU;
 	emit(outputUpdate(ret));
 }
 
@@ -68,9 +68,9 @@ void BugleCompensationWithPID::initPIDData()
 	m_pidData.nInteError= 0;
 	m_pidData.nLastError= 0;					//Error[k]
 	m_pidData.nPrevError= 0;					//Error[k-1]
-	m_pidData.dKp= CONST_KP;	//±ÈÀı³£ÊıProportional Const
-	m_pidData.dKi= CONST_KI;		//»ı·Ö³£ÊıIntegralConst
-	m_pidData.dKd= CONST_KD;	//Î¢·Ö³£ÊıDerivative Const
+	m_pidData.dKp= CONST_KP;	//æ¯”ä¾‹å¸¸æ•°Proportional Const
+	m_pidData.dKi= CONST_KI;		//ç§¯åˆ†å¸¸æ•°IntegralConst
+	m_pidData.dKd= CONST_KD;	//å¾®åˆ†å¸¸æ•°Derivative Const
 	m_pidData.nSetPoint= 0;
 }
 
@@ -81,7 +81,7 @@ double BugleCompensationWithPID::pidRealize(qint32 input)
 	err = m_pidData.nSetPoint-input;     
 	m_pidData.nInteError += err; 
 	double percent = ((double)err)/PRESS_DELTA;
-	ret = m_pidData.dKp*(percent*FLOW_FACTOR) + m_nCurrentOutput;//Ä¿Ç°Ö»×ö±ÈÀı¿ØÖÆ;
+	ret = m_pidData.dKp*(percent*FLOW_FACTOR) + m_nCurrentOutput;//ç›®å‰åªåšæ¯”ä¾‹æ§åˆ¶;
 	//ret = m_pidData.dKp*err + m_pidData.dKi*m_pidData.nInteError+m_nCurrentOutput;// + m_pidData.dKd*(err-m_pidData.nLastError)+m_nCurrentOutput;      
 	m_pidData.nLastError = err;      
 	return ret;
@@ -90,31 +90,31 @@ double BugleCompensationWithPID::pidRealize(qint32 input)
 void BugleCompensationWithPID::stopOutput()
 {
 	m_nCurrentOutput = 0;
-	//¸´Î»Éè¶¨Öµ±»Éè±êÖ¾Î»;
+	//å¤ä½è®¾å®šå€¼è¢«è®¾æ ‡å¿—ä½;
 	m_bSetPointIsSet = false;
-	//¸´Î»Êä³öÎÈ¶¨;
+	//å¤ä½è¾“å‡ºç¨³å®š;
 	m_bOutputStable = false;
-	//¸´Î»PIDÊı¾İ;
+	//å¤ä½PIDæ•°æ®;
 	initPIDData();
 }
 
 void BugleCompensationWithPID::pauseOutput()
 {
-	//¸´Î»Êä³öÎÈ¶¨;
+	//å¤ä½è¾“å‡ºç¨³å®š;
 	m_bOutputStable = false;
-	//¼ÇÂ¼Éè¶¨Öµ;
+	//è®°å½•è®¾å®šå€¼;
 	qint32 set = m_pidData.nSetPoint;
-	//¸´Î»PIDÊı¾İ;
+	//å¤ä½PIDæ•°æ®;
 	initPIDData();
-	//»Ö¸´Éè¶¨Öµ;
+	//æ¢å¤è®¾å®šå€¼;
 	m_pidData.nSetPoint = set;
 }
 
 void BugleCompensationWithPID::waitOutputStable()
 {
-	//ÑÓÊ±;(ÑÓÊ±ÖÜÆÚÔÚ±¾ÎÄ¼ş¿ªÍ·ÅäÖÃ,µ¥Î»ms)
+	//å»¶æ—¶;(å»¶æ—¶å‘¨æœŸåœ¨æœ¬æ–‡ä»¶å¼€å¤´é…ç½®,å•ä½ms)
 	TimeHelper::mDelay(OUTPUT_STABLE_PERIOD_MSEC);
-	//ÖÃÎ»ÎÈ¶¨;
+	//ç½®ä½ç¨³å®š;
 	m_bOutputStable = true;
 }
 

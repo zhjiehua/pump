@@ -30,15 +30,15 @@ private:
 	MyTableModel *gradient_model;
 	QTime *m_pTime;
 	double m_dPeriod;
-	//QwtPlotCurve m_curve;//ÇúÏß
-	QVector<QPointF>m_curveData;//ÇúÏßÊı¾İ;
+	//QwtPlotCurve m_curve;//æ›²çº¿
+	QVector<QPointF>m_curveData;//æ›²çº¿æ•°æ®;
 
 	void initDisplay();
 	int getBulge();
 
-	//ÇúÏßÏà¹Ø;
-	void addDataToCurve(double x, double y);	//½«Êı¾İ¼ÓÈëÇúÏß;
-	void initPlotDisp();				//ÇúÏßÍ¼³õÊ¼»¯;
+	//æ›²çº¿ç›¸å…³;
+	void addDataToCurve(double x, double y);	//å°†æ•°æ®åŠ å…¥æ›²çº¿;
+	void initPlotDisp();				//æ›²çº¿å›¾åˆå§‹åŒ–;
 
 private slots:
 	void on_startBtn_clicked();
@@ -47,9 +47,9 @@ private slots:
 	void on_bugleBtn_clicked();
 	void getOutTableFocus(int dir);
 	void updatePressVal(QString, quint8);
-	void dealBulge();//´¦ÀíÍ¹ÂÖĞÅºÅ;
+	void dealBulge();//å¤„ç†å‡¸è½®ä¿¡å·;
 
-	//Í¼±íÏà¹Ø;
+	//å›¾è¡¨ç›¸å…³;
 	void on_plotBtn_clicked();
 };
 

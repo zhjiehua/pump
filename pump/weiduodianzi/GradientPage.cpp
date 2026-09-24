@@ -3,7 +3,7 @@
 #include <QKeyEvent>
 #include "msgbox.h"
 
-//Ìê¶È±í1-10
+//å‰ƒåº¦è¡¨1-10
 #define TABLE_GRADIENT_1	0
 #define TABLE_GRADIENT_2	1
 #define TABLE_GRADIENT_3	2

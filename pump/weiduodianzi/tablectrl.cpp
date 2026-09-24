@@ -24,7 +24,7 @@ TableCtrl::~TableCtrl()
 }
 
 
-//´¦ÀíÉÏÏÂ×óÓÒreturn¡¢backspace°´¼ü;
+//å¤„ç†ä¸Šä¸‹å·¦å³returnã€backspaceæŒ‰é”®;
 void TableCtrl::keyPressEvent( QKeyEvent *event )
 {
 
@@ -132,7 +132,7 @@ void TableCtrl::keyPressEvent( QKeyEvent *event )
 
         if(currentIndex().row() == model()->rowCount()-1)
   		{
-  			//ÐÂÔöÒ»ÐÐ;
+  			//æ–°å¢žä¸€è¡Œ;
 			MyTableModel *myModel = qobject_cast<MyTableModel *>(model());
   			myModel->insertRow(model()->rowCount());
   		}

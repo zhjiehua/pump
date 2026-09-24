@@ -22,7 +22,7 @@ private:
 	Ui::GlpInfoPageClass ui;
 	
 private slots:
-    void updateBugleDisp(quint32 cnt);//更新栓塞次数
+    void updateBugleDisp(quint32 cnt);//鏇存柊鏍撳娆℃暟
 	void pumpChange(int);
 	void updateUsedTime();
 };

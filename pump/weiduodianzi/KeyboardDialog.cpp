@@ -2,7 +2,7 @@
 #include "ui_keyboardDialog.h"
 #include <QDebug>
 #include <QPainter>
-//¼üÅÌ;
+//é”®ç›˜;
 
 KeyBoardDialog::KeyBoardDialog(QWidget *parent) :
     QDialog(parent),
@@ -15,7 +15,7 @@ KeyBoardDialog::KeyBoardDialog(QWidget *parent) :
 //     QPalette palette;
 //     palette.setColor(QPalette::Background, QColor(255,255,255,0xff));
 //     setPalette(palette);
-    //setAttribute(Qt::WA_TranslucentBackground, false);//ÉèÖÃÍ¸Ã÷2-´°Ìå±êÌâÀ¸²»Í¸Ã÷,±³¾°Í¸Ã÷
+    //setAttribute(Qt::WA_TranslucentBackground, false);//è®¾ç½®é€æ˜2-çª—ä½“æ ‡é¢˜æ ä¸é€æ˜,èƒŒæ™¯é€æ˜
 }
 
 KeyBoardDialog::~KeyBoardDialog()
@@ -168,15 +168,15 @@ void KeyBoardDialog::paintEvent(QPaintEvent * event)
 	QPainter painter(this);
 
 	int nBkMode = 0;
-	if(nBkMode == 0)//´¿É«±³¾°;
+	if(nBkMode == 0)//çº¯è‰²èƒŒæ™¯;
 	{
 		painter.fillRect(0,0,width(), height() ,QBrush(QColor(255,255,255,255)));
 	}
-	else if(nBkMode == 1)//½¥±ä±³¾°;
+	else if(nBkMode == 1)//æ¸å˜èƒŒæ™¯;
 	{
 
 	}
-	else//Í¼Æ¬±³¾°;
+	else//å›¾ç‰‡èƒŒæ™¯;
 	{
 		
 	}

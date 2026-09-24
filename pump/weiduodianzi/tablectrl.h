@@ -23,7 +23,7 @@ private:
 	QModelIndex m_currentIndex;
 
 signals:
-	void getOutFocus(int dir);//ÏòÏÂÊ§È¥½¹µã;//0ÉÏ//1ÏÂ//2×ó//3ÓÒ;
+	void getOutFocus(int dir);//å‘ä¸‹å¤±å»ç„¦ç‚¹;//0ä¸Š//1ä¸‹//2å·¦//3å³;
 	
 };
 

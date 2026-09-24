@@ -43,7 +43,7 @@ void AdminPage::initFocusList()
 	xList.append(ui.activeBtn);
 	xList.append(ui.utcBtn);
 	xList.append(ui.btcBtn);
-	xList.append(ui.rstBtn);//»Ö¸´³ö³§ÉèÖÃ£¬²âÊÔÓÃ;
+	xList.append(ui.rstBtn);//æ¢å¤å‡ºå‚è®¾ç½®ï¼Œæµ‹è¯•ç”¨;
 	xList.append(ui.saveDataBtn);
 	xList.append(ui.updateDataBtn);
 	xList.append(ui.manufYearEdit);
@@ -64,7 +64,7 @@ void AdminPage::initFocusList()
 	yList.append(ui.activeBtn);
 	yList.append(ui.utcBtn);
 	yList.append(ui.btcBtn);
-	yList.append(ui.rstBtn);//»Ö¸´³ö³§ÉèÖÃ£¬²âÊÔÓÃ;
+	yList.append(ui.rstBtn);//æ¢å¤å‡ºå‚è®¾ç½®ï¼Œæµ‹è¯•ç”¨;
 	yList.append(ui.saveDataBtn);
 	yList.append(ui.updateDataBtn);
 	yList.append(ui.manufYearEdit);
@@ -101,8 +101,8 @@ void AdminPage::on_activeBtn_clicked()
 	MsgBox msgBox(this, tr("Tips"), tr("Comfirm to Cancel Active!!!"));
 	if(msgBox.exec() == QMessageBox::Ok)
 	{
-		MachineStat::getInstance()->activeMachine(0, 0);				//È¡Ïû¼¤»î;
-		MachineStat::getInstance()->clearTime(MachineStat::SYSTIME);	//ÊÔÓÃÆÚÇåÁãÖØĞÂ¼ÆËã;
+		MachineStat::getInstance()->activeMachine(0, 0);				//å–æ¶ˆæ¿€æ´»;
+		MachineStat::getInstance()->clearTime(MachineStat::SYSTIME);	//è¯•ç”¨æœŸæ¸…é›¶é‡æ–°è®¡ç®—;
 	}
 }
 
@@ -134,7 +134,7 @@ void AdminPage::initDisplay()
 	ui.instMonthEdit->setValRange("instMonth", 1, 12, 0);
 	ui.instDayEdit->setValRange("instDay", 0, 31, 0);
 	//ui.licenseEdit->setValRange("license",0, 9999999999, 0, 10);
-	ui.licenseEdit->setValRange("license",0, 9999999999);////Îâ½ÜÄÜĞŞ¸Ä@2016-06-08
+	ui.licenseEdit->setValRange("license",0, 9999999999);////å´æ°èƒ½ä¿®æ”¹@2016-06-08
 	ui.serialEdit->setValRange("serial",0, 9999999999, 0, 10);
 	//ui.dayEdit->setValRange("tryDay", 1, 1000, 0);
 	ui.proCombo->setVar("pcProtocol");
@@ -145,7 +145,7 @@ void AdminPage::initDisplay()
 	connect(ui.connectCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(changeConnectPort(int)));
 
 	//connect(ui.dayEdit, SIGNAL(dataChanging(QString)), this, SLOT(tryDayChanged(QString)) );
-	//ui.dayEdit->setEnabled(false);//ÆÁ±ÎÊÔÓÃÈÕÆÚµÄ±à¼­
+	//ui.dayEdit->setEnabled(false);//å±è”½è¯•ç”¨æ—¥æœŸçš„ç¼–è¾‘
 
 	ui.licenseEdit->setTextMode();
 	ui.serialEdit->setTextMode();
@@ -175,7 +175,7 @@ void AdminPage::changeConnectPort(int idx)
 	MachineStat::getInstance()->setConnectPort(idx);
 }
 
-//±£´æÊı¾İ
+//ä¿å­˜æ•°æ®
 void AdminPage::on_saveDataBtn_clicked()
 {
 	//qDebug() << "on_saveDataBtn_clicked()";
@@ -202,7 +202,7 @@ void AdminPage::on_saveDataBtn_clicked()
 	}
 }
 
-//¸üĞÂÊı¾İ
+//æ›´æ–°æ•°æ®
 void AdminPage::on_updateDataBtn_clicked()
 {
 	MsgBox msgBox(this, tr("Tips"), tr("Comfirm to update data?"));

@@ -7,7 +7,7 @@
 #define ENABLE_IO_BUGLE_SIMULATION	0
 
 
-#ifdef linux
+#if defined(linux) && !defined(DESKTOP_HMI)
 #include <sys/ioctl.h>
 #include "qkbdmy_qws.h"
 static int fd = -1;
@@ -38,13 +38,13 @@ IoModule * IoModule::getInstance()
 
 void IoModule::initIO()
 {
-#ifdef linux
+#if defined(linux) && !defined(DESKTOP_HMI)
 	fd = open("/dev/pwm", 0);
 	if (fd < 0) {
 		perror("open pwm device");
 		exit(1);
 	}
-	ioctl(fd, PWM_IOCTL_WHICH_EDGE, 0);//ÕÅ½Ü»ªÌí¼Ó@2016-06-15£¬0±íÊ¾ÏÂ½µÑØ¼ì²â
+	ioctl(fd, PWM_IOCTL_WHICH_EDGE, 0);//å¼ æ°åæ·»åŠ @2016-06-15ï¼Œ0è¡¨ç¤ºä¸‹é™æ²¿æ£€æµ‹
 #endif
 
 	m_pReadIoTimer = new QTimer(this);
@@ -56,11 +56,14 @@ void IoModule::initIO()
 
 void IoModule::logic_set_io(quint32 io, bool val)
 {
-#ifdef linux
+#if defined(linux) && !defined(DESKTOP_HMI)
 	if(val)
 		ioctl(fd, PWM_IOCTL_SET_IO, io);
 	else
 		ioctl(fd, PWM_IOCTL_CLS_IO, io);
+#else
+	Q_UNUSED(io);
+	Q_UNUSED(val);
 #endif
 }
 
@@ -68,10 +71,12 @@ void IoModule::logic_set_io(quint32 io, bool val)
 bool IoModule::logic_get_io(quint32 io)
 {
 	unsigned long ret = 1;
-#ifdef linux
+#if defined(linux) && !defined(DESKTOP_HMI)
 	temp_read = io;
 	ioctl(fd, PWM_IOCTL_GET_IO, (unsigned long*)(&temp_read));
 	ret = temp_read&io;
+#else
+	Q_UNUSED(io);
 #endif
 	if(ret)
 		return true;
@@ -96,8 +101,8 @@ void IoModule::logic_init_lamp_operation()
 
 	QState *pOperationS = new QState();
 	pInitS->addTransition(this, SIGNAL(initLampSuccess()),pOperationS);
-	pMachine->addState(pInitS);//³õÊ¼»¯×´Ì¬;
-	pMachine->addState(pOperationS);//²Ù×÷×´Ì¬;
+	pMachine->addState(pInitS);//åˆå§‹åŒ–çŠ¶æ€;
+	pMachine->addState(pOperationS);//æ“ä½œçŠ¶æ€;
 	pMachine->setInitialState(pInitS);
 
 	connect(pInitS1, SIGNAL(entered()), this, SLOT(init_s1()));
@@ -113,8 +118,10 @@ void IoModule::logic_init_lamp_operation()
 
 void IoModule::doWarn(bool on)
 {
-#ifdef linux
+#if defined(linux) && !defined(DESKTOP_HMI)
 	MyKeyHandler::turnOnWarning(on);
+#else
+	Q_UNUSED(on);
 #endif
 }
 
@@ -152,13 +159,13 @@ void IoModule::readingIO()
 	unsigned long ret = 0;
 	unsigned long weepRet = 0;
 	static unsigned long last_weepRet = 0;
-#ifdef linux
+#if defined(linux) && !defined(DESKTOP_HMI)
 	temp_read = IO_BULGE_MASK;
 	ioctl(fd, PWM_IOCTL_GET_EDG, (unsigned long*)(&temp_read));
 	ret = temp_read&IO_BULGE_MASK;
 
 #else
-#if ENABLE_IO_BUGLE_SIMULATION//Ä£ÄâÍ¹ÂÖĞÅºÅ
+#if ENABLE_IO_BUGLE_SIMULATION//æ¨¡æ‹Ÿå‡¸è½®ä¿¡å·
 	static quint32 cnt = 0;
 	if(++cnt == 3)
 	{
@@ -172,22 +179,14 @@ void IoModule::readingIO()
 		emit(bulge());
 	}
 	
-#if ENABLE_AD_PRESS_SIMULATION//ÓÃÓÚÄ£Äâ¶ÁÈ¡µ½ADĞÅºÅ,Í¬Ê±¿ÉÒÔ²âÊÔ¿ªÊ¼Í£Ö¹ÊÇ·ñÉúĞ§;
+#if ENABLE_AD_PRESS_SIMULATION//ç”¨äºæ¨¡æ‹Ÿè¯»å–åˆ°ADä¿¡å·,åŒæ—¶å¯ä»¥æµ‹è¯•å¼€å§‹åœæ­¢æ˜¯å¦ç”Ÿæ•ˆ;
 	//quint32 temp = qrand()%1000;
 	quint32 temp = 100;
 	emit(testPress(temp));
 #endif
 
-	//Â©Òº¼ì²â
-#ifdef linux
-	//temp_read = IO_DIN5_MASK;
-	//ioctl(fd, PWM_IOCTL_GET_IO, (unsigned long*)(&temp_read));
-	//weepRet = temp_read&IO_DIN5_MASK;
-
-	weepRet = 0;//È¥µôÂ©Òº¼ì²â
-#else
-	weepRet = 0;
-#endif
+	//æ¼æ¶²æ£€æµ‹
+	weepRet = 0;//å»æ‰æ¼æ¶²æ£€æµ‹
 	
 	if(last_weepRet != weepRet)
 	{
