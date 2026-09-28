@@ -1,0 +1,256 @@
+{
+  "version": "2.0.0",
+  "linux": {
+    "options": {
+      "env": {
+        "QMAKE": "/home/jiehua/qt/Qt5.14.2/5.14.2/gcc_64/bin/qmake",
+        "PATH": "/home/jiehua/qt/Qt5.14.2/5.14.2/gcc_64/bin:${env:PATH}"
+      }
+    }
+  },
+  "windows": {
+    "options": {
+      "env": {
+        "QMAKE": "D:\\Qt\\Qt5.12.4\\5.12.4\\mingw73_32\\bin\\qmake.exe",
+        "MINGW_BIN": "D:\\Qt\\Qt5.12.4\\Tools\\mingw730_32\\bin",
+        "QT_ROOT": "D:\\Qt\\Qt5.12.4\\5.12.4\\mingw73_32",
+        "PATH": "D:\\Qt\\Qt5.12.4\\5.12.4\\mingw73_32\\bin;D:\\Qt\\Qt5.12.4\\Tools\\mingw730_32\\bin;${env:PATH}"
+      }
+    }
+  },
+  "tasks": [
+    {
+      "label": "Build: HMI",
+      "type": "shell",
+      "options": { "cwd": "${workspaceFolder}/hmi" },
+      "command": "bash",
+      "args": [
+        "-lc",
+        "mkdir -p build bin && (test -f build/Makefile || (cd build && \"${QMAKE:-qmake}\" ../hmi.pro)) && make -C build -j\"$(nproc 2>/dev/null || echo 4)\""
+      ],
+      "windows": {
+        "command": "powershell",
+        "args": [
+          "-NoProfile",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-Command",
+          "New-Item -ItemType Directory -Force -Path build,bin | Out-Null; if (-not (Test-Path build\\Makefile)) { Push-Location build; & $env:QMAKE ..\\hmi.pro CONFIG+=release; Pop-Location }; mingw32-make -C build -j$([Environment]::ProcessorCount); exit $LASTEXITCODE"
+        ]
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$gcc"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "Build: weiduodianzi",
+      "type": "shell",
+      "options": { "cwd": "${workspaceFolder}/pump/weiduodianzi" },
+      "command": "bash",
+      "args": [
+        "-lc",
+        "mkdir -p build_desktop bin && (test -f build_desktop/Makefile || (cd build_desktop && \"${QMAKE:-qmake}\" ../weiduodianzi_desktop.pro)) && make -C build_desktop -j\"$(nproc 2>/dev/null || echo 4)\""
+      ],
+      "windows": {
+        "command": "powershell",
+        "args": [
+          "-NoProfile",
+          "-ExecutionPolicy",
+          "Bypass",
+          "-Command",
+          "New-Item -ItemType Directory -Force -Path build_desktop,bin | Out-Null; if (-not (Test-Path build_desktop\\Makefile)) { Push-Location build_desktop; & $env:QMAKE ..\\weiduodianzi_desktop.pro CONFIG+=release; Pop-Location }; mingw32-make -C build_desktop -j$([Environment]::ProcessorCount); exit $LASTEXITCODE"
+        ]
+      },
+      "group": "build",
+      "problemMatcher": ["$gcc"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "QMake: HMI",
+      "type": "shell",
+      "options": { "cwd": "${workspaceFolder}/hmi" },
+      "command": "bash",
+      "args": [
+        "-lc",
+        "mkdir -p build bin && cd build && \"${QMAKE:-qmake}\" ../hmi.pro"
+      ],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "QMake: weiduodianzi",
+      "type": "shell",
+      "options": { "cwd": "${workspaceFolder}/pump/weiduodianzi" },
+      "command": "bash",
+      "args": [
+        "-lc",
+        "mkdir -p build_desktop bin && cd build_desktop && \"${QMAKE:-qmake}\" ../weiduodianzi_desktop.pro"
+      ],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "Clean: HMI",
+      "type": "shell",
+      "options": { "cwd": "${workspaceFolder}/hmi" },
+      "command": "bash",
+      "args": ["-lc", "rm -rf build bin"],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "Clean: weiduodianzi",
+      "type": "shell",
+      "options": { "cwd": "${workspaceFolder}/pump/weiduodianzi" },
+      "command": "bash",
+      "args": ["-lc", "rm -rf build_desktop bin"],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "Build: weiduodianzi (Qt4)",
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}/pump/weiduodianzi",
+        "env": {
+          "QMAKE": "/home/jiehua/qt/Qt4.8.5/bin/qmake",
+          "PATH": "/home/jiehua/qt/Qt4.8.5/bin:${env:PATH}",
+          "LD_LIBRARY_PATH": "/home/jiehua/qt/Qt4.8.5/lib:${env:LD_LIBRARY_PATH}"
+        }
+      },
+      "command": "bash",
+      "args": [
+        "-lc",
+        "mkdir -p build_qt4_desktop bin && (test -f build_qt4_desktop/Makefile || (cd build_qt4_desktop && \"${QMAKE:-qmake}\" ../weiduodianzi_qt4_desktop.pro)) && make -C build_qt4_desktop -j\"$(nproc 2>/dev/null || echo 4)\""
+      ],
+      "group": "build",
+      "problemMatcher": ["$gcc"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "QMake: weiduodianzi (Qt4)",
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}/pump/weiduodianzi",
+        "env": {
+          "QMAKE": "/home/jiehua/qt/Qt4.8.5/bin/qmake",
+          "PATH": "/home/jiehua/qt/Qt4.8.5/bin:${env:PATH}"
+        }
+      },
+      "command": "bash",
+      "args": [
+        "-lc",
+        "mkdir -p build_qt4_desktop bin && cd build_qt4_desktop && \"${QMAKE:-qmake}\" ../weiduodianzi_qt4_desktop.pro"
+      ],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "Clean: weiduodianzi (Qt4)",
+      "type": "shell",
+      "options": { "cwd": "${workspaceFolder}/pump/weiduodianzi" },
+      "command": "bash",
+      "args": ["-lc", "rm -rf build_qt4_desktop bin"],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "Build: HMI (Qt4)",
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}/hmi",
+        "env": {
+          "QMAKE": "/home/jiehua/qt/Qt4.8.5/bin/qmake",
+          "PATH": "/home/jiehua/qt/Qt4.8.5/bin:${env:PATH}",
+          "LD_LIBRARY_PATH": "/home/jiehua/qt/Qt4.8.5/lib:${env:LD_LIBRARY_PATH}"
+        }
+      },
+      "command": "bash",
+      "args": [
+        "-lc",
+        "mkdir -p build_qt4 bin && (test -f build_qt4/Makefile || (cd build_qt4 && \"${QMAKE:-qmake}\" ../hmi.pro CONFIG+=embedded)) && make -C build_qt4 -j\"$(nproc 2>/dev/null || echo 4)\""
+      ],
+      "group": "build",
+      "problemMatcher": ["$gcc"],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "QMake: HMI (Qt4)",
+      "type": "shell",
+      "options": {
+        "cwd": "${workspaceFolder}/hmi",
+        "env": {
+          "QMAKE": "/home/jiehua/qt/Qt4.8.5/bin/qmake",
+          "PATH": "/home/jiehua/qt/Qt4.8.5/bin:${env:PATH}"
+        }
+      },
+      "command": "bash",
+      "args": [
+        "-lc",
+        "mkdir -p build_qt4 bin && cd build_qt4 && \"${QMAKE:-qmake}\" ../hmi.pro CONFIG+=embedded"
+      ],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "Clean: HMI (Qt4)",
+      "type": "shell",
+      "options": { "cwd": "${workspaceFolder}/hmi" },
+      "command": "bash",
+      "args": ["-lc", "rm -rf build_qt4"],
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    }
+  ]
+}

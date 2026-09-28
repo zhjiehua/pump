@@ -1,0 +1,44 @@
+<RCC>
+    <qresource prefix="/hmi">
+        <file>res/ui/activenavigator.png</file>
+        <file>res/ui/bk.png</file>
+        <file>res/ui/btn.png</file>
+        <file>res/ui/btnfocus.png</file>
+        <file>res/ui/calibration.png</file>
+        <file>res/ui/calibrationfocus.png</file>
+        <file>res/ui/checked.png</file>
+        <file>res/ui/chinese.png</file>
+        <file>res/ui/chinesefocus.png</file>
+        <file>res/ui/clock.png</file>
+        <file>res/ui/clockfocus.png</file>
+        <file>res/ui/connect_established.png</file>
+        <file>res/ui/disconnect.png</file>
+        <file>res/ui/down.png</file>
+        <file>res/ui/down-arrow.png</file>
+        <file>res/ui/english.png</file>
+        <file>res/ui/englishfocus.png</file>
+        <file>res/ui/focusnavigator.png</file>
+        <file>res/ui/global.png</file>
+        <file>res/ui/globalfocus.png</file>
+        <file>res/ui/glpinfo.png</file>
+        <file>res/ui/glpinfofocus.png</file>
+        <file>res/ui/grid.png</file>
+        <file>res/ui/gridfocus.png</file>
+        <file>res/ui/key.png</file>
+        <file>res/ui/keyfocus.png</file>
+        <file>res/ui/logo.png</file>
+        <file>res/ui/message.png</file>
+        <file>res/ui/messagefocus.png</file>
+        <file>res/ui/netconfig.png</file>
+        <file>res/ui/netconfigfocus.png</file>
+        <file>res/ui/normalnavigator.png</file>
+        <file>res/ui/permission.png</file>
+        <file>res/ui/permissionfocus.png</file>
+        <file>res/ui/setup.png</file>
+        <file>res/ui/unchecked.png</file>
+        <file>res/ui/uncheckedfocus.png</file>
+        <file>res/ui/up.png</file>
+        <file>res/ui/user.png</file>
+        <file>res/ui/weeping.png</file>
+    </qresource>
+</RCC>

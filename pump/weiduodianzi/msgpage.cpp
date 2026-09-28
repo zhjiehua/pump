@@ -62,7 +62,7 @@ CBasePage* MsgPage::getInstance(QWidget *parent, quint8 index, quint8 previndex,
 	return new MsgPage(parent, index, previndex, add);
 }
 
-//更新程序
+//鏇存柊绋嬪簭
 void MsgPage::on_updateBtn_clicked()
 {
 	MsgBox msgBox(this, tr("Tips"), tr("Comfirm to update program?"));
@@ -94,7 +94,7 @@ void MsgPage::on_updateBtn_clicked()
 
 }
 
-//保存数据
+//淇濆瓨鏁版嵁
 void MsgPage::on_saveDataBtn_clicked()
 {
 	//qDebug() << "on_saveDataBtn_clicked()";
@@ -121,7 +121,7 @@ void MsgPage::on_saveDataBtn_clicked()
 	}
 }
 
-//更新数据
+//鏇存柊鏁版嵁
 void MsgPage::on_updateDataBtn_clicked()
 {
 	MsgBox msgBox(this, tr("Tips"), tr("Comfirm to update data?"));

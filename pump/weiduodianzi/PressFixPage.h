@@ -35,7 +35,7 @@ private slots:
 	void updatePresVal(QString disp, quint8 warning);
 	void updatePressList();
 
-	void updateFlow();//´¦ÀíÍ¹ÂÖĞÅºÅ;
+	void updateFlow();//å¤„ç†å‡¸è½®ä¿¡å·;
 	
 };
 

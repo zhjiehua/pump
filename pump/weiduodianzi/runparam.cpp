@@ -32,9 +32,9 @@ void RunParamPage::initFocusList()
 	yList.append(ui.gradient);
 	yList.append(ui.coefficient);
 
-	//ui.pumpMod->setVar("pumptype");//±ÃÀàÐÍ;
+	//ui.pumpMod->setVar("pumptype");//æ³µç±»åž‹;
 	ui.coefficient->setValRange("coefficient", 0, 100, 0);
-	//Á÷Á¿²¹³¥...........
+	//æµé‡è¡¥å¿...........
 	ui.gradient->setVar("gradient");
 
 	//connect(ui.pumpMod, SIGNAL(currentIndexChanged(int)), this, SLOT(setMinAndMaxPress()));
@@ -49,7 +49,7 @@ void RunParamPage::setMinAndMaxPress()
 	if(pumpType > 10)
 		return;
 
-	//ÉèÖÃ×î´óÑ¹Á¦ÊäÈë·¶Î§ÓëÏÖÊµÄÚÈÝ;
+	//è®¾ç½®æœ€å¤§åŽ‹åŠ›è¾“å…¥èŒƒå›´ä¸ŽçŽ°å®žå†…å®¹;
 	QString temp;
 	int pmax = DataBase::getInstance()->queryData("pmax").toInt();
 	if(pmax != 0)
@@ -65,7 +65,7 @@ void RunParamPage::setMinAndMaxPress()
 	ui.maxPress->setText(temp);
 	DataBase::getInstance()->updateDate("maxpress", temp);
 
-	//ÉèÖÃ×îÐ¡Ñ¹Á¦ÊäÈë·¶Î§;
+	//è®¾ç½®æœ€å°åŽ‹åŠ›è¾“å…¥èŒƒå›´;
 	ui.minPress->setValRange("minpress", -50, maxPressArray[pumpType], 2);
 	int minPress = DataBase::getInstance()->queryData("minpress").toInt();
 	if(minPress > maxPressArray[pumpType])

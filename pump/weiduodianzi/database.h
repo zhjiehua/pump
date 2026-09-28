@@ -28,38 +28,38 @@ public:
 	~DataBase();
 	static DataBase *getInstance();
 
-	void saveDb();														//±£´æÊı¾İ¿âÎÄ¼ş;
-	void updateDate(QString name, QString data);						//¸üĞÂÊı¾İ;
-	QString queryData(QString name);									//²éÑ¯Êı¾İ;
-	quint32 getGradientEndTime(){return endTime;};						//»ñÈ¡Ìİ¶È±í½áÊøÊ±¼ä;
-	QList<LineUint> &getGradientList(){return gradientList;}			//»ñÈ¡Ìİ¶È±í;
-	QList<LineUint> &getFlowCompensationList(){return flowCompensationList;}//»ñÈ¡Á÷Á¿²¹³¥±í;
-	QList<LineUint> &getPressCompensationList(){return pressCompensationList;}//»ñÈ¡Á÷Á¿²¹³¥±í;
+	void saveDb();														//ä¿å­˜æ•°æ®åº“æ–‡ä»¶;
+	void updateDate(QString name, QString data);						//æ›´æ–°æ•°æ®;
+	QString queryData(QString name);									//æŸ¥è¯¢æ•°æ®;
+	quint32 getGradientEndTime(){return endTime;};						//è·å–æ¢¯åº¦è¡¨ç»“æŸæ—¶é—´;
+	QList<LineUint> &getGradientList(){return gradientList;}			//è·å–æ¢¯åº¦è¡¨;
+	QList<LineUint> &getFlowCompensationList(){return flowCompensationList;}//è·å–æµé‡è¡¥å¿è¡¨;
+	QList<LineUint> &getPressCompensationList(){return pressCompensationList;}//è·å–æµé‡è¡¥å¿è¡¨;
 
-	QList<QStringList> readGradientTable(int which = 0);				//¶ÁÈ¡Ìİ¶È±í;
-	void updateGradientTable(int which, QList<QStringList>data);		//¸üĞÂÌİ¶È±í;
+	QList<QStringList> readGradientTable(int which = 0);				//è¯»å–æ¢¯åº¦è¡¨;
+	void updateGradientTable(int which, QList<QStringList>data);		//æ›´æ–°æ¢¯åº¦è¡¨;
 
-	QList<QStringList> readCompensationTable(int which = 0);			//¶ÁÈ¡²¹³¥±í(Á÷Á¿»òÌİ¶È²¹³¥);
-	void updateCompensationTable(int which, QList<QStringList>data);	//¸üĞÂ²¹³¥±í;
+	QList<QStringList> readCompensationTable(int which = 0);			//è¯»å–è¡¥å¿è¡¨(æµé‡æˆ–æ¢¯åº¦è¡¥å¿);
+	void updateCompensationTable(int which, QList<QStringList>data);	//æ›´æ–°è¡¥å¿è¡¨;
 	void updateFlowCompensationTable(QList<QStringList>data);			
 	void updatePressCompensationTable(QList<QStringList>data);
 
-	void readGradientTableIntoList(int which = 0);						//¶Á³öÌê¶È±í£¬½øĞĞ±ØÒªµÄ×ª»»;
-	void readFlowCompensationTableIntoList();							//¶Á³öÁ÷Á¿²¹³¥±í£¬½øĞĞ±ØÒªµÄ×ª»»;
-	void readFlowCompensationTableIntoList(QList<QStringList>&data);	//¶Á³öÁ÷Á¿²¹³¥±í£¬½øĞĞ±ØÒªµÄ×ª»»;
-	void readPressCompensationTableIntoList();							//¶Á³öÑ¹Á¦²¹³¥±í£¬½øĞĞ±ØÒªµÄ×ª»»;
-	void readPressCompensationTableIntoList(QList<QStringList>&data);	//¶Á³öÑ¹Á¦²¹³¥±í£¬½øĞĞ±ØÒªµÄ×ª»»;
-	void reOrderList(QList<QStringList> &list);							//ÅÅĞò;
+	void readGradientTableIntoList(int which = 0);						//è¯»å‡ºå‰ƒåº¦è¡¨ï¼Œè¿›è¡Œå¿…è¦çš„è½¬æ¢;
+	void readFlowCompensationTableIntoList();							//è¯»å‡ºæµé‡è¡¥å¿è¡¨ï¼Œè¿›è¡Œå¿…è¦çš„è½¬æ¢;
+	void readFlowCompensationTableIntoList(QList<QStringList>&data);	//è¯»å‡ºæµé‡è¡¥å¿è¡¨ï¼Œè¿›è¡Œå¿…è¦çš„è½¬æ¢;
+	void readPressCompensationTableIntoList();							//è¯»å‡ºå‹åŠ›è¡¥å¿è¡¨ï¼Œè¿›è¡Œå¿…è¦çš„è½¬æ¢;
+	void readPressCompensationTableIntoList(QList<QStringList>&data);	//è¯»å‡ºå‹åŠ›è¡¥å¿è¡¨ï¼Œè¿›è¡Œå¿…è¦çš„è½¬æ¢;
+	void reOrderList(QList<QStringList> &list);							//æ’åº;
 
-	void saveTableToFile(QString fileName, QList<QStringList>&data);//±£´æ±í¸ñµ½ÎÄ¼ş;
+	void saveTableToFile(QString fileName, QList<QStringList>&data);//ä¿å­˜è¡¨æ ¼åˆ°æ–‡ä»¶;
 
-	//»Ö¸´³ö³§Ä¬ÈÏ²¹³¥±í¸ñ(Ñ¹Á¦ºÍÁ÷ËÙ);
+	//æ¢å¤å‡ºå‚é»˜è®¤è¡¥å¿è¡¨æ ¼(å‹åŠ›å’Œæµé€Ÿ);
 	void restoreCompensationTable();
 
 private:
 	DataBase(QObject *parent = 0);
 	QThread m_thread;
-	QMap<QString, QString>dataBase;										//Êı¾İ¿âÄÚÈİ;
+	QMap<QString, QString>dataBase;										//æ•°æ®åº“å†…å®¹;
 	quint32 endTime;
 	QList<LineUint> gradientList;
 	QList<LineUint> flowCompensationList;
@@ -71,15 +71,15 @@ private:
 	int m_ret;
 	int m_nrow;
 	int m_ncolumn;
-	char **m_azResult;									//¶şÎ¬Êı×é´æ·Å½á¹û;
+	char **m_azResult;									//äºŒç»´æ•°ç»„å­˜æ”¾ç»“æœ;
 
 
 	//method
-	void initDb();										//³õÊ¼»¯Êı¾İ¿â;
-	void createGradientTable();							//´´½¨12¸öÌİ¶È±í;
-	void createCompensationTable();						//´´½¨Á÷Á¿²¹³¥±íºÍÑ¹Á¦²¹³¥±í;
-	void restoreDefPressCompenTable(int pumpType);		//´´½¨³ö³§Ä¬ÈÏÑ¹Á¦Ğ£Õı±í¸ñ;
-	void restoreDefFlowCompenTable(int pumpType);		//´´½¨³ö³§Ä¬ÈÏÁ÷ËÙĞ£Õı±í¸ñ;
+	void initDb();										//åˆå§‹åŒ–æ•°æ®åº“;
+	void createGradientTable();							//åˆ›å»º12ä¸ªæ¢¯åº¦è¡¨;
+	void createCompensationTable();						//åˆ›å»ºæµé‡è¡¥å¿è¡¨å’Œå‹åŠ›è¡¥å¿è¡¨;
+	void restoreDefPressCompenTable(int pumpType);		//åˆ›å»ºå‡ºå‚é»˜è®¤å‹åŠ›æ ¡æ­£è¡¨æ ¼;
+	void restoreDefFlowCompenTable(int pumpType);		//åˆ›å»ºå‡ºå‚é»˜è®¤æµé€Ÿæ ¡æ­£è¡¨æ ¼;
 	
 
 signals:
@@ -87,8 +87,8 @@ signals:
 	void save();
 
 private slots:
-	void saveToDataBase();//±£´æÊı¾İ¿âÎÄ¼ş;
-	void saveData(QString name, QString val);			//±£´æÊı¾İµ½Êı¾İ¿âÎÄ¼ş;
+	void saveToDataBase();//ä¿å­˜æ•°æ®åº“æ–‡ä»¶;
+	void saveData(QString name, QString val);			//ä¿å­˜æ•°æ®åˆ°æ•°æ®åº“æ–‡ä»¶;
 	
 };
 

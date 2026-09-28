@@ -26,14 +26,14 @@ void BugleCompensationWithSection::updateOutput(quint32 output, double flow)
 	m_bOutputStable = false;
 	m_nCurrentOutput = output;
 
-	if(flow > 10000)//´óÓÚ1mlÊ±ºòÆÁ±Î²¹³¥
+	if(flow > 10000)//å¤§äºŽ1mlæ—¶å€™å±è”½è¡¥å¿
 	{
 		m_nTimeoutIndex = 0;
 		m_pTimer->stop();
 		return;
 	}
 
-	updateTimeoutList(flow);				//¸üÐÂ²¹³¥±í¸ñ;
+	updateTimeoutList(flow);				//æ›´æ–°è¡¥å¿è¡¨æ ¼;
 	waitOutputStable();
 }
 
@@ -58,7 +58,7 @@ void BugleCompensationWithSection::pauseOutput()
 
 void BugleCompensationWithSection::waitOutputStable()
 {
-	//ÑÓÊ±;(ÑÓÊ±ÖÜÆÚÔÚ±¾ÎÄ¼þ¿ªÍ·ÅäÖÃ,µ¥Î»ms)
+	//å»¶æ—¶;(å»¶æ—¶å‘¨æœŸåœ¨æœ¬æ–‡ä»¶å¼€å¤´é…ç½®,å•ä½ms)
 	TimeHelper::mDelay(OUTPUT_STABLE_PERIOD_MSEC);
 	m_bOutputStable = true;
 }
@@ -66,11 +66,11 @@ void BugleCompensationWithSection::waitOutputStable()
 void BugleCompensationWithSection::bugleSignal()
 {
 	m_bBugleSignal = true;
-	//°´±í¸ñ¸üÐÂÌÝ¶È?
+	//æŒ‰è¡¨æ ¼æ›´æ–°æ¢¯åº¦?
 	m_nTimeoutIndex = 0;
 	m_pTimer->stop();
 
-	if(isOutputStable())//Ö¤Ã÷ÕýÔÚÔËÐÐ;
+	if(isOutputStable())//è¯æ˜Žæ­£åœ¨è¿è¡Œ;
 		m_pTimer->start(m_timeoutList.at(m_nTimeoutIndex));
 }
 

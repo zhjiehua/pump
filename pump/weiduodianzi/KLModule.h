@@ -13,30 +13,30 @@ public:
 	KLModule(QObject *parent);
 	~KLModule();
 
-//¶ÔÍâ½Ó¿Ú:
-	void logic_key_filter(QWidget *obj, int operationMold = 0, int navigatorCnt = 5);	//ÓÃÓÚ¼à¿Ø¸Ã´°¿ÚµÄ°´¼üÏûÏ¢,Ä¬ÈÏ²Ù×÷·½Ê½£¨0£©;
-	void logic_navigator_mold(bool mold){m_bLogicKeyMod = mold;}	//°´¼üÇĞ»»±êÇ©Ò³ºÍ½¹µãµÄ²Ù×÷·½Ê½(0)ÓÃµ½£¬ÓÃÓÚÇĞ»»µ½±êÇ©Ò³²Ù×÷Ä£Ê½;
-	void logic_navigator_current(){emit(logic_navigator_at(m_nCurrentNavigator)); logic_navigator_mold(true);};	//´¥·¢µ±Ç°µ¼º½Ò³,·½Ê½[0];
+//å¯¹å¤–æ¥å£:
+	void logic_key_filter(QWidget *obj, int operationMold = 0, int navigatorCnt = 5);	//ç”¨äºç›‘æ§è¯¥çª—å£çš„æŒ‰é”®æ¶ˆæ¯,é»˜è®¤æ“ä½œæ–¹å¼ï¼ˆ0ï¼‰;
+	void logic_navigator_mold(bool mold){m_bLogicKeyMod = mold;}	//æŒ‰é”®åˆ‡æ¢æ ‡ç­¾é¡µå’Œç„¦ç‚¹çš„æ“ä½œæ–¹å¼(0)ç”¨åˆ°ï¼Œç”¨äºåˆ‡æ¢åˆ°æ ‡ç­¾é¡µæ“ä½œæ¨¡å¼;
+	void logic_navigator_current(){emit(logic_navigator_at(m_nCurrentNavigator)); logic_navigator_mold(true);};	//è§¦å‘å½“å‰å¯¼èˆªé¡µ,æ–¹å¼[0];
 	void logic_set_navigator_current(int m_nCurrent);
 
 signals:
-	void logic_navigator_at(int index);					//±êÇ©Ò³ÇĞ»»ÏûÏ¢;
-	void logic_focus_next_right();						//ÏòÓÒÇĞ»»½¹µã;
-	void logic_focus_next_left();						//Ïò×óÇĞ»»½¹µã;
-	void logic_focus_next_up();							//ÏòÉÏÇĞ»»½¹µã;
-	void logic_focus_next_down();						//ÏòÏÂÇĞ»»½¹µã;
+	void logic_navigator_at(int index);					//æ ‡ç­¾é¡µåˆ‡æ¢æ¶ˆæ¯;
+	void logic_focus_next_right();						//å‘å³åˆ‡æ¢ç„¦ç‚¹;
+	void logic_focus_next_left();						//å‘å·¦åˆ‡æ¢ç„¦ç‚¹;
+	void logic_focus_next_up();							//å‘ä¸Šåˆ‡æ¢ç„¦ç‚¹;
+	void logic_focus_next_down();						//å‘ä¸‹åˆ‡æ¢ç„¦ç‚¹;
 
 protected:
 	bool eventFilter(QObject *obj, QEvent *event);
 
 private:
-	int m_nLogicKeyOperationMold;						//°´¼üÇĞ»»Ò³ÃæºÍ½¹µãµÄ²Ù×÷·½Ê½;
-	int m_nNavigatorCnt;								//±êÇ©Ò³ÊıÄ¿;
-	int m_nCurrentNavigator;							//µ±Ç°µ¼º½Ò³;
-	bool m_bLogicKeyMod;								//µ±Ö»ÓĞÉÏÏÂ×óÓÒ°´¼üÀ´²Ù×÷±êÇ©Ò³Ê±ºòÓÃµ½¸Ã±äÁ¿[°´¼ü²Ù×÷·½Ê½0]									
+	int m_nLogicKeyOperationMold;						//æŒ‰é”®åˆ‡æ¢é¡µé¢å’Œç„¦ç‚¹çš„æ“ä½œæ–¹å¼;
+	int m_nNavigatorCnt;								//æ ‡ç­¾é¡µæ•°ç›®;
+	int m_nCurrentNavigator;							//å½“å‰å¯¼èˆªé¡µ;
+	bool m_bLogicKeyMod;								//å½“åªæœ‰ä¸Šä¸‹å·¦å³æŒ‰é”®æ¥æ“ä½œæ ‡ç­¾é¡µæ—¶å€™ç”¨åˆ°è¯¥å˜é‡[æŒ‰é”®æ“ä½œæ–¹å¼0]									
 
-	bool logic_key_deal_mold0(QKeyEvent *ke);			//°´¼üÇĞ»»±êÇ©Ò³ºÍ½¹µãµÄ²Ù×÷·½Ê½(0);
-	bool logic_key_deal_mold1(QKeyEvent *ke);			//°´¼üÇĞ»»±êÇ©Ò³ºÍ½¹µãµÄ²Ù×÷·½Ê½(1);£¡£¡£¡£¡£¡ĞÂµÄ·½Ê½¿ÉÒÔÔÚ´ËÊµÏÖ£¬Ô¤Áô;
+	bool logic_key_deal_mold0(QKeyEvent *ke);			//æŒ‰é”®åˆ‡æ¢æ ‡ç­¾é¡µå’Œç„¦ç‚¹çš„æ“ä½œæ–¹å¼(0);
+	bool logic_key_deal_mold1(QKeyEvent *ke);			//æŒ‰é”®åˆ‡æ¢æ ‡ç­¾é¡µå’Œç„¦ç‚¹çš„æ“ä½œæ–¹å¼(1);ï¼ï¼ï¼ï¼ï¼æ–°çš„æ–¹å¼å¯ä»¥åœ¨æ­¤å®ç°ï¼Œé¢„ç•™;
 
 
 };

@@ -13,11 +13,11 @@
 /*****************************************************************/
 int DectoBCD(int Dec,int length);
 
-#define NOWARN			 0//ÎŞ±¨¾¯
-#define COMUNICATION_ERR 1//Í¨Ñ¶³ö´í;
-#define OVERFLOW_ERR	 2//Á÷ËÙ³¬ÏŞ;
-#define OVERPRESS_ERR	 3//Ñ¹Á¦³¬ÏŞ;
-#define WEEPING          4//Â©Òº
+#define NOWARN			 0//æ— æŠ¥è­¦
+#define COMUNICATION_ERR 1//é€šè®¯å‡ºé”™;
+#define OVERFLOW_ERR	 2//æµé€Ÿè¶…é™;
+#define OVERPRESS_ERR	 3//å‹åŠ›è¶…é™;
+#define WEEPING          4//æ¼æ¶²
 
 class MachineStat;
 typedef void (MachineStat::*pTimeoutFunc)();
@@ -37,30 +37,30 @@ public:
 
 	enum MachineTime
 	{
-		SYSTIME,		//ÏµÍ³ÀÛ¼ÆÊ±¼ä,¿ª»ú²»ÇåÁã;
-		PUMPTIME,		//±ÃÀÛ¼ÆÔËĞĞÊ±¼ä,¿ª»ú²»ÇåÁã;
-		STARTUPTIME,	//¿ª»úÊ±¼ä,¿ª»úÇåÁã;
+		SYSTIME,		//ç³»ç»Ÿç´¯è®¡æ—¶é—´,å¼€æœºä¸æ¸…é›¶;
+		PUMPTIME,		//æ³µç´¯è®¡è¿è¡Œæ—¶é—´,å¼€æœºä¸æ¸…é›¶;
+		STARTUPTIME,	//å¼€æœºæ—¶é—´,å¼€æœºæ¸…é›¶;
 	};
 
 	enum MachineStatment
 	{
-		INISTAT = -1,	//³õÊ¼×´Ì¬,¿ª»úÊ±ºò´¦ÓÚ¸Ã×´Ì¬;
-		STOP = 0,		//Í£Ö¹×´Ì¬;
-		PAUSE,			//ÔİÍ£×´Ì¬;
-		RUNNING,		//ÔËĞĞ×´Ì¬;
-		PUMP,			//±ÃÒº×´Ì¬;
-		PURGE,			//ÇåÏ´×´Ì¬;
-		PCCTRL,			//ÉÏÎ»»ú¿ØÖÆ×´Ì¬;
-		FIX,			//Ğ£ÕıÄ£Ê½;
+		INISTAT = -1,	//åˆå§‹çŠ¶æ€,å¼€æœºæ—¶å€™å¤„äºè¯¥çŠ¶æ€;
+		STOP = 0,		//åœæ­¢çŠ¶æ€;
+		PAUSE,			//æš‚åœçŠ¶æ€;
+		RUNNING,		//è¿è¡ŒçŠ¶æ€;
+		PUMP,			//æ³µæ¶²çŠ¶æ€;
+		PURGE,			//æ¸…æ´—çŠ¶æ€;
+		PCCTRL,			//ä¸Šä½æœºæ§åˆ¶çŠ¶æ€;
+		FIX,			//æ ¡æ­£æ¨¡å¼;
 	};
 
-	//Á÷ËÙ¿ØÖÆÄ£Ê½;
+	//æµé€Ÿæ§åˆ¶æ¨¡å¼;
 	enum FlowCtrlMode
 	{
-		GRADIENT_MODE,	//Ìİ¶ÈÄ£Ê½;
-		PUMP_PURGE_MODE,//±Ã»òÇåÏ´Ä£Ê½;
-		PC_MODE,		//ÉÏÎ»»úÄ£Ê½;
-		DEBUG_MODE,		//µ÷ÊÔÄ£Ê½;
+		GRADIENT_MODE,	//æ¢¯åº¦æ¨¡å¼;
+		PUMP_PURGE_MODE,//æ³µæˆ–æ¸…æ´—æ¨¡å¼;
+		PC_MODE,		//ä¸Šä½æœºæ¨¡å¼;
+		DEBUG_MODE,		//è°ƒè¯•æ¨¡å¼;
 	};
 
 	enum E_IPConfig
@@ -75,102 +75,102 @@ public:
 		MachineStatment machineStat;
 		MachineStatment oldMachineStat;
 		quint32 startupTime;
-		uint m_firstTryDateTime;					//¼ÇÂ¼ÊÔÓÃµ±ÈÕµÄÈÕÆÚÊ±¼ä£¬²»ÇåÁã;
-		quint32 m_nSysUsedTime;						//! ÏµÍ³Ê¹ÓÃÊ±¼ä
+		uint m_firstTryDateTime;					//è®°å½•è¯•ç”¨å½“æ—¥çš„æ—¥æœŸæ—¶é—´ï¼Œä¸æ¸…é›¶;
+		quint32 m_nSysUsedTime;						//! ç³»ç»Ÿä½¿ç”¨æ—¶é—´
 		quint32 pumpStartupTime;
 		quint32 bugleCnt;
-		bool bTryDone;								//ÊÔÓÃÍê±Ï±êÖ¾;
+		bool bTryDone;								//è¯•ç”¨å®Œæ¯•æ ‡å¿—;
 
 		quint32 m_nSerialId;
-		int m_nPumpType;							//±ÃÀàĞÍ;
+		int m_nPumpType;							//æ³µç±»å‹;
 
-		bool m_bUpdateFlowFromPc;					//±êÖ¾´ÓÉÏÎ»»úÉèÖÃÁËÁ÷ËÙºÍ°Ù·Ö±È;
+		bool m_bUpdateFlowFromPc;					//æ ‡å¿—ä»ä¸Šä½æœºè®¾ç½®äº†æµé€Ÿå’Œç™¾åˆ†æ¯”;
 
-		double m_dCurrentFlow;						//µ±Ç°Á÷ËÙ;
+		double m_dCurrentFlow;						//å½“å‰æµé€Ÿ;
 
 		bool m_bFixMode;
 		
 	};
 
-	//ÕÅ½Ü»ªÌí¼Ó@2016-06-23
+	//å¼ æ°åæ·»åŠ @2016-06-23
 	bool m_bCanClearOverPress;
 
 	bool m_bPumpTypeChange;
 
 	~MachineStat();
 	static MachineStat *getInstance();
-	void setFixMode(bool mode);										//½øÈëĞ£×¼Ä£Ê½;
+	void setFixMode(bool mode);										//è¿›å…¥æ ¡å‡†æ¨¡å¼;
 	bool isFixMode();
-	void clearPressWarn();									//Çå³ıÑ¹Á¦±¨¾¯;
-	void sysError(int reSend, bool insert);					//²åÈë±¨¾¯;
+	void clearPressWarn();									//æ¸…é™¤å‹åŠ›æŠ¥è­¦;
+	void sysError(int reSend, bool insert);					//æ’å…¥æŠ¥è­¦;
 	void setPcProtocol(int idx);
 	void setConnectPort(int idx);
 
-	int checkProbation();									//¼ì²éÊ¹ÓÃÊ£ÓàÊ±¼ä;
-	quint32 getTime(MachineTime time);						//»ñÈ¡Ê±¼ä;
-	void clearTime(MachineTime time);						//Çå³ıÊ±¼ä;
-	bool activeMachine(quint64 activeNum, bool bActive = true);						//Í¨¹ı¼¤»îÂë¼¤»î»úÆ÷×´Ì¬;	
-	bool isTryDone(){return m_machineStat.bTryDone;}									//¼ì²éÊÇ·ñ¹ıÁËÊÔÓÃÆÚ;
+	int checkProbation();									//æ£€æŸ¥ä½¿ç”¨å‰©ä½™æ—¶é—´;
+	quint32 getTime(MachineTime time);						//è·å–æ—¶é—´;
+	void clearTime(MachineTime time);						//æ¸…é™¤æ—¶é—´;
+	bool activeMachine(quint64 activeNum, bool bActive = true);						//é€šè¿‡æ¿€æ´»ç æ¿€æ´»æœºå™¨çŠ¶æ€;	
+	bool isTryDone(){return m_machineStat.bTryDone;}									//æ£€æŸ¥æ˜¯å¦è¿‡äº†è¯•ç”¨æœŸ;
 
-	void enableUpdateFlow();																//¸üĞÂÁ÷ËÙµç»úÊ¹ÄÜ;
-	void disableUpdateFlow();																//¸üĞÂÁ÷ËÙµç»ú³ıÄÜ;
-	void updateFlow(double flow, MachineStat::FlowCtrlMode eFlowMod);						//¸üĞÂÁ÷ËÙ(Á÷ËÙ£¬Á÷ËÙ¿ØÖÆÄ£Ê½);
-	void updateFlowPercent(quint32 percent, MachineStat::FlowCtrlMode eFlowMod);			//Á÷ËÙ¸üĞÂ;
+	void enableUpdateFlow();																//æ›´æ–°æµé€Ÿç”µæœºä½¿èƒ½;
+	void disableUpdateFlow();																//æ›´æ–°æµé€Ÿç”µæœºé™¤èƒ½;
+	void updateFlow(double flow, MachineStat::FlowCtrlMode eFlowMod);						//æ›´æ–°æµé€Ÿ(æµé€Ÿï¼Œæµé€Ÿæ§åˆ¶æ¨¡å¼);
+	void updateFlowPercent(quint32 percent, MachineStat::FlowCtrlMode eFlowMod);			//æµé€Ÿæ›´æ–°;
 	void updateFlowPercent(double percent);
-	float GetWordFactor();									//¶ÁÈ¡ÅäÖÃÁ÷ËÙ;
-	void clearPress();										//Ñ¹Á¦ÇåÁã;
-	void syncTime(quint32 time);							//ÉÏÎ»»úÊ±¼äÍ¬²½;
+	float GetWordFactor();									//è¯»å–é…ç½®æµé€Ÿ;
+	void clearPress();										//å‹åŠ›æ¸…é›¶;
+	void syncTime(quint32 time);							//ä¸Šä½æœºæ—¶é—´åŒæ­¥;
 	
-	void uploadPresVal();									//ÉÏ´«Ñ¹Á¦µ½ÉÏÎ»»ú;
+	void uploadPresVal();									//ä¸Šä¼ å‹åŠ›åˆ°ä¸Šä½æœº;
 	/*********************************20160615*************************/
-	void setUploadPressFreq_Clarity(int freq);				//ÉèÖÃÉÏ´«Ñ¹Á¦ÆµÂÊ;
+	void setUploadPressFreq_Clarity(int freq);				//è®¾ç½®ä¸Šä¼ å‹åŠ›é¢‘ç‡;
 	/*****************************************************************/
-	//void updatePresVal(uint32 disp);						//¸üĞÂÑ¹Á¦Öµ;
+	//void updatePresVal(uint32 disp);						//æ›´æ–°å‹åŠ›å€¼;
 	
 	MachineStatment getCurrentStat(){
 		return m_machineStat.machineStat;
-	}														//»ñÈ¡µ±Ç°»úÆ÷×´Ì¬;
+	}														//è·å–å½“å‰æœºå™¨çŠ¶æ€;
 	void restoreOldStat(){
-		m_machineStat.machineStat = m_machineStat.oldMachineStat;//ÕÅ½Ü»ªÌí¼Ó@2016-06-25
+		m_machineStat.machineStat = m_machineStat.oldMachineStat;//å¼ æ°åæ·»åŠ @2016-06-25
 		setMachineStat(m_machineStat.oldMachineStat);
-	};	//»Ö¸´ÉÏÒ»×´Ì¬;
+	};	//æ¢å¤ä¸Šä¸€çŠ¶æ€;
 
 	void initMACAddr();
-	void initIPAddr();//³õÊ¼»¯ipµØÖ·;
-	void setNetWorkConfig(MachineStat::E_IPConfig eConfig);//ÅäÖÃ±¾µØºÍÔ¶³ÌIP/PORT
-	quint32 getMaxFlow();//»ñÈ¡Á÷ËÙ×î´óÖµ;
-	quint32 getMaxPress();//»ñÈ¡Á÷ËÙ×î´óÖµ;
+	void initIPAddr();//åˆå§‹åŒ–ipåœ°å€;
+	void setNetWorkConfig(MachineStat::E_IPConfig eConfig);//é…ç½®æœ¬åœ°å’Œè¿œç¨‹IP/PORT
+	quint32 getMaxFlow();//è·å–æµé€Ÿæœ€å¤§å€¼;
+	quint32 getMaxPress();//è·å–æµé€Ÿæœ€å¤§å€¼;
 
 	FlowCtrl *getFlowCtrl();
 
-	void pumpTypeChanged(bool flag = false);//±ÃĞÍ·¢Éú¸Ä±ä;
-	int getPumpType();	//»ñÈ¡µ±Ç°±ÃÀàĞÍ;
+	void pumpTypeChanged(bool flag = false);//æ³µå‹å‘ç”Ÿæ”¹å˜;
+	int getPumpType();	//è·å–å½“å‰æ³µç±»å‹;
 
-	void updateSerialId(quint32 id);						//¸üĞÂĞòÁĞºÅµÄËæ»úID;
+	void updateSerialId(quint32 id);						//æ›´æ–°åºåˆ—å·çš„éšæœºID;
 
-	void isUpdateFlowFromPC();								//ÅĞ¶ÏÊÇ·ñ¸Õ´ÓPC¸üĞÂÁËÁ÷ËÙ,ÊÇÔò¸üĞÂÏÔÊ¾;
+	void isUpdateFlowFromPC();								//åˆ¤æ–­æ˜¯å¦åˆšä»PCæ›´æ–°äº†æµé€Ÿ,æ˜¯åˆ™æ›´æ–°æ˜¾ç¤º;
 
-	/*0XXXXX ±íÊ¾±Ã´¦ÔÚÍ£Ö¹×´Ì¬£¬ÇÒXXXXXÎª±ÃÔËĞĞµ±Ç°Éè¶¨Á÷ËÙ¡£
-	1XXXXX ±íÊ¾±Ã´¦ÔÚÔËĞĞ×´Ì¬£¬ÇÒXXXXXÎª±ÃÔËĞĞµ±Ç°Éè¶¨Á÷ËÙ¡£
-	Á÷ËÙÊı¾İ¸ñÊ½Îª¹Ì¶¨ÈıÎ»Ğ¡Êı£¬µ¥Î»Îªml/min¡£*/
-	quint32 pcGetMachineStat();								//»ñÈ¡×´Ì¬1; 
+	/*0XXXXX è¡¨ç¤ºæ³µå¤„åœ¨åœæ­¢çŠ¶æ€ï¼Œä¸”XXXXXä¸ºæ³µè¿è¡Œå½“å‰è®¾å®šæµé€Ÿã€‚
+	1XXXXX è¡¨ç¤ºæ³µå¤„åœ¨è¿è¡ŒçŠ¶æ€ï¼Œä¸”XXXXXä¸ºæ³µè¿è¡Œå½“å‰è®¾å®šæµé€Ÿã€‚
+	æµé€Ÿæ•°æ®æ ¼å¼ä¸ºå›ºå®šä¸‰ä½å°æ•°ï¼Œå•ä½ä¸ºml/minã€‚*/
+	quint32 pcGetMachineStat();								//è·å–çŠ¶æ€1; 
 	
-	//·µ»ØÉè±¸Âë£¬²»Í¬±ÃĞÍ¶ÔÓ¦²»Í¬Éè±¸Âë;
+	//è¿”å›è®¾å¤‡ç ï¼Œä¸åŒæ³µå‹å¯¹åº”ä¸åŒè®¾å¤‡ç ;
 	quint32 getMachineCode();
-	//ÉèÖÃÉè±¸Âë;
+	//è®¾ç½®è®¾å¤‡ç ;
 	void updateMachineCode();
 
-	void updateWarning();			//¸üĞÂ±¨¾¯;//Îâ½ÜÄÜÌí¼Ó@2016-06-18£¬½«Õâ¸öË½ÓĞ·½·¨¸ÄÎª¹«ÓĞ
+	void updateWarning();			//æ›´æ–°æŠ¥è­¦;//å´æ°èƒ½æ·»åŠ @2016-06-18ï¼Œå°†è¿™ä¸ªç§æœ‰æ–¹æ³•æ”¹ä¸ºå…¬æœ‰
 
-	void syncFlowFromPc();			//½«PCÉèÖÃµÄÁ÷ËÙÍ¬²½µ½MCU;//wjfÌí¼Ó@2016-06-22,´ÓË½ÓĞ¸Ä¹«ÓĞ;
+	void syncFlowFromPc();			//å°†PCè®¾ç½®çš„æµé€ŸåŒæ­¥åˆ°MCU;//wjfæ·»åŠ @2016-06-22,ä»ç§æœ‰æ”¹å…¬æœ‰;
 
-	//»ñÈ¡µ±Ç°»úÆ÷µÄÔËĞĞ×´Ì¬;
-	MachineStatment getMachineStat();//ÕÅ½Ü»ªÌí¼Ó@2016-07-15,´ÓË½ÓĞ¸Ä¹«ÓĞ;
+	//è·å–å½“å‰æœºå™¨çš„è¿è¡ŒçŠ¶æ€;
+	MachineStatment getMachineStat();//å¼ æ°åæ·»åŠ @2016-07-15,ä»ç§æœ‰æ”¹å…¬æœ‰;
 
 	bool pwdOK;
 	bool pwdNeed;
 	USRTYPE usrType;
-	int whichPage;  //Èç¹ûÃÜÂëÕıÈ·½«Ìøµ½µÄÒ³Ãæ
+	int whichPage;  //å¦‚æœå¯†ç æ­£ç¡®å°†è·³åˆ°çš„é¡µé¢
 
 	bool noRTCBattery;
 private:
@@ -186,133 +186,133 @@ private:
 	/*********************************20160615*************************/
 	QTimer *m_pUploadTimer;
 	/*********************************************************************/
-	struct MachineRunningStat m_machineStat;				//»úÆ÷×´Ì¬;
+	struct MachineRunningStat m_machineStat;				//æœºå™¨çŠ¶æ€;
 	DataBase *pDb;
-	CommunicationCoupling *m_pCommunicationCoupling;		//Í¨Ñ¶½ººÏ²ã;
-	FlowCtrl *m_pFlowCtrl;									//Á÷ËÙ¿ØÖÆ;
-	quint32 m_nCurrentPressRawCode;							//¼ÇÂ¼×îĞÂ´Ó·Ö¿ØMCUÖĞÊÕµ½µÄÑ¹Á¦×Ö;
-	QString m_sCurrentPressVal;								//¼ÇÂ¼×îĞÂµÄÑ¹Á¦Öµ£¬¾­¹ı²¹³¥¸÷ÖÖ´¦Àí;
-	double m_dCurrentflowValInPc;							//¼ÇÂ¼PCÉèÖÃµÄ×îĞÂÁ÷ËÙÖµ;
-	quint32 m_nCurrentPercent;								//¼ÇÂ¼PCÉèÖÃµÄ×îĞÂ°Ù·Ö±È;
-	double m_dFlowPercent;									//Á÷ËÙ°Ù·Ö±È£¨µ¥»ú£©;
-	//double m_dPumpOrPurgeFlowVal;							//¼ÇÂ¼ÓÃÓÚPUMPºÍPURGE×´Ì¬µÄÁ÷ËÙÖµ;
-	QList<LPTimeOutStruct> m_timeoutList;					//¶¨Ê±ÈÎÎñÁĞ±í;
-	QList<int>warningList;									//±¨¾¯¶ÓÁĞ;
-//Á÷ËÙÏà¹Ø;
-	//Ìİ¶È±íºÍĞ£Õı±íµÄÉú³É;
-	bool m_bPcGradientCtrl;									//ÉÏÎ»»úÌİ¶È¿ØÖÆ±êÖ¾Î»;
-	quint8 m_nPcGradientCtrlFlag;							//ÉÏÎ»»úÌİ¶È¿ØÖÆ¼ÆÊ±£¬Èç¹û³¬Ê±Ã»ÓĞÊÕµ½ÉÏÎ»»úµÄÍ¬²½Ê±¼äÃüÁîÔòÍ£Ö¹ÔËĞĞ;
-	quint32 m_nFlowCtrlWord;								//Á÷ËÙ¿ØÖÆ×Ö;
+	CommunicationCoupling *m_pCommunicationCoupling;		//é€šè®¯èƒ¶åˆå±‚;
+	FlowCtrl *m_pFlowCtrl;									//æµé€Ÿæ§åˆ¶;
+	quint32 m_nCurrentPressRawCode;							//è®°å½•æœ€æ–°ä»åˆ†æ§MCUä¸­æ”¶åˆ°çš„å‹åŠ›å­—;
+	QString m_sCurrentPressVal;								//è®°å½•æœ€æ–°çš„å‹åŠ›å€¼ï¼Œç»è¿‡è¡¥å¿å„ç§å¤„ç†;
+	double m_dCurrentflowValInPc;							//è®°å½•PCè®¾ç½®çš„æœ€æ–°æµé€Ÿå€¼;
+	quint32 m_nCurrentPercent;								//è®°å½•PCè®¾ç½®çš„æœ€æ–°ç™¾åˆ†æ¯”;
+	double m_dFlowPercent;									//æµé€Ÿç™¾åˆ†æ¯”ï¼ˆå•æœºï¼‰;
+	//double m_dPumpOrPurgeFlowVal;							//è®°å½•ç”¨äºPUMPå’ŒPURGEçŠ¶æ€çš„æµé€Ÿå€¼;
+	QList<LPTimeOutStruct> m_timeoutList;					//å®šæ—¶ä»»åŠ¡åˆ—è¡¨;
+	QList<int>warningList;									//æŠ¥è­¦é˜Ÿåˆ—;
+//æµé€Ÿç›¸å…³;
+	//æ¢¯åº¦è¡¨å’Œæ ¡æ­£è¡¨çš„ç”Ÿæˆ;
+	bool m_bPcGradientCtrl;									//ä¸Šä½æœºæ¢¯åº¦æ§åˆ¶æ ‡å¿—ä½;
+	quint8 m_nPcGradientCtrlFlag;							//ä¸Šä½æœºæ¢¯åº¦æ§åˆ¶è®¡æ—¶ï¼Œå¦‚æœè¶…æ—¶æ²¡æœ‰æ”¶åˆ°ä¸Šä½æœºçš„åŒæ­¥æ—¶é—´å‘½ä»¤åˆ™åœæ­¢è¿è¡Œ;
+	quint32 m_nFlowCtrlWord;								//æµé€Ÿæ§åˆ¶å­—;
 	
-	//Í¹ÂÖ²¹³¥;
+	//å‡¸è½®è¡¥å¿;
 	QTime bugleTime;
 	bool m_bBugleFlag;
 
-	//Ñ¹Á¦Ïà¹Ø;
-	QList<double>pressList;									//Ñ¹Á¦Êı¾İ³Ø;
+	//å‹åŠ›ç›¸å…³;
+	QList<double>pressList;									//å‹åŠ›æ•°æ®æ± ;
 
 //methods:
-//³õÊ¼»¯;
+//åˆå§‹åŒ–;
 	void initDb();	
 	void initIO();
 	void initTimer();
 	void initMachineStat();
 	void initFlowCtrl();
-	void initLogicThread();									//³õÊ¼»¯ºóÌ¨Í¨Ñ¶´¦ÀíÏß³Ì;
-	void initTimeoutList();									//³õÊ¼»¯¶¨Ê±Æ÷ÁĞ±í;
-	void initCommunication();								//Í¨Ñ¶³õÊ¼»¯;
-//ÊÍ·Å;
-	void releaseTimeoutList();								//ÊÍ·Å¶¨Ê±Æ÷ÁĞ±í;
-//»úÆ÷×´Ì¬¿ØÖÆ;
+	void initLogicThread();									//åˆå§‹åŒ–åå°é€šè®¯å¤„ç†çº¿ç¨‹;
+	void initTimeoutList();									//åˆå§‹åŒ–å®šæ—¶å™¨åˆ—è¡¨;
+	void initCommunication();								//é€šè®¯åˆå§‹åŒ–;
+//é‡Šæ”¾;
+	void releaseTimeoutList();								//é‡Šæ”¾å®šæ—¶å™¨åˆ—è¡¨;
+//æœºå™¨çŠ¶æ€æ§åˆ¶;
 	void storeOldStat(MachineStatment stat);
-	void stopMachine();			//Í£Ö¹»úÆ÷;
-	void pauseMachine();		//ÔİÍ£»úÆ÷;
-	void startMachine();		//¿ªÊ¼ÔËĞĞ;
-	void pumpMachine();			//±ÃÒº;
-	void purgeMachine();		//ÇåÏ´;
-	void pcCtrlMachine();		//ÉÏÎ»»ú¿ØÖÆ;
-//Ê±¼äÏà¹Ø;
+	void stopMachine();			//åœæ­¢æœºå™¨;
+	void pauseMachine();		//æš‚åœæœºå™¨;
+	void startMachine();		//å¼€å§‹è¿è¡Œ;
+	void pumpMachine();			//æ³µæ¶²;
+	void purgeMachine();		//æ¸…æ´—;
+	void pcCtrlMachine();		//ä¸Šä½æœºæ§åˆ¶;
+//æ—¶é—´ç›¸å…³;
 	void setStartupTime(quint32 time);
-	inline void clearStartupTime();	//×´Ì¬ÇĞ»»Ê±ºòÇå³ıÔËĞĞÊ±¼ä;
+	inline void clearStartupTime();	//çŠ¶æ€åˆ‡æ¢æ—¶å€™æ¸…é™¤è¿è¡Œæ—¶é—´;
 	void clearUsedTime();
-	void clearBugleCnt();//ÇåË¨ÈûÊ¹ÓÃ´ÎÊı
+	void clearBugleCnt();//æ¸…æ “å¡ä½¿ç”¨æ¬¡æ•°
 	void clearStartupUsedTime(){m_machineStat.startupTime = 0;}
-	uint getUsedTime();											//»ñÈ¡ÏµÍ³Ê¹ÓÃÊ±¼ä;
-	void saveUsedTime();			//Ê¹ÓÃÊ±¼ä¼ÇÂ¼±£´æ;
+	uint getUsedTime();											//è·å–ç³»ç»Ÿä½¿ç”¨æ—¶é—´;
+	void saveUsedTime();			//ä½¿ç”¨æ—¶é—´è®°å½•ä¿å­˜;
 	void registerTimeoutFunc(const quint32 time, pTimeoutFunc pFunc);
-	void saveDataBase(){pDb->saveDb();}						//±£´æÊı¾İ¿â;
-	void checkTryOut();										//¼ì²éÊÔÓÃÆÚÊÇ·ñ³¬Ê±;
-	void checkFlowCtrlByPc();								//¼ì²éÉÏÎ»»úÌİ¶È¿ØÖÆ;
-	void updateStartupTime();								//¸üĞÂÆô¶¯Ê±¼ä;
+	void saveDataBase(){pDb->saveDb();}						//ä¿å­˜æ•°æ®åº“;
+	void checkTryOut();										//æ£€æŸ¥è¯•ç”¨æœŸæ˜¯å¦è¶…æ—¶;
+	void checkFlowCtrlByPc();								//æ£€æŸ¥ä¸Šä½æœºæ¢¯åº¦æ§åˆ¶;
+	void updateStartupTime();								//æ›´æ–°å¯åŠ¨æ—¶é—´;
 
-	quint64 generateActiveCode(quint64 sertialNum, quint8 which);					//Éú³É¼¤»îÂë;
+	quint64 generateActiveCode(quint64 sertialNum, quint8 which);					//ç”Ÿæˆæ¿€æ´»ç ;
 
-//Á÷ËÙ¿ØÖÆ;
-	bool checkFlowOverLoaded(double flow);							//¼ì²âÁ÷ËÙÊÇ·ñ³¬×î´óÖµ£¬³¬ÔòÍ£»ú²¢¾¯¸æ;
-	void syncFlowToMachine();							//¸üĞÂÌİ¶ÈÁ÷ËÙµ½·Ö¿Ø;
-	quint32 updateFlowByGradientList(quint32 time);		//¸ù¾İ¶ÔÓ¦µÄÊ±¼äÖµ£¬²é±í»ñµÃÁ÷Á¿;
-	quint32 compensationForFlow(double flow);			//¸ù¾İÁ÷Á¿²¹³¥±í½øĞĞÁ÷Á¿²¹³¥;
-	double compensationForFlowSecondary(double flow);	//Í¹ÂÖ²¹³¥Á÷ËÙ;
+//æµé€Ÿæ§åˆ¶;
+	bool checkFlowOverLoaded(double flow);							//æ£€æµ‹æµé€Ÿæ˜¯å¦è¶…æœ€å¤§å€¼ï¼Œè¶…åˆ™åœæœºå¹¶è­¦å‘Š;
+	void syncFlowToMachine();							//æ›´æ–°æ¢¯åº¦æµé€Ÿåˆ°åˆ†æ§;
+	quint32 updateFlowByGradientList(quint32 time);		//æ ¹æ®å¯¹åº”çš„æ—¶é—´å€¼ï¼ŒæŸ¥è¡¨è·å¾—æµé‡;
+	quint32 compensationForFlow(double flow);			//æ ¹æ®æµé‡è¡¥å¿è¡¨è¿›è¡Œæµé‡è¡¥å¿;
+	double compensationForFlowSecondary(double flow);	//å‡¸è½®è¡¥å¿æµé€Ÿ;
 
-    //»ñÈ¡Ìİ¶È±íµÄµ×nĞĞÁ÷ËÙ;
+    //è·å–æ¢¯åº¦è¡¨çš„åº•nè¡Œæµé€Ÿ;
     double getGradientTableFlow(quint32 nWhich, quint32 nRow = 0);
 
-	//Á÷ËÙ°Ù·Ö±ÈµÄ¸üĞÂ;
-	void updateFlowPercentInPcMode(quint32 add, bool manual = false);					//PCÄ£Ê½ÏÂµÄ°Ù·Ö±È¸üĞÂ;
-	void updateFlowPercentLocal(quint32 add);							//·ÇPCÄ£Ê½ÏÂµÄ°Ù·Ö±È¸üĞÂ;
+	//æµé€Ÿç™¾åˆ†æ¯”çš„æ›´æ–°;
+	void updateFlowPercentInPcMode(quint32 add, bool manual = false);					//PCæ¨¡å¼ä¸‹çš„ç™¾åˆ†æ¯”æ›´æ–°;
+	void updateFlowPercentLocal(quint32 add);							//éPCæ¨¡å¼ä¸‹çš„ç™¾åˆ†æ¯”æ›´æ–°;
 
-	//²»Í¬Ä£Ê½ÏÂµÄÁ÷ËÙ¿ØÖÆ;
-	void updateFlowInPcMode(double flow);							//PCÄ£Ê½ÏÂµÄÁ÷ËÙ¿ØÖÆ;
-	void updateFlowInGradientMode(double flow);						//µ¥»úÌİ¶ÈÄ£Ê½ÏÂµÄÁ÷ËÙ¿ØÖÆ;
-	void updateFlowInPumpPurgeMode(double flow);					//µ¥»ú±Ã¡¢ÇåÏ´Ä£Ê½ÏÂµÄÁ÷ËÙ¿ØÖÆ;
-	void updateFlowInDebugMode(double flow);						//µ÷ÊÔÄ£Ê½ÏÂµÄÁ÷ËÙ¿ØÖÆ;
+	//ä¸åŒæ¨¡å¼ä¸‹çš„æµé€Ÿæ§åˆ¶;
+	void updateFlowInPcMode(double flow);							//PCæ¨¡å¼ä¸‹çš„æµé€Ÿæ§åˆ¶;
+	void updateFlowInGradientMode(double flow);						//å•æœºæ¢¯åº¦æ¨¡å¼ä¸‹çš„æµé€Ÿæ§åˆ¶;
+	void updateFlowInPumpPurgeMode(double flow);					//å•æœºæ³µã€æ¸…æ´—æ¨¡å¼ä¸‹çš„æµé€Ÿæ§åˆ¶;
+	void updateFlowInDebugMode(double flow);						//è°ƒè¯•æ¨¡å¼ä¸‹çš„æµé€Ÿæ§åˆ¶;
 
-	//void syncFlowFromPc();											//½«PCÉèÖÃµÄÁ÷ËÙÍ¬²½µ½MCU;
-	void syncFlowToMcu(double flow);								//½«Á÷ËÙ×ª³É³ÉMCU¿ØÖÆ×Ö£¬Í¨¹ı´®¿Ú·¢ËÍ¸øMCU;
+	//void syncFlowFromPc();											//å°†PCè®¾ç½®çš„æµé€ŸåŒæ­¥åˆ°MCU;
+	void syncFlowToMcu(double flow);								//å°†æµé€Ÿè½¬æˆæˆMCUæ§åˆ¶å­—ï¼Œé€šè¿‡ä¸²å£å‘é€ç»™MCU;
 	
 	
-//Ñ¹Á¦Ïà¹Ø;
-	double compensationForPress(uint32 arg);			//Ñ¹Á¦²¹³¥;
-	void checkPressOverloaded(double press);			//¼ì²éÑ¹Á¦ÊÇ·ñ³¬ÏŞ£¬³¬ÏŞÓ¦×öÏàÓ¦±£»¤´ëÊ©;
-	void initPressPoll();								//Ñ¹Á¦Êı¾İ³Ø³õÊ¼»¯;
-	double getAverageOfPress(double au);				//È¡Ñ¹Á¦Æ½¾ùÖµ;
+//å‹åŠ›ç›¸å…³;
+	double compensationForPress(uint32 arg);			//å‹åŠ›è¡¥å¿;
+	void checkPressOverloaded(double press);			//æ£€æŸ¥å‹åŠ›æ˜¯å¦è¶…é™ï¼Œè¶…é™åº”åšç›¸åº”ä¿æŠ¤æªæ–½;
+	void initPressPoll();								//å‹åŠ›æ•°æ®æ± åˆå§‹åŒ–;
+	double getAverageOfPress(double au);				//å–å‹åŠ›å¹³å‡å€¼;
 
-	//È¨ÏŞÏà¹Ø;
-	void serialNumberGenerate();								//Ëæ»úÉú³ÉĞòÁĞºÅ;
+	//æƒé™ç›¸å…³;
+	void serialNumberGenerate();								//éšæœºç”Ÿæˆåºåˆ—å·;
 	quint32 getTryDayFromActiveCode( quint64 activeNum, quint32 serialId );
-	//void updateWarning();									//¸üĞÂ±¨¾¯;
+	//void updateWarning();									//æ›´æ–°æŠ¥è­¦;
 
-	////»ñÈ¡µ±Ç°»úÆ÷µÄÔËĞĞ×´Ì¬;
+	////è·å–å½“å‰æœºå™¨çš„è¿è¡ŒçŠ¶æ€;
 	//MachineStatment getMachineStat();
 
 public slots:
-	void setMachineStat(MachineStatment stat,  bool recover= false);//ÇĞ»»»úÆ÷×´Ì¬;
-	void updatePresVal(quint32 disp);						//¸üĞÂÑ¹Á¦Öµ;
-	void dealBulge();									//´¦ÀíÍ¹ÂÖĞÅºÅ;
+	void setMachineStat(MachineStatment stat,  bool recover= false);//åˆ‡æ¢æœºå™¨çŠ¶æ€;
+	void updatePresVal(quint32 disp);						//æ›´æ–°å‹åŠ›å€¼;
+	void dealBulge();									//å¤„ç†å‡¸è½®ä¿¡å·;
 	void weepingWarn(bool flag);
 
 private slots:
 	void timeoutFunc();
-	void updateFlowCtrl(quint32 data);					//¸üĞÂÁ÷ËÙ¿ØÖÆ×Ö;
+	void updateFlowCtrl(quint32 data);					//æ›´æ–°æµé€Ÿæ§åˆ¶å­—;
 
 	void shutDownWarn();
 	
 	/*********************************20160615*************************/
-	//¶¨Ê±ÉÏ´«Ñ¹Á¦¶¨Ê±Æ÷ÖĞ¶Ï;
+	//å®šæ—¶ä¸Šä¼ å‹åŠ›å®šæ—¶å™¨ä¸­æ–­;
 	void uploadPressTimeout_Clarity();
 	/******************************************************************/
 
 signals:
-	void machineStatChanged(MachineStat::MachineStatment stat);		//»úÆ÷×´Ì¬±ä»¯;
-	void updatePressDisplay(QString, quint8);						//¸üĞÂÑ¹Á¦ÏÔÊ¾,µÚ¶ş¸ö²ÎÊıÎª¸½¼Ó²ÎÊı£¬¿ÉÒÔÖ¸Ê¾ÊÇ·ñ±¨¾¯
-	void updateFlowDisplay(QString );								//¸üĞÂÁ÷ËÙÏÔÊ¾;
-	void updateStartupTimeDisplay(quint32);							//¸üĞÂÔËĞĞÊ±¼äÏÔÊ¾;	
+	void machineStatChanged(MachineStat::MachineStatment stat);		//æœºå™¨çŠ¶æ€å˜åŒ–;
+	void updatePressDisplay(QString, quint8);						//æ›´æ–°å‹åŠ›æ˜¾ç¤º,ç¬¬äºŒä¸ªå‚æ•°ä¸ºé™„åŠ å‚æ•°ï¼Œå¯ä»¥æŒ‡ç¤ºæ˜¯å¦æŠ¥è­¦
+	void updateFlowDisplay(QString );								//æ›´æ–°æµé€Ÿæ˜¾ç¤º;
+	void updateStartupTimeDisplay(quint32);							//æ›´æ–°è¿è¡Œæ—¶é—´æ˜¾ç¤º;	
 
-	void updateBugleCnt(quint32 cnt);								//Ë¨ÈûÊ¹ÓÃ´ÎÊı¸üĞÂ;
+	void updateBugleCnt(quint32 cnt);								//æ “å¡ä½¿ç”¨æ¬¡æ•°æ›´æ–°;
 
 	void systemError(int num, QString str);
 
-	void updatePercentDisplay(QString);						//¸üĞÂ°Ù·Ö±ÈÏÔÊ¾ĞÅºÅ;
+	void updatePercentDisplay(QString);						//æ›´æ–°ç™¾åˆ†æ¯”æ˜¾ç¤ºä¿¡å·;
 };
 
 #endif // MACHINESTAT_H

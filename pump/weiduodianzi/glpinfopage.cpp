@@ -4,8 +4,8 @@
 #include <QApplication>
 #include <QKeyEvent>
 
-//#define TIME_UNIT_BASE 1//µ¥Î»ÊÇs£¬²âÊÔÓÃ;
-#define TIME_UNIT_BASE 3600//µ¥Î»Ð¡Ê±£¬ÕæÕýÓÃ;
+//#define TIME_UNIT_BASE 1//å•ä½æ˜¯sï¼Œæµ‹è¯•ç”¨;
+#define TIME_UNIT_BASE 3600//å•ä½å°æ—¶ï¼ŒçœŸæ­£ç”¨;
 
 static quint32 curPumpType;
 
@@ -33,11 +33,11 @@ void GlpInfoPage::initFocusList()
 
 	yList.append(ui.pumpMod);
 
-	ui.pumpMod->setVar(QString("pumptype"));//±ÃÀàÐÍ;
+	ui.pumpMod->setVar(QString("pumptype"));//æ³µç±»åž‹;
 
 	connect(ui.pumpMod, SIGNAL(currentIndexChanged(int)), this, SLOT(pumpChange(int)));
 
-    ////Ë¨Èû¸üÐÂ°ó¶¨;
+    ////æ “å¡žæ›´æ–°ç»‘å®š;
     connect(MachineStat::getInstance(), SIGNAL(updateBugleCnt(quint32)), this, SLOT(updateBugleDisp(quint32)) );
     ui.bltUsedLbl->setText(DataBase::getInstance()->queryData("bugleCnt"));
 
@@ -85,11 +85,11 @@ void GlpInfoPage::updateBugleDisp(quint32 cnt)
 	quint32 pumpType = DataBase::getInstance()->queryData("pumptype").toInt();
 	QList<double> pumpVolume;
 
-	//pumpVolume<<60.8057<<248.1608<<1<<1<<1<<1<<1; //µ¥Î»uL
+	//pumpVolume<<60.8057<<248.1608<<1<<1<<1<<1<<1; //å•ä½uL
 	//double totalFluid = pumpVolume.at(pumpType) * cnt/1000;
 
-	//pumpVolume<<0.0608057<<0.2481608<<1<<1<<1<<1<<1; //µ¥Î»uL
-	pumpVolume<<0.0608057<<0.2481608<<1<<1<<1<<1<<1<<1<<1<<1<<1; //µ¥Î»uL
+	//pumpVolume<<0.0608057<<0.2481608<<1<<1<<1<<1<<1; //å•ä½uL
+	pumpVolume<<0.0608057<<0.2481608<<1<<1<<1<<1<<1<<1<<1<<1<<1; //å•ä½uL
 	double totalFluid = pumpVolume.at(pumpType%11) * cnt;
     ui.bltUsedLbl->setText(QString::number(cnt));
 	ui.totalFluidLbl->setText(QString::number(totalFluid));
@@ -109,13 +109,13 @@ void GlpInfoPage::pumpChange(int pumpType)
 	MachineStat::getInstance()->pumpTypeChanged(true);
 	MachineStat::getInstance()->m_bPumpTypeChange = true;
 
-	//¸üÐÂ×î´ó×îÐ¡Ñ¹Á¦
+	//æ›´æ–°æœ€å¤§æœ€å°åŽ‹åŠ›
 	//int array[7]={42, 25 , 20, 20, 15, 10, 10};
 	int maxPressArray[11]={42, 25 , 20, 20, 20, 15, 15, 10, 10, 10, 10};
 	QString temp = QString::number(maxPressArray[pumpType]);
 	DataBase::getInstance()->updateDate("maxpress", temp);
 
-	//¸üÐÂ×îÐ¡Ñ¹Á¦
+	//æ›´æ–°æœ€å°åŽ‹åŠ›
 	int minPress = DataBase::getInstance()->queryData("minpress").toInt();
 	if(minPress > maxPressArray[pumpType])
 		minPress = 0;
@@ -140,7 +140,7 @@ bool GlpInfoPage::eventFilter(QObject *obj, QEvent *event)
 	return false;
 }
 
-#define YEAR_SECOND	(60¡Á60¡Á24¡Á365)
+#define YEAR_SECOND	(60*60*24*365)
 void GlpInfoPage::updateUsedTime()
 {
 	int totalSec = MachineStat::getInstance()->getTime(MachineStat::SYSTIME);

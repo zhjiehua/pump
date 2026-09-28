@@ -1,0 +1,10 @@
+# Legacy weiduodianzi sources are UTF-8 (converted from GB18030/GBK).
+root = true
+
+[*.{c,cpp,h,hpp,ui,pro,pri,ts,qrc,md,txt}]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+
+[resource.h]
+charset = utf-8

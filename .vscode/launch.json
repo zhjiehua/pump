@@ -1,0 +1,191 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run HMI",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/hmi/bin/pump",
+      "args": [],
+      "cwd": "${workspaceFolder}/hmi/bin",
+      "stopAtEntry": false,
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "preLaunchTask": "Build: HMI",
+      "environment": [
+        {
+          "name": "LD_LIBRARY_PATH",
+          "value": "/home/jiehua/qt/Qt5.14.2/5.14.2/gcc_64/lib:${env:LD_LIBRARY_PATH}"
+        },
+        {
+          "name": "QT_PLUGIN_PATH",
+          "value": "/home/jiehua/qt/Qt5.14.2/5.14.2/gcc_64/plugins"
+        },
+        {
+          "name": "PATH",
+          "value": "/home/jiehua/qt/Qt5.14.2/5.14.2/gcc_64/bin:${env:PATH}"
+        }
+      ],
+      "windows": {
+        "program": "${workspaceFolder}/hmi/bin/pump.exe",
+        "miDebuggerPath": "D:/Qt/Qt5.12.4/Tools/mingw730_32/bin/gdb.exe",
+        "environment": [
+          {
+            "name": "PATH",
+            "value": "${workspaceFolder}/hmi/bin;D:\\Qt\\Qt5.12.4\\5.12.4\\mingw73_32\\bin;D:\\Qt\\Qt5.12.4\\Tools\\mingw730_32\\bin;${env:PATH}"
+          },
+          {
+            "name": "QT_PLUGIN_PATH",
+            "value": "D:\\Qt\\Qt5.12.4\\5.12.4\\mingw73_32\\plugins"
+          }
+        ]
+      },
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    },
+    {
+      "name": "Run weiduodianzi",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/pump/weiduodianzi/bin/weiduodianzi",
+      "args": [],
+      "cwd": "${workspaceFolder}/pump/weiduodianzi/bin",
+      "stopAtEntry": false,
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "preLaunchTask": "Build: weiduodianzi",
+      "environment": [
+        {
+          "name": "LD_LIBRARY_PATH",
+          "value": "/home/jiehua/qt/Qt5.14.2/5.14.2/gcc_64/lib:${env:LD_LIBRARY_PATH}"
+        },
+        {
+          "name": "QT_PLUGIN_PATH",
+          "value": "/home/jiehua/qt/Qt5.14.2/5.14.2/gcc_64/plugins"
+        },
+        {
+          "name": "PATH",
+          "value": "/home/jiehua/qt/Qt5.14.2/5.14.2/gcc_64/bin:${env:PATH}"
+        }
+      ],
+      "windows": {
+        "program": "${workspaceFolder}/pump/weiduodianzi/bin/weiduodianzi.exe",
+        "miDebuggerPath": "D:/Qt/Qt5.12.4/Tools/mingw730_32/bin/gdb.exe",
+        "environment": [
+          {
+            "name": "PATH",
+            "value": "${workspaceFolder}/pump/weiduodianzi/bin;D:\\Qt\\Qt5.12.4\\5.12.4\\mingw73_32\\bin;D:\\Qt\\Qt5.12.4\\Tools\\mingw730_32\\bin;${env:PATH}"
+          },
+          {
+            "name": "QT_PLUGIN_PATH",
+            "value": "D:\\Qt\\Qt5.12.4\\5.12.4\\mingw73_32\\plugins"
+          }
+        ]
+      },
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    },
+    {
+      "name": "Run weiduodianzi (Qt4)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/pump/weiduodianzi/bin/weiduodianzi",
+      "args": [
+        "-graphicssystem",
+        "raster"
+      ],
+      "cwd": "${workspaceFolder}/pump/weiduodianzi/bin",
+      "stopAtEntry": false,
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "preLaunchTask": "Build: weiduodianzi (Qt4)",
+      "environment": [
+        {
+          "name": "PATH",
+          "value": "/home/jiehua/qt/Qt4.8.5/bin:${env:PATH}"
+        },
+        {
+          "name": "LD_LIBRARY_PATH",
+          "value": "/home/jiehua/qt/Qt4.8.5/lib:${env:LD_LIBRARY_PATH}"
+        },
+        {
+          "name": "QT_PLUGIN_PATH",
+          "value": "/home/jiehua/qt/Qt4.8.5/plugins"
+        },
+        {
+          "name": "QTDIR",
+          "value": "/home/jiehua/qt/Qt4.8.5"
+        },
+        {
+          "name": "QT_GRAPHICSSYSTEM",
+          "value": "raster"
+        }
+      ],
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    },
+    {
+      "name": "Run HMI (Qt4)",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/hmi/bin/pump",
+      "args": [
+        "-graphicssystem",
+        "raster"
+      ],
+      "cwd": "${workspaceFolder}/hmi/bin",
+      "stopAtEntry": false,
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "/usr/bin/gdb",
+      "preLaunchTask": "Build: HMI (Qt4)",
+      "environment": [
+        {
+          "name": "PATH",
+          "value": "/home/jiehua/qt/Qt4.8.5/bin:${env:PATH}"
+        },
+        {
+          "name": "LD_LIBRARY_PATH",
+          "value": "/home/jiehua/qt/Qt4.8.5/lib:${env:LD_LIBRARY_PATH}"
+        },
+        {
+          "name": "QT_PLUGIN_PATH",
+          "value": "/home/jiehua/qt/Qt4.8.5/plugins"
+        },
+        {
+          "name": "QTDIR",
+          "value": "/home/jiehua/qt/Qt4.8.5"
+        },
+        {
+          "name": "QT_GRAPHICSSYSTEM",
+          "value": "raster"
+        }
+      ],
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    }
+  ]
+}

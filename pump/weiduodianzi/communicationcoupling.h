@@ -15,28 +15,28 @@ public:
 	CommunicationCoupling(MachineStat *parent);
 	~CommunicationCoupling();
 
-	void sendMcuCmd(quint8, quint32, quint32);				//·¢ËÍMCUÃüÁî;
-	void sendCmd(quint8, quint32, quint32);					//·¢ËÍÉÏÎ»»úÃüÁî;
+	void sendMcuCmd(quint8, quint32, quint32);				//å‘é€MCUå‘½ä»¤;
+	void sendCmd(quint8, quint32, quint32);					//å‘é€ä¸Šä½æœºå‘½ä»¤;
 
-	void sendCmdClarity(quint32 hAI, quint32 hPFC, quint32 hVal);		//·¢ËÍÉÏÎ»»úÃüÁî(Clarity);
+	void sendCmdClarity(quint32 hAI, quint32 hPFC, quint32 hVal);		//å‘é€ä¸Šä½æœºå‘½ä»¤(Clarity);
 
-	void setPcProtocol(int idx);							//ÉèÖÃÉÏÎ»»úµÄÍ¨Ñ¶Ğ­Òé;
-	void setConnectPort(int idx);							//ÉèÖÃÉÏÎ»»úµÄÍ¨Ñ¶Ğ­Òé;
+	void setPcProtocol(int idx);							//è®¾ç½®ä¸Šä½æœºçš„é€šè®¯åè®®;
+	void setConnectPort(int idx);							//è®¾ç½®ä¸Šä½æœºçš„é€šè®¯åè®®;
 	void remoteIPChange();
 	void remotePortChange();
 	void localIPChange();
 	void localPortChange();
 
-	void setPumpTypeForPcFlowCtrl(int nPump);						//ÉèÖÃ±ÃĞÍ£¬±ÃĞÍ²»Í¬£¬ÉÏÎ»»ú¿ØÖÆÁ÷ËÙ¿ØÖÆ×Ö³¤¶È²»Í¬;
+	void setPumpTypeForPcFlowCtrl(int nPump);						//è®¾ç½®æ³µå‹ï¼Œæ³µå‹ä¸åŒï¼Œä¸Šä½æœºæ§åˆ¶æµé€Ÿæ§åˆ¶å­—é•¿åº¦ä¸åŒ;
 
 private:
-	Worker *m_pWorker;										//ºóÌ¨Âß¼­´¦Àí;
-	MachineStat *m_pMachine;								//»úÆ÷×´Ì¬;
+	Worker *m_pWorker;										//åå°é€»è¾‘å¤„ç†;
+	MachineStat *m_pMachine;								//æœºå™¨çŠ¶æ€;
 
-	void initCommunication();								//Í¨Ñ¶³õÊ¼»¯;
+	void initCommunication();								//é€šè®¯åˆå§‹åŒ–;
 
-	void sendClarityACK();									//·¢ËÍ»ØÓ¦ĞÅºÅ;
-	void sendClarityNAK();									//·¢ËÍ´íÎóĞÅºÅ;
+	void sendClarityACK();									//å‘é€å›åº”ä¿¡å·;
+	void sendClarityNAK();									//å‘é€é”™è¯¯ä¿¡å·;
 
 private slots:
 	void processCmd4Mcu(quint8 type, quint32 cmd, quint32 arg,quint32 add);
@@ -52,8 +52,8 @@ signals:
 
 	void cmdSendClarity(quint32, quint32, quint32);
 
-	void s_setPcProtocol(int idx);							//ÉèÖÃÉÏÎ»»úµÄÍ¨Ñ¶Ğ­Òé;
-	void s_setConnectPort(int idx);							//ÉèÖÃÉÏÎ»»úµÄÍ¨Ñ¶Ğ­Òé;
+	void s_setPcProtocol(int idx);							//è®¾ç½®ä¸Šä½æœºçš„é€šè®¯åè®®;
+	void s_setConnectPort(int idx);							//è®¾ç½®ä¸Šä½æœºçš„é€šè®¯åè®®;
 	void s_remoteIPChange();
 	void s_remotePortChange();
 	void s_localIPChange();

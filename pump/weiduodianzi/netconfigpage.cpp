@@ -61,7 +61,7 @@ void NetConfigPage::initFocusList()
     ui.remote_ipEdit4->setValRange("remote_ip4", 0, 255, 0);
     ui.remote_portEdit->setValRange("remote_port", 0, 999999, 0);
 
-    //�źŲ�;
+    //信号槽;
     connect(ui.ipEdit1, SIGNAL(dataChanging(QString)), this, SLOT(ipChanged()));
     connect(ui.ipEdit4, SIGNAL(dataChanging(QString)), this, SLOT(ipChanged()));
     connect(ui.ipEdit4, SIGNAL(dataChanging(QString)), this, SLOT(ipChanged()));

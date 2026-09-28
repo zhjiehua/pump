@@ -3,7 +3,7 @@
 
 #include <QDialog>
 
-//¼üÅÌ;
+//é”®ç›˜;
 
 namespace Ui {
 class KeyBoardDialog;

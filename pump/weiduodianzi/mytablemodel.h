@@ -22,8 +22,8 @@ public:
 	MyTableModel(QObject *parent, int nColumnCnt = 0, int nWhichTbl = 0);
 	~MyTableModel();
 
-	void readDataFromTable(int which);//´ÓÊı¾İ¿â¶ÁÈëÊı¾İ;
-	void updateDataToTable();//¸üĞÂÊı¾İµ½Êı¾İ¿â;
+	void readDataFromTable(int which);//ä»æ•°æ®åº“è¯»å…¥æ•°æ®;
+	void updateDataToTable();//æ›´æ–°æ•°æ®åˆ°æ•°æ®åº“;
 	QList<QStringList>& getTableData(){return tableData;}
 
 	void insertRow(int row, TableInsertMode mode = COPYLASTROW, const QStringList &data = QStringList());
@@ -34,11 +34,11 @@ public:
 	QStringList tempData;
 
 private:
-	int m_nColumnCnt;//±í¸ñÁĞÊı;
+	int m_nColumnCnt;//è¡¨æ ¼åˆ—æ•°;
 	int m_nWhichTable;
 	TableInsertMode m_insertMode;
 
-/*******************************±ØĞëÊµÏÖµÄĞéº¯Êı****************************************/
+/*******************************å¿…é¡»å®ç°çš„è™šå‡½æ•°****************************************/
 	QVariant data(const QModelIndex &index, int role) const;//!!!!
 	bool setData(const QModelIndex &index, const QVariant &value, int role);//!!!!
 	bool insertRows(int row, int count, const QModelIndex & parent = QModelIndex());//!!!!
@@ -46,7 +46,7 @@ private:
 	Qt::ItemFlags flags ( const QModelIndex & index ) const;
 	QVariant headerData ( int section, Qt::Orientation orientation, int role = Qt::DisplayRole )const;
 
-//ÁíÍâ·â×°µÄº¯Êı;
+//å¦å¤–å°è£…çš„å‡½æ•°;
 	void insertRowsWithCopyMode(int row, int count);
 	void insertRowsWithUsrMode(int row, int count);
 

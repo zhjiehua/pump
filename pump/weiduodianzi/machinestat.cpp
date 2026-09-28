@@ -11,20 +11,20 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-//ÉÏÎ»»úPCÌİ¶È¿ØÖÆ³¬Ê±Ê±¼ä5s£¬¸Ä2s
+//ä¸Šä½æœºPCæ¢¯åº¦æ§åˆ¶è¶…æ—¶æ—¶é—´5sï¼Œæ”¹2s
 #define  GRADIENTPCTIMEOUT 2
 
-//ÉÏÎ»»úÊ±¼äÍ¬²½µ¥Î»0.01min = 0.6s;
+//ä¸Šä½æœºæ—¶é—´åŒæ­¥å•ä½0.01min = 0.6s;
 #define SYNC_TIME_UNIT		0.6
 
-//Ñ¹Á¦Êı¾İ³Ø´óĞ¡;
+//å‹åŠ›æ•°æ®æ± å¤§å°;
 #define PRESS_POLL_SIZE		10
 
 #define SERIAL_MAX		9999999999
 #define SERIAL_NUM_KEY	19900208
 #define SERIAL_NUM_VAL	345192069
 
-//·Ç·¨³õÊ¼»¯Öµ;
+//éæ³•åˆå§‹åŒ–å€¼;
 #define FLOW_INVALID	99999999
 
 #define SERIAL_MAX		9999999999
@@ -38,14 +38,14 @@
 #include "baseMainPage.h"
 extern BaseMainPage *g_pMainWindow;
 
-//±¨¾¯;
+//æŠ¥è­¦;
 bool bWarn=false;
 double overFlow;
 double overPress;
-bool bOverPress = false;//Ñ¹Á¦±¨¾¯±êÖ¾
+bool bOverPress = false;//å‹åŠ›æŠ¥è­¦æ ‡å¿—
 
-bool bSyncOverPress = false; //ÕÅ½Ü»ªÌí¼Ó@2016-06-23£¬Í¬²½Ê±Ñ¹Á¦±¨¾¯
-bool bSyncFlag = false;//±íÊ¾ÕæÕıÍ¬²½
+bool bSyncOverPress = false; //å¼ æ°åæ·»åŠ @2016-06-23ï¼ŒåŒæ­¥æ—¶å‹åŠ›æŠ¥è­¦
+bool bSyncFlag = false;//è¡¨ç¤ºçœŸæ­£åŒæ­¥
 
 #ifdef __cplusplus
 
@@ -57,16 +57,16 @@ extern uint32 g_MachineCode;
 #endif
 /////////////////////////////////////////////////////////
 //
-//¹¦ÄÜ£ºÊ®½øÖÆ×ªBCDÂë
+//åŠŸèƒ½ï¼šåè¿›åˆ¶è½¬BCDç 
 //
-//ÊäÈë£ºint Dec                      ´ı×ª»»µÄÊ®½øÖÆÊı¾İ
-//      int length                   BCDÂëÊı¾İ³¤¶È
+//è¾“å…¥ï¼šint Dec                      å¾…è½¬æ¢çš„åè¿›åˆ¶æ•°æ®
+//      int length                   BCDç æ•°æ®é•¿åº¦
 //
-//Êä³ö£ºunsigned char *Bcd           ×ª»»ºóµÄBCDÂë
+//è¾“å‡ºï¼šunsigned char *Bcd           è½¬æ¢åçš„BCDç 
 //
-//·µ»Ø£º0  success
+//è¿”å›ï¼š0  success
 //
-//Ë¼Â·£ºÔ­ÀíÍ¬BCDÂë×ªÊ®½øÖÆ
+//æ€è·¯ï¼šåŸç†åŒBCDç è½¬åè¿›åˆ¶
 //
 //////////////////////////////////////////////////////////
 int DectoBCD(int Dec,int length)
@@ -86,7 +86,7 @@ int DectoBCD(int Dec,int length)
 
 MachineStat::MachineStat(QObject *parent)
 	: QObject(parent)
-	, m_dCurrentflowValInPc(0)//ÕÅ½Ü»ªĞŞ¸Ä@2016-06-25£¬½«-1¸Ä³É0
+	, m_dCurrentflowValInPc(0)//å¼ æ°åä¿®æ”¹@2016-06-25ï¼Œå°†-1æ”¹æˆ0
 	, m_dFlowPercent(0)
 	, m_nCurrentPressRawCode(0)
 	, m_sCurrentPressVal("0")
@@ -95,7 +95,7 @@ MachineStat::MachineStat(QObject *parent)
 	, m_bBugleFlag(false)
 	, m_nFlowCtrlWord(FLOW_INVALID)
 	, m_nCurrentPercent(100000)
-	,m_bCanClearOverPress(false)  //ÕÅ½Ü»ªÌí¼Ó@2016-06-23
+	,m_bCanClearOverPress(false)  //å¼ æ°åæ·»åŠ @2016-06-23
 	,m_bPumpTypeChange(false)
 	,pwdOK(false)
 	,pwdNeed(false)
@@ -134,71 +134,71 @@ void MachineStat::setMachineStat(MachineStatment stat, bool recover)
 	if(ISNOT_MACHINE_STAT(stat))
 		return;
 
-	if(!recover)//Èç¹û²»¸²¸ÇÖ®Ç°×´Ì¬;
+	if(!recover)//å¦‚æœä¸è¦†ç›–ä¹‹å‰çŠ¶æ€;
 	{
-		if(stat == m_machineStat.machineStat)			//¼ì²é×´Ì¬ÊÇ·ñ·¢Éú±ä»¯;
+		if(stat == m_machineStat.machineStat)			//æ£€æŸ¥çŠ¶æ€æ˜¯å¦å‘ç”Ÿå˜åŒ–;
 			return;
 
-		storeOldStat(stat);//±¸·İÏÈÇ°×´Ì¬;
+		storeOldStat(stat);//å¤‡ä»½å…ˆå‰çŠ¶æ€;
 		emit(machineStatChanged(stat));
 	}
 	
-	if(stat == STOP)//Í£Ö¹µç»ú×ª¶¯;
+	if(stat == STOP)//åœæ­¢ç”µæœºè½¬åŠ¨;
 	{
 		if(bOverPress)
 		{
 			bOverPress = false;
-			sysError(OVERPRESS_ERR, false);//È¡Ïû±¨¾¯;
+			sysError(OVERPRESS_ERR, false);//å–æ¶ˆæŠ¥è­¦;
 		}
 
 		stopMachine();
 	}
-	else if(stat == PAUSE)//ÔİÍ£;
+	else if(stat == PAUSE)//æš‚åœ;
 	{
 		if(bOverPress)
 		{
 			bOverPress = false;
-			sysError(OVERPRESS_ERR, false);//È¡Ïû±¨¾¯;
+			sysError(OVERPRESS_ERR, false);//å–æ¶ˆæŠ¥è­¦;
 		}
 
 		pauseMachine();
 	}
-	else if(stat == RUNNING)//ÔËĞĞ;
+	else if(stat == RUNNING)//è¿è¡Œ;
 	{
 		if(bOverPress)
 		{
 			bOverPress = false;
-			sysError(OVERPRESS_ERR, false);//È¡Ïû±¨¾¯;
+			sysError(OVERPRESS_ERR, false);//å–æ¶ˆæŠ¥è­¦;
 		}
 		
 		startMachine();
 	}
-	else if(stat == PUMP)//±ÃÒº;
+	else if(stat == PUMP)//æ³µæ¶²;
 	{
 		if(bOverPress)
 		{
 			bOverPress = false;
-			sysError(OVERPRESS_ERR, false);//È¡Ïû±¨¾¯;
+			sysError(OVERPRESS_ERR, false);//å–æ¶ˆæŠ¥è­¦;
 		}
 
 		pumpMachine();
 	}
-	else if(stat == PURGE)//ÇåÏ´;
+	else if(stat == PURGE)//æ¸…æ´—;
 	{
 		if(bOverPress)
 		{
 			bOverPress = false;
-			sysError(OVERPRESS_ERR, false);//È¡Ïû±¨¾¯;
+			sysError(OVERPRESS_ERR, false);//å–æ¶ˆæŠ¥è­¦;
 		}
 
 		purgeMachine();
 	}
-	else if(stat == PCCTRL)//ÉÏÎ»»úÁ÷ËÙ;
+	else if(stat == PCCTRL)//ä¸Šä½æœºæµé€Ÿ;
 	{
 		if(bOverPress)
 		{
 			bOverPress = false;
-			sysError(OVERPRESS_ERR, false);//È¡Ïû±¨¾¯;
+			sysError(OVERPRESS_ERR, false);//å–æ¶ˆæŠ¥è­¦;
 		}
 
 		pcCtrlMachine();
@@ -207,7 +207,7 @@ void MachineStat::setMachineStat(MachineStatment stat, bool recover)
 
 void MachineStat::timeoutFunc()
 {
-	//»úÆ÷´¦ÓÚÔËĞĞ¡¢±ÃÒº¡¢ÇåÏ´×´Ì¬;
+	//æœºå™¨å¤„äºè¿è¡Œã€æ³µæ¶²ã€æ¸…æ´—çŠ¶æ€;
 	for (QList<LPTimeOutStruct>::iterator it = m_timeoutList.begin(); it!=m_timeoutList.end(); it++)
 	{
 		LPTimeOutStruct pTimeout = *it;
@@ -238,7 +238,7 @@ void MachineStat::initTimer()
 	/*********************************20160615***********************************/
 	m_pUploadTimer = new QTimer(this);
 	connect(m_pUploadTimer, SIGNAL(timeout()), this, SLOT(uploadPressTimeout_Clarity()) );
-	//Èç¹ûµ±Ç°ÊÇclarityĞ­Òé£¬Ôò¿ªÆô×Ô¶¯Ñ¹Á¦ÉÏ´«¶¨Ê±Æ÷;
+	//å¦‚æœå½“å‰æ˜¯clarityåè®®ï¼Œåˆ™å¼€å¯è‡ªåŠ¨å‹åŠ›ä¸Šä¼ å®šæ—¶å™¨;
 	if(DataBase::getInstance()->queryData("pcProtocol").toInt() != 0)
 		setUploadPressFreq_Clarity(1);
 	/******************************************************************************/
@@ -246,12 +246,12 @@ void MachineStat::initTimer()
 
 void MachineStat::initMachineStat()
 {
-	m_machineStat.machineStat = STOP;											//¿ªÊ¼¡¢Í£Ö¹¡¢ÇåÏ´;
-	m_machineStat.oldMachineStat = INISTAT;									//¾ÉµÄ»úÆ÷×´Ì¬;
-	m_machineStat.startupTime = 0;											//¿ª»úÊ±¼ä
-	//m_machineStat.sysUsedTime = pDb->queryData("usedTime").toInt();			//ÏµÍ³ÀÛ¼ÆÊ±¼ä;
-	m_machineStat.pumpStartupTime = pDb->queryData("pumpUsedTime").toInt();	//±ÃÀÛ¼ÆÆôÓÃÊ±¼ä;
-	m_machineStat.bugleCnt = pDb->queryData("bugleCnt").toInt();			//Ë¨ÈûÊ¹ÓÃ´ÎÊı£¨Í¹ÂÖ¹âµç¿ª¹Ø£©
+	m_machineStat.machineStat = STOP;											//å¼€å§‹ã€åœæ­¢ã€æ¸…æ´—;
+	m_machineStat.oldMachineStat = INISTAT;									//æ—§çš„æœºå™¨çŠ¶æ€;
+	m_machineStat.startupTime = 0;											//å¼€æœºæ—¶é—´
+	//m_machineStat.sysUsedTime = pDb->queryData("usedTime").toInt();			//ç³»ç»Ÿç´¯è®¡æ—¶é—´;
+	m_machineStat.pumpStartupTime = pDb->queryData("pumpUsedTime").toInt();	//æ³µç´¯è®¡å¯ç”¨æ—¶é—´;
+	m_machineStat.bugleCnt = pDb->queryData("bugleCnt").toInt();			//æ “å¡ä½¿ç”¨æ¬¡æ•°ï¼ˆå‡¸è½®å…‰ç”µå¼€å…³ï¼‰
 	m_machineStat.bTryDone = false;
 
 	m_machineStat.m_bUpdateFlowFromPc = false;
@@ -259,24 +259,24 @@ void MachineStat::initMachineStat()
 	m_machineStat.m_dCurrentFlow = 0;
 	m_machineStat.m_bFixMode = false;
 
-	//¶ÁÈ¡ÊÔÓÃµÄµ±ÌìÈÕÆÚ;
-	//m_machineStat.m_firstTryDateTime = pDb->queryData("firstTryDateTime").toUInt();//¼ÇÂ¼¿ªÊ¼ÊÔÓÃµÄµ±ÌìÈÕÆÚÊ±¼ä;
+	//è¯»å–è¯•ç”¨çš„å½“å¤©æ—¥æœŸ;
+	//m_machineStat.m_firstTryDateTime = pDb->queryData("firstTryDateTime").toUInt();//è®°å½•å¼€å§‹è¯•ç”¨çš„å½“å¤©æ—¥æœŸæ—¶é—´;
 	//if(m_machineStat.m_firstTryDateTime == 0)
 	//{
 	//	clearUsedTime();
 	//}
-	m_machineStat.m_nSysUsedTime = pDb->queryData("usedTime").toInt();			//ÏµÍ³ÀÛ¼ÆÊ±¼ä;
+	m_machineStat.m_nSysUsedTime = pDb->queryData("usedTime").toInt();			//ç³»ç»Ÿç´¯è®¡æ—¶é—´;
 
 	pumpTypeChanged();
 
-	//Í¹ÂÖ²¹³¥;
+	//å‡¸è½®è¡¥å¿;
 	//connect(BugleCompensation::getInstance(), SIGNAL(outputUpdate(quint32)), this, SLOT(updateFlowCtrl(quint32)) );
 
 #ifdef linux
-	//! ¶ÁÈ¡rtcÊ±¼ä;
+	//! è¯»å–rtcæ—¶é—´;
 	time_t now = time(NULL);
 
-	//! ¶ÁÈ¡Êı¾İ¿â±êÖ¾;
+	//! è¯»å–æ•°æ®åº“æ ‡å¿—;
 	long last_time = DataBase::getInstance()->queryData("last_time").toLong();
 
 	qDebug() << "!!!!!!now = " << now;
@@ -284,14 +284,14 @@ void MachineStat::initMachineStat()
 
 	if(last_time == 0)
 	{
-		//Ğ´Èëlast_time;
+		//å†™å…¥last_time;
 		//DataBase::getInstance()->updateDate("last_time", QString::number(now));
 
 		qDebug() << "last_time == 0";
 	}
 	else
 	{
-		//! ±È½Ï;
+		//! æ¯”è¾ƒ;
 		if( now <= last_time )
 		{
 			//while(1)
@@ -312,7 +312,9 @@ void MachineStat::initMachineStat()
 	}
 
 	DataBase::getInstance()->updateDate("last_time", QString::number(now));
+	#if !defined(DESKTOP_HMI)
 	system(QString("hwclock -s").toLatin1().data());
+#endif
 #endif
 
 }
@@ -331,7 +333,7 @@ void MachineStat::clearTime(MachineTime time)
 
 void MachineStat::storeOldStat(MachineStatment stat)
 {
-	m_machineStat.oldMachineStat = m_machineStat.machineStat;//¼ÇÂ¼¾ÉµÄ»úÆ÷×´Ì¬;
+	m_machineStat.oldMachineStat = m_machineStat.machineStat;//è®°å½•æ—§çš„æœºå™¨çŠ¶æ€;
 	m_machineStat.machineStat = stat;
 }
 
@@ -340,17 +342,17 @@ void MachineStat::stopMachine()
 {
 	disableUpdateFlow();
 	
-	m_pCommunicationCoupling->sendMcuCmd(1,MCU_WAVEADD_MOTOR,0);//ÕÅ½Ü»ªµ÷ÊÔÆÁ±Î@2016-06-26
+	m_pCommunicationCoupling->sendMcuCmd(1,MCU_WAVEADD_MOTOR,0);//å¼ æ°åè°ƒè¯•å±è”½@2016-06-26
 	
 	setStartupTime(0);
 	BugleCompensation::getInstance()->stopOutput();
 
-	m_nFlowCtrlWord = FLOW_INVALID;//¸³ÖµÒ»¸ö·Ç·¨µÄÁ÷ËÙ¿ØÖÆ×Ö;
+	m_nFlowCtrlWord = FLOW_INVALID;//èµ‹å€¼ä¸€ä¸ªéæ³•çš„æµé€Ÿæ§åˆ¶å­—;
 
-	//»Ö¸´PUMP»òPURGEµÄÁ÷ËÙÏÔÊ¾;
+	//æ¢å¤PUMPæˆ–PURGEçš„æµé€Ÿæ˜¾ç¤º;
 	emit(updateFlowDisplay(DataBase::getInstance()->queryData("pumpPurgeFlowVal")));
 
-	m_machineStat.m_dCurrentFlow = 0;//ÕÅ½Ü»ªÌí¼Ó@2016-07-15
+	m_machineStat.m_dCurrentFlow = 0;//å¼ æ°åæ·»åŠ @2016-07-15
 	m_dCurrentflowValInPc = 0; 
 	m_nCurrentPercent = 100;
 	emit(updatePercentDisplay("100")); 
@@ -358,7 +360,7 @@ void MachineStat::stopMachine()
 
 void MachineStat::pauseMachine()
 {
-	//disableUpdateFlow();//ÕÅ½Ü»ªÆÁ±Î@2016-06-25£¬ÔİÍ£Ê±£¬±ÃÒÔºã¶¨ËÙ¶ÈÔËĞĞ
+	//disableUpdateFlow();//å¼ æ°åå±è”½@2016-06-25ï¼Œæš‚åœæ—¶ï¼Œæ³µä»¥æ’å®šé€Ÿåº¦è¿è¡Œ
 	BugleCompensation::getInstance()->pauseOutput();
 }
 
@@ -367,13 +369,13 @@ void MachineStat::startMachine()
 	enableUpdateFlow();
 	int which = pDb->queryData("gradientTable").toInt();
 	if(which != 12)
-		pDb->readGradientTableIntoList(which);			//¶ÁÈ¡Ìİ¶È±í¸ñµ½ÄÚ´æ;
+		pDb->readGradientTableIntoList(which);			//è¯»å–æ¢¯åº¦è¡¨æ ¼åˆ°å†…å­˜;
 	clearStartupTime();
 
 	//if( m_machineStat.oldMachineStat == PAUSE )
 	//	BugleCompensation::getInstance()->waitOutputStable();
 
-	sysError(OVERPRESS_ERR, false);//È¡Ïû±¨¾¯;
+	sysError(OVERPRESS_ERR, false);//å–æ¶ˆæŠ¥è­¦;
 }
 
 void MachineStat::pumpMachine()
@@ -387,7 +389,7 @@ void MachineStat::pumpMachine()
 	updateFlow(flow, PUMP_PURGE_MODE);
 	clearStartupTime();
 
-	//ÕÅ½Ü»ªÆÁ±Î@2016-06-28
+	//å¼ æ°åå±è”½@2016-06-28
 	//if( m_machineStat.oldMachineStat == PAUSE )
 	//	BugleCompensation::getInstance()->waitOutputStable();
 
@@ -397,7 +399,7 @@ void MachineStat::pumpMachine()
 
 void MachineStat::clearStartupTime()
 {
-	if(m_machineStat.oldMachineStat != PAUSE)//Èç¹ûÖ®Ç°²»ÊÇÔİÍ£×´Ì¬£¬ÇåÁã;
+	if(m_machineStat.oldMachineStat != PAUSE)//å¦‚æœä¹‹å‰ä¸æ˜¯æš‚åœçŠ¶æ€ï¼Œæ¸…é›¶;
 		setStartupTime(0);
 }
 
@@ -406,32 +408,32 @@ void MachineStat::purgeMachine()
 	enableUpdateFlow();
 	//DataBase::getInstance()->readGradientTableIntoList(11);
 	double flow = DataBase::getInstance()->queryData("pumpPurgeFlowVal").toDouble();
-	if(!m_machineStat.m_bUpdateFlowFromPc)//ÕÅ½Ü»ªÌí¼Ó@2016-06-25
+	if(!m_machineStat.m_bUpdateFlowFromPc)//å¼ æ°åæ·»åŠ @2016-06-25
 	{
 		updateFlow(flow, PUMP_PURGE_MODE);
 
-		//»Ö¸´PUMP»òPURGEµÄÁ÷ËÙÏÔÊ¾;
+		//æ¢å¤PUMPæˆ–PURGEçš„æµé€Ÿæ˜¾ç¤º;
 		emit(updateFlowDisplay(DataBase::getInstance()->queryData("pumpPurgeFlowVal")));
 	}
 	clearStartupTime();
 
-	//if( m_machineStat.oldMachineStat == PAUSE ) //ÕÅ½Ü»ªÆÁ±Î@2016-06-25
+	//if( m_machineStat.oldMachineStat == PAUSE ) //å¼ æ°åå±è”½@2016-06-25
 	//	BugleCompensation::getInstance()->waitOutputStable();
 }
 
-//! modified by wjf@2016-06-22 ¼ò»¯½øÈëPCÄ£Ê½µÄ¹¤×÷
+//! modified by wjf@2016-06-22 ç®€åŒ–è¿›å…¥PCæ¨¡å¼çš„å·¥ä½œ
 void MachineStat::pcCtrlMachine()
 {
 #if 0
-	//ÆÁ±ÎÉÏÎ»»úÊ±¼äÍ¬²½
-	//ÅĞ¶ÏÊÇÆÕÍ¨Á÷ËÙ¿ØÖÆ»¹ÊÇÉÏÎ»»úÌİ¶È¿ØÖÆ;
+	//å±è”½ä¸Šä½æœºæ—¶é—´åŒæ­¥
+	//åˆ¤æ–­æ˜¯æ™®é€šæµé€Ÿæ§åˆ¶è¿˜æ˜¯ä¸Šä½æœºæ¢¯åº¦æ§åˆ¶;
 
 	m_nPcGradientCtrlFlag = 0;
 	if(m_dCurrentflowValInPc == 0)
 	{
-		m_bPcGradientCtrl = true;//PC¿ØÖÆ;
+		m_bPcGradientCtrl = true;//PCæ§åˆ¶;
 	}
-	else//ÆÕÍ¨Á÷ËÙ¿ØÖÆ;
+	else//æ™®é€šæµé€Ÿæ§åˆ¶;
 		syncFlowFromPc();
 
 	syncFlowFromPc();
@@ -444,7 +446,7 @@ void MachineStat::pcCtrlMachine()
 	pDb->updateDate("gradientTable", "10");
 	clearStartupTime();
 
-	////ÕÅ½Ü»ªÌí¼Ó@2016-06-29
+	////å¼ æ°åæ·»åŠ @2016-06-29
 	//if(DataBase::getInstance()->queryData("pcProtocol").toInt() != 0)
 	//	syncFlowFromPc();
 }
@@ -455,7 +457,7 @@ void MachineStat::pcCtrlMachine()
 float MachineStat::GetWordFactor()
 {
 	int selectindex = DataBase::getInstance()->queryData("pumptype").toInt(); 
-	//float pumpMaxFlowArray[]={6,1.5,0.245,0.11,0.05,0.025,0.008333};//ÕÅ½Ü»ªĞŞ¸Ä@2016-06-14£¬½«50mlÂö³åÏµÊı3.3¸Ä³É1.5
+	//float pumpMaxFlowArray[]={6,1.5,0.245,0.11,0.05,0.025,0.008333};//å¼ æ°åä¿®æ”¹@2016-06-14ï¼Œå°†50mlè„‰å†²ç³»æ•°3.3æ”¹æˆ1.5
 	float pumpMaxFlowArray[]={6,1.5,0.245,
 		0.11,
 		0.11,
@@ -464,7 +466,7 @@ float MachineStat::GetWordFactor()
 		0.025,
 		0.025,
 		0.008333,
-		0.008333};//ÕÅ½Ü»ªĞŞ¸Ä@2016-06-14£¬½«50mlÂö³åÏµÊı3.3¸Ä³É1.5
+		0.008333};//å¼ æ°åä¿®æ”¹@2016-06-14ï¼Œå°†50mlè„‰å†²ç³»æ•°3.3æ”¹æˆ1.5
 	if(selectindex>10)
 	{
 		selectindex=0;
@@ -475,7 +477,7 @@ float MachineStat::GetWordFactor()
 
 void MachineStat::updateFlow(double flow, MachineStat::FlowCtrlMode eFlowMod)
 {
-	//Á÷ËÙ·¶Î§¼ì²â£¬³¬³ö×î´óÖµÍ£»ú±¨¾¯;
+	//æµé€ŸèŒƒå›´æ£€æµ‹ï¼Œè¶…å‡ºæœ€å¤§å€¼åœæœºæŠ¥è­¦;
 	switch(eFlowMod)
 	{
 		case GRADIENT_MODE:
@@ -524,7 +526,7 @@ quint32 MachineStat::compensationForFlow(double flow)
 		const LineUint &line = flowCompensationList.at(i);
 		if(line.inRange(flow))
 		{
-			double percent = line.getValueByXAndK(flow);//¸ù¾İ¹«Ê½·µ»Ø¶ÔÓ¦µÄÁ÷Á¿Öµ;
+			double percent = line.getValueByXAndK(flow);//æ ¹æ®å…¬å¼è¿”å›å¯¹åº”çš„æµé‡å€¼;
 			percent = flow/percent;
 			//percent = compensationForFlowSecondary(percent);
 			return (percent/0.0001);
@@ -536,14 +538,14 @@ quint32 MachineStat::compensationForFlow(double flow)
 
 int MachineStat::checkProbation()
 {
-	quint32 probationDay = pDb->queryData("tryDay").toInt();			//ÊÔÓÃÌìÊı;
+	quint32 probationDay = pDb->queryData("tryDay").toInt();			//è¯•ç”¨å¤©æ•°;
 	//qDebug()<<pDb->queryData("usedTime").toULong();
-	//quint32 usedDay = pDb->queryData("usedTime").toULong()/60/60/24;	//ÒÑ¾­ÊÔÓÃÊ±¼ä;
+	//quint32 usedDay = pDb->queryData("usedTime").toULong()/60/60/24;	//å·²ç»è¯•ç”¨æ—¶é—´;
 	quint32 usedDay = getTime(SYSTIME)/60/60/24;
 
 	qint32 temp = probationDay - usedDay;
 	
-	//temp = 3;//ÆÁ±ÎÏÈ;
+	//temp = 3;//å±è”½å…ˆ;
 
 	if(temp <= 0)
 	{
@@ -558,7 +560,7 @@ int MachineStat::checkProbation()
 
 void MachineStat::saveUsedTime()
 {
-	//»úÆ÷ÀÛ¼ÆÊ¹ÓÃÊ±¼ä¼ÇÂ¼;
+	//æœºå™¨ç´¯è®¡ä½¿ç”¨æ—¶é—´è®°å½•;
 	quint32 usedTime = m_machineStat.m_nSysUsedTime;
 	QString temp = QString::number(usedTime);
 	pDb->updateDate("usedTime", temp);
@@ -571,7 +573,7 @@ void MachineStat::saveUsedTime()
 //! modified by wjf@2016-06-22
 void MachineStat::syncTime(quint32 time)
 {
-	//! ²»ÀíÈıÆß¶şÊ®Ò»£¬ÊÕµ½ÉÏÎ»»úÍ¬²½¾Í½øÈëPCÄ£Ê½;
+	//! ä¸ç†ä¸‰ä¸ƒäºŒåä¸€ï¼Œæ”¶åˆ°ä¸Šä½æœºåŒæ­¥å°±è¿›å…¥PCæ¨¡å¼;
 	if(m_machineStat.machineStat != PCCTRL && !bSyncOverPress)
 		setMachineStat(PCCTRL);
 
@@ -579,7 +581,7 @@ void MachineStat::syncTime(quint32 time)
 
 	setStartupTime( time*SYNC_TIME_UNIT );
 
-	////ÅĞ¶ÏÊÇ·ñ´¦ÓÚPC¿ØÖÆÄ£Ê½;
+	////åˆ¤æ–­æ˜¯å¦å¤„äºPCæ§åˆ¶æ¨¡å¼;
 	//if( !m_bPcGradientCtrl )
 	//{
 	//	m_bPcGradientCtrl = true;
@@ -588,12 +590,12 @@ void MachineStat::syncTime(quint32 time)
 
 	m_nPcGradientCtrlFlag = 0;
 
-	if(bOverPress)//ÕÅ½Ü»ªÌí¼Ó@2016-07-26
+	if(bOverPress)//å¼ æ°åæ·»åŠ @2016-07-26
 		return;
 
-	m_machineStat.m_bUpdateFlowFromPc = false;//ÕÅ½Ü»ªÌí¼Ó@2016-06-25£¬½â¾öpc¶ËÍ¬²½Á÷ËÙÊ±µÄÏÔÊ¾ÎÊÌâ
+	m_machineStat.m_bUpdateFlowFromPc = false;//å¼ æ°åæ·»åŠ @2016-06-25ï¼Œè§£å†³pcç«¯åŒæ­¥æµé€Ÿæ—¶çš„æ˜¾ç¤ºé—®é¢˜
 
-	//ÕÅ½Ü»ªÌí¼Ó@2016-06-20£¬Èç¹ûÑ¹Á¦±¨¾¯£¬Ôò²»Í¬²½Á÷ËÙ
+	//å¼ æ°åæ·»åŠ @2016-06-20ï¼Œå¦‚æœå‹åŠ›æŠ¥è­¦ï¼Œåˆ™ä¸åŒæ­¥æµé€Ÿ
 	//if(!bSyncOverPress)
 	//{
 		//syncFlowFromPc();
@@ -602,16 +604,16 @@ void MachineStat::syncTime(quint32 time)
 
 quint32 MachineStat::updateFlowByGradientList(quint32 time)
 {
-	time = time % pDb->getGradientEndTime();				//Ê±¼ä×ª»»;
-	QList<LineUint> &gradientList = pDb->getGradientList();//Á÷Á¿±í¸ñ;
+	time = time % pDb->getGradientEndTime();				//æ—¶é—´è½¬æ¢;
+	QList<LineUint> &gradientList = pDb->getGradientList();//æµé‡è¡¨æ ¼;
 	for (int i = 0; i<gradientList.count(); i++)
 	{
 		const LineUint &line = gradientList.at(i);
-		if(line.inStep(time))											//ÅĞ¶ÏÊÇ·ñ´ïµ½Ìİ¶È×ª»»µÄÊ±¼ä;
+		if(line.inStep(time))											//åˆ¤æ–­æ˜¯å¦è¾¾åˆ°æ¢¯åº¦è½¬æ¢çš„æ—¶é—´;
 		{
-			double flow = line.getStepValueByX(time);					//·µ»Ø¶ÔÓ¦Ê±¼äµãµÄÁ÷Á¿Öµ;
-			updateFlowPercent(line.getPercentVal(), GRADIENT_MODE);		//¸üĞÂÁ÷ËÙ°Ù·Ö±È;
-			updateFlow(flow, GRADIENT_MODE);							//¸üĞÂÁ÷ËÙ;
+			double flow = line.getStepValueByX(time);					//è¿”å›å¯¹åº”æ—¶é—´ç‚¹çš„æµé‡å€¼;
+			updateFlowPercent(line.getPercentVal(), GRADIENT_MODE);		//æ›´æ–°æµé€Ÿç™¾åˆ†æ¯”;
+			updateFlow(flow, GRADIENT_MODE);							//æ›´æ–°æµé€Ÿ;
 			return flow;
 		}
 	}
@@ -622,9 +624,9 @@ quint32 MachineStat::updateFlowByGradientList(quint32 time)
 double MachineStat::compensationForPress(uint32 arg)
 {
 	double v0 = pDb->queryData("pressRawV0").toDouble();
-	//double val = ((double)arg-v0)*0.01;//40MPaÁ¿³Ì
-	double val = ((double)arg-v0)*0.0128; //51MPaÁ¿³Ì
-	//double val = ((double)arg-v0)*0.015; //60MPaÁ¿³Ì
+	//double val = ((double)arg-v0)*0.01;//40MPaé‡ç¨‹
+	double val = ((double)arg-v0)*0.0128; //51MPaé‡ç¨‹
+	//double val = ((double)arg-v0)*0.015; //60MPaé‡ç¨‹
 	QList<LineUint> &pressCompensationList = pDb->getPressCompensationList();
 	for (int i = 0; i < pressCompensationList.count(); i++)
 	{
@@ -651,7 +653,7 @@ void MachineStat::checkPressOverloaded(double val)
 		else if(val < minVal)
 			warning = 1;
 	}
-	else//Ğ¡ÓÚÒ»·ÖÖÓ²»×÷×îĞ¡Ñ¹Á¦¼ì²â;
+	else//å°äºä¸€åˆ†é’Ÿä¸ä½œæœ€å°å‹åŠ›æ£€æµ‹;
 	{
 		if(val > maxVal)
 			warning = 2;
@@ -667,20 +669,20 @@ void MachineStat::checkPressOverloaded(double val)
 		}
 		else
 		{
-			setMachineStat(STOP, false);//Í£»ú;
+			setMachineStat(STOP, false);//åœæœº;
 		}
-		//setMachineStat(STOP, true);//Í£»ú;
+		//setMachineStat(STOP, true);//åœæœº;
 		overPress = val;
-		bOverPress = true;//ÖÃÎ»Ñ¹Á¦±¨¾¯±êÖ¾;
-		sysError(OVERPRESS_ERR, true);//±¨¾¯;
+		bOverPress = true;//ç½®ä½å‹åŠ›æŠ¥è­¦æ ‡å¿—;
+		sysError(OVERPRESS_ERR, true);//æŠ¥è­¦;
 
-		//ÕÅ½Ü»ªÌí¼Ó@2016-06-23
+		//å¼ æ°åæ·»åŠ @2016-06-23
 		if(bSyncFlag)
 			bSyncOverPress = true;
 	}
 	else
 	{
-		//sysError(OVERPRESS_ERR, false);//È¡Ïû±¨¾¯;
+		//sysError(OVERPRESS_ERR, false);//å–æ¶ˆæŠ¥è­¦;
 	}
 
 	m_sCurrentPressVal = QString::number(val, 'f', 2);
@@ -695,7 +697,7 @@ void MachineStat::updatePresVal(quint32 arg)
 	if(val < 0)
 		val = 0;
 
-	val = getAverageOfPress(val);//Êı¾İ³ØÂË²¨;
+	val = getAverageOfPress(val);//æ•°æ®æ± æ»¤æ³¢;
 	checkPressOverloaded(val);
 }
 
@@ -710,7 +712,7 @@ void MachineStat::uploadPresVal()
 {
 	double val = m_sCurrentPressVal.toDouble();
 	val = val * 100;
-	//¾ÉĞ­Òé;
+	//æ—§åè®®;
 	if(DataBase::getInstance()->queryData("pcProtocol").toInt() == 0 )
 	{
 		int pumpType = DataBase::getInstance()->queryData("pumptype").toInt();
@@ -718,7 +720,7 @@ void MachineStat::uploadPresVal()
 			val = val / 10;
 		m_pCommunicationCoupling->sendCmd(1, PFC_READ_PRESS, val);
 	}
-	else//clarityĞ­Òé;
+	else//clarityåè®®;
 		m_pCommunicationCoupling->sendCmdClarity(0, PFCC_SEND_PRESS, DectoBCD(val, 4));
 }
 
@@ -742,12 +744,12 @@ void MachineStat::initMACAddr()
 	if(sMAC.count() < 10)
 		sMAC = QString("1234567890");
 
-	sMAC = "ifconfig eth0 hw ether " + QString("AA") + sMAC;//µÚÒ»¸ö×Ö½ÚµÄµÚÒ»Î»²»ÄÜÊÇ1£¬1±íÊ¾¹ã²¥
+	sMAC = "ifconfig eth0 hw ether " + QString("AA") + sMAC;//ç¬¬ä¸€ä¸ªå­—èŠ‚çš„ç¬¬ä¸€ä½ä¸èƒ½æ˜¯1ï¼Œ1è¡¨ç¤ºå¹¿æ’­
 	//qDebug() << "sMAC = " << sMAC;
 
-#ifdef linux
+#if defined(linux) && !defined(DESKTOP_HMI)
 	system(QString("ifconfig eth0 down").toLatin1().data());
-	system(sMAC.toLatin1().data());   //ÕÅ½Ü»ªÉ¾³ı@2016-06-15£¬µ÷ÊÔÓÃ£¬µ½Ê±ÒªÌí¼Ó»ØÀ´
+	system(sMAC.toLatin1().data());   //å¼ æ°ååˆ é™¤@2016-06-15ï¼Œè°ƒè¯•ç”¨ï¼Œåˆ°æ—¶è¦æ·»åŠ å›æ¥
 	system(QString("ifconfig eth0 up").toLatin1().data());
 #endif
 }
@@ -755,8 +757,8 @@ void MachineStat::initMACAddr()
 void MachineStat::initIPAddr()
 {
 	QString strCig = QString("ifconfig eth0 %1.%2.%3.%4").arg(DataBase::getInstance()->queryData("ip1")).arg(DataBase::getInstance()->queryData("ip2")).arg(DataBase::getInstance()->queryData("ip3")).arg(DataBase::getInstance()->queryData("ip4"));
-#ifdef linux
-	system(strCig.toLatin1().data());  //ÕÅ½Ü»ªÉ¾³ı@2016-06-15£¬µ÷ÊÔÓÃ£¬µ½Ê±ÒªÌí¼Ó»ØÀ´
+#if defined(linux) && !defined(DESKTOP_HMI)
+	system(strCig.toLatin1().data());  //å¼ æ°ååˆ é™¤@2016-06-15ï¼Œè°ƒè¯•ç”¨ï¼Œåˆ°æ—¶è¦æ·»åŠ å›æ¥
 #endif
 }
 
@@ -811,7 +813,7 @@ void MachineStat::syncFlowToMachine()
 	{
 		//if(m_machineStat.machineStat!=PCCTRL)
 		//{
-			updateFlowByGradientList(m_machineStat.startupTime);		//°´Ìİ¶È¸üĞÂÁ÷ËÙ;
+			updateFlowByGradientList(m_machineStat.startupTime);		//æŒ‰æ¢¯åº¦æ›´æ–°æµé€Ÿ;
 		//}
 	}
 }
@@ -819,7 +821,7 @@ void MachineStat::syncFlowToMachine()
 void MachineStat::checkTryOut()
 {
 	int active = pDb->queryData("bActive").toInt();
-	if(active == 0)//Èç¹ûÎ´¼¤»î£¬ĞèÒª¶¨Ê±¼ì²âÊÔÓÃÊ±¼ä;
+	if(active == 0)//å¦‚æœæœªæ¿€æ´»ï¼Œéœ€è¦å®šæ—¶æ£€æµ‹è¯•ç”¨æ—¶é—´;
 	{
 		if( checkProbation() == 0)
 		{
@@ -827,7 +829,7 @@ void MachineStat::checkTryOut()
 			m_machineStat.bTryDone = true;
 			g_pMainWindow->changePage(PERMITPAGE_INDEX);
 		}
-		else//ÊÔÓÃÆÚÎ´µ½;
+		else//è¯•ç”¨æœŸæœªåˆ°;
 		{
 			m_machineStat.bTryDone = false;
 		}
@@ -839,19 +841,19 @@ void MachineStat::checkTryOut()
 //! modified by wjf@2016-06-22
 void MachineStat::checkFlowCtrlByPc()
 {
-	//ÆÁ±ÎÉÏÎ»»úÊ±¼äÍ¬²½;
+	//å±è”½ä¸Šä½æœºæ—¶é—´åŒæ­¥;
 	//return;
 
-	//if(m_machineStat.machineStat!= PCCTRL)//ÕÅ½Ü»ªÆÁ±Î@2016-06-25
+	//if(m_machineStat.machineStat!= PCCTRL)//å¼ æ°åå±è”½@2016-06-25
 	//	return;
 
-	if(!bSyncFlag)//ÕÅ½Ü»ªÌí¼Ó@2016-06-25
+	if(!bSyncFlag)//å¼ æ°åæ·»åŠ @2016-06-25
 		return;
 
 	//if(!m_bPcGradientCtrl)
 	//	return;
 
-	//Clarity Ğ­Òé²»ĞèÒªÒÔÏÂ²½Öè;
+	//Clarity åè®®ä¸éœ€è¦ä»¥ä¸‹æ­¥éª¤;
 	if(DataBase::getInstance()->queryData("pcProtocol").toInt() == 1)
 		return;
 
@@ -864,8 +866,8 @@ void MachineStat::checkFlowCtrlByPc()
 		bSyncFlag = 0;
 		bSyncOverPress = 0;
 
-		setMachineStat(PAUSE); //Í£Ö¹²É¼¯ºó£¬ÒªÎ¬³Öºã¶¨Á÷ËÙ
-		//setMachineStat(STOP); //ÕÅ½Ü»ªĞŞ¸Ä@2016-06-21
+		setMachineStat(PAUSE); //åœæ­¢é‡‡é›†åï¼Œè¦ç»´æŒæ’å®šæµé€Ÿ
+		//setMachineStat(STOP); //å¼ æ°åä¿®æ”¹@2016-06-21
 	}
 }
 
@@ -873,7 +875,7 @@ void MachineStat::updateStartupTime()
 {
 	if(m_machineStat.machineStat >= RUNNING)
 	{
-		//ÆÁ±ÎÉÏÎ»»úÊ±¼äÍ¬²½;
+		//å±è”½ä¸Šä½æœºæ—¶é—´åŒæ­¥;
 		/**/if(!m_bPcGradientCtrl && m_machineStat.machineStat != PCCTRL)
 			setStartupTime(++m_machineStat.startupTime);
 		//setStartupTime(++m_machineStat.startupTime);
@@ -881,7 +883,7 @@ void MachineStat::updateStartupTime()
 
 	}
 
-	m_machineStat.m_nSysUsedTime++;//ÏµÍ³Ê¹ÓÃÊ±¼ä;
+	m_machineStat.m_nSysUsedTime++;//ç³»ç»Ÿä½¿ç”¨æ—¶é—´;
 
 	//static int cnt = 0;
 	//emit(updateBugleCnt(cnt++));
@@ -895,7 +897,7 @@ quint64 MachineStat::generateActiveCode( quint64 sertialNum, quint8 which )
 	date=today.year()*10000;
 	date+=today.month()*100;
 	date+=today.day();*/
-	if(which == 0)//ÓÀ¾Ã¼¤»î;
+	if(which == 0)//æ°¸ä¹…æ¿€æ´»;
 	{
 		ret = (sertialNum+date)%ACTIVE_CODE_MAX;
 		ret ^=ACTIVE_MASK;
@@ -946,7 +948,7 @@ void MachineStat::dealBulge()
 	/*m_bBugleFlag = true;
 	bugleTime = QTime::currentTime();
 	bugleTime.restart();*/
-	//¸æÖªÍ¹ÂÖ²¹³¥;
+	//å‘ŠçŸ¥å‡¸è½®è¡¥å¿;
 	BugleCompensation::getInstance()->bugleSignal();
 
 	m_machineStat.bugleCnt++;
@@ -957,7 +959,7 @@ void MachineStat::dealBulge()
 
 void MachineStat::weepingWarn(bool flag)
 {
-	sysError(WEEPING, flag);//±¨¾¯
+	sysError(WEEPING, flag);//æŠ¥è­¦
 }
 
 void MachineStat::serialNumberGenerate()
@@ -1004,26 +1006,26 @@ bool MachineStat::activeMachine(quint64 activeNum, bool bActive/* = true*/)
 	if( bActive )
 	{
 		quint64 serialNum = DataBase::getInstance()->queryData("serial").toULongLong();
-		if( activeNum >= ACTIVE_CODE_TRY )//ÊÔÓÃ¼¤»î;
+		if( activeNum >= ACTIVE_CODE_TRY )//è¯•ç”¨æ¿€æ´»;
 		{
-			//ÅĞ¶ÏÊÇ·ñÏàµÈ;
+			//åˆ¤æ–­æ˜¯å¦ç›¸ç­‰;
 			quint64 tActiveNum = generateActiveCode(serialNum, 1);
 			quint64 temp = activeNum/1000*1000;
 			if(tActiveNum == temp)
 			{
 				quint64 tryday = getTryDayFromActiveCode(activeNum, m_machineStat.m_nSerialId);
-				//Çå¿ÕĞòÁĞºÅËæ»úÂë;
+				//æ¸…ç©ºåºåˆ—å·éšæœºç ;
 				m_machineStat.m_nSerialId = 0;
 				
-				if(tryday == 0)//È¡Ïû¼¤»î;
+				if(tryday == 0)//å–æ¶ˆæ¿€æ´»;
 				{
-					//Çå¿ÕÊÔÓÃÈÕÆÚ;
+					//æ¸…ç©ºè¯•ç”¨æ—¥æœŸ;
 					pDb->updateDate("tryDay", QString::number(0));
 					clearUsedTime();
 				}
 				else
 				{
-					//ÀÛ¼ÓÊÔÓÃÈÕÆÚ;
+					//ç´¯åŠ è¯•ç”¨æ—¥æœŸ;
 					tryday+=pDb->queryData("tryDay").toUInt();
 					pDb->updateDate("tryDay", QString::number(tryday));
 					/*qDebug()<<pDb->queryData("tryDay");*/
@@ -1035,18 +1037,18 @@ bool MachineStat::activeMachine(quint64 activeNum, bool bActive/* = true*/)
 			else
 				ret = false;
 		}
-		else//ÓÀ¾Ã¼¤»î;
+		else//æ°¸ä¹…æ¿€æ´»;
 		{
-			//ÅĞ¶ÏÊÇ·ñÏàµÈ;
+			//åˆ¤æ–­æ˜¯å¦ç›¸ç­‰;
 			quint64 tActiveNum = generateActiveCode(serialNum, 0);
 			if(tActiveNum == activeNum)
 			{
-				//¼ÇÂ¼¼¤»î±êÖ¾;
+				//è®°å½•æ¿€æ´»æ ‡å¿—;
 				DataBase::getInstance()->updateDate("bActive", "1");
-				//Çå¿ÕĞòÁĞºÅËæ»úÂë;
+				//æ¸…ç©ºåºåˆ—å·éšæœºç ;
 				m_machineStat.m_nSerialId = 0;
 
-				//Çå¿ÕÊÔÓÃÈÕÆÚ;
+				//æ¸…ç©ºè¯•ç”¨æ—¥æœŸ;
 				pDb->updateDate("tryDay", QString::number(0));
 				clearUsedTime();
 			}
@@ -1057,7 +1059,7 @@ bool MachineStat::activeMachine(quint64 activeNum, bool bActive/* = true*/)
 	}
 	else
 	{
-		//È¡Ïû¼¤»î±êÖ¾;
+		//å–æ¶ˆæ¿€æ´»æ ‡å¿—;
 		DataBase::getInstance()->updateDate("bActive", "0");
 	}
 	return ret;
@@ -1071,7 +1073,7 @@ void MachineStat::clearBugleCnt()
 
 void MachineStat::clearUsedTime()
 {
-	//m_machineStat.m_firstTryDateTime = QDateTime::currentDateTime().toTime_t();//¼ÇÂ¼µ±Ç°ÈÕÆÚÊ±¼ä;
+	//m_machineStat.m_firstTryDateTime = QDateTime::currentDateTime().toTime_t();//è®°å½•å½“å‰æ—¥æœŸæ—¶é—´;
 	//pDb->updateDate("firstTryDateTime", QString::number(m_machineStat.m_firstTryDateTime));
 	m_machineStat.m_nSysUsedTime = 0;
 	QString temp = QString::number(m_machineStat.m_nSysUsedTime);
@@ -1104,7 +1106,7 @@ void MachineStat::shutDownWarn()
 /********************************************20160615*************************************/
 void MachineStat::uploadPressTimeout_Clarity()
 {
-	//Èç¹ûµ±Ç°ÊÇ¾ÉĞ­Òé£¬ÔòÍ£Ö¹¶¨Ê±Æ÷²¢·µ»Ø;
+	//å¦‚æœå½“å‰æ˜¯æ—§åè®®ï¼Œåˆ™åœæ­¢å®šæ—¶å™¨å¹¶è¿”å›;
 	if( DataBase::getInstance()->queryData("pcProtocol").toInt() == 0 )
 	{
 		setUploadPressFreq_Clarity(0);
@@ -1117,7 +1119,7 @@ void MachineStat::uploadPressTimeout_Clarity()
 
 void MachineStat::initPressPoll()
 {
-	//³õÊ¼»¯au¶ÓÁĞ£¬ÓÃÓÚÆ½¾ùauÖµ£¬Æ½»¬;
+	//åˆå§‹åŒ–aué˜Ÿåˆ—ï¼Œç”¨äºå¹³å‡auå€¼ï¼Œå¹³æ»‘;
 	pressList.clear();
 	for (int i = 0; i < PRESS_POLL_SIZE; i++)
 	{
@@ -1127,7 +1129,7 @@ void MachineStat::initPressPoll()
 
 double MachineStat::getAverageOfPress( double au )
 {
-	//auÖµÆ½»¬´¦Àí;
+	//auå€¼å¹³æ»‘å¤„ç†;
 	double auAverage = 0;
 	int maxLen = PRESS_POLL_SIZE;
 
@@ -1214,7 +1216,7 @@ void MachineStat::updateWarning()
 			break;
 		//case OVERFLOW_ERR:
 		//	emit(systemError(warningId, tr("Flow over:")+QString::number(overFlow)));
-		//	//³ö·¢·äÃùÆ÷±¨¾¯;
+		//	//å‡ºå‘èœ‚é¸£å™¨æŠ¥è­¦;
 		//	if(!bWarn)
 		//	{
 		//		bWarn = true;
@@ -1225,7 +1227,7 @@ void MachineStat::updateWarning()
 		case OVERPRESS_ERR:
 			{
 				emit(systemError(warningId, tr("Press over:")+QString::number(overPress)));
-				//³ö·¢·äÃùÆ÷±¨¾¯;
+				//å‡ºå‘èœ‚é¸£å™¨æŠ¥è­¦;
 				if(!bWarn)
 				{
 					bWarn = true;
@@ -1237,7 +1239,7 @@ void MachineStat::updateWarning()
 		case WEEPING:
 			{
 				emit(systemError(warningId, tr("Weeping:")));
-				//³ö·¢·äÃùÆ÷±¨¾¯;
+				//å‡ºå‘èœ‚é¸£å™¨æŠ¥è­¦;
 				if(!bWarn)
 				{
 					bWarn = true;
@@ -1269,20 +1271,20 @@ FlowCtrl * MachineStat::getFlowCtrl()
 
 void MachineStat::pumpTypeChanged(bool flag)
 {
-	//»ñÈ¡±ÃµÄÀàĞÍ¸Ä±äÉÏÎ»»ú¾ÉĞ­ÒéÁ÷ËÙ¿ØÖÆÃüÁî³¤¶È;
+	//è·å–æ³µçš„ç±»å‹æ”¹å˜ä¸Šä½æœºæ—§åè®®æµé€Ÿæ§åˆ¶å‘½ä»¤é•¿åº¦;
 	int index = DataBase::getInstance()->queryData("pumptype").toInt();
 	m_pCommunicationCoupling->setPumpTypeForPcFlowCtrl(index);
 	m_machineStat.m_nPumpType = index;
 
-	//¸üĞÂĞ­Òé²ã±ÃÀàĞÍ
+	//æ›´æ–°åè®®å±‚æ³µç±»å‹
 	m_pCommunicationCoupling->sendCmd(PROTOCL_LOCAL_USE_CHANGE_PUMPTYPE, index, 0);
 
-	//¸üĞÂµ±Ç°µÄÉè±¸Âë;
+	//æ›´æ–°å½“å‰çš„è®¾å¤‡ç ;
 	updateMachineCode();
 
 	if(flag == true)
 	{
-		//! »Ö¸´³ö³§ÉèÖÃ;
+		//! æ¢å¤å‡ºå‚è®¾ç½®;
 		DataBase::getInstance()->restoreCompensationTable();//! added by wjf@2016-06-22
 	}
 
@@ -1306,20 +1308,20 @@ void MachineStat::isUpdateFlowFromPC()
 	m_machineStat.m_bUpdateFlowFromPc = false;
 
 	updateFlowPercentInPcMode(m_nCurrentPercent, true);
-	emit(updateFlowDisplay(QString::number(m_dCurrentflowValInPc, 'f', 4)));			//¸üĞÂÁ÷ËÙÏÔÊ¾;
+	emit(updateFlowDisplay(QString::number(m_dCurrentflowValInPc, 'f', 4)));			//æ›´æ–°æµé€Ÿæ˜¾ç¤º;
 }
 
 quint32 MachineStat::pcGetMachineStat()
 {
 	quint32 ret = 0;
 
-	//»ñÈ¡ÔËĞĞ×´Ì¬;
+	//è·å–è¿è¡ŒçŠ¶æ€;
 	MachineStatment st = getMachineStat();
 	if( st != STOP )
 		ret |= 1<<20;
 
-	//»ñÈ¡µ±Ç°Á÷ËÙ;
-	//m_machineStat.m_dCurrentFlow = 5.000;//²âÊÔÓÃ£¬Ä£Äâµ±Ç°Á÷ËÙ5ml£¬²âÊÔclarityĞ­ÒéÓÃ;
+	//è·å–å½“å‰æµé€Ÿ;
+	//m_machineStat.m_dCurrentFlow = 5.000;//æµ‹è¯•ç”¨ï¼Œæ¨¡æ‹Ÿå½“å‰æµé€Ÿ5mlï¼Œæµ‹è¯•clarityåè®®ç”¨;
 	quint32 flow = m_machineStat.m_dCurrentFlow*1000;
 	quint32 hFlow = DectoBCD(flow, 5);
 	//qDebug() << "flow = " << flow;
@@ -1410,19 +1412,19 @@ void MachineStat::updateFlowInPcMode( double flow )
 	m_dCurrentflowValInPc = flow;
 	m_machineStat.m_bUpdateFlowFromPc = true;
 
-	//qDebug() << "updateFlowInPcMode() flow = " << flow; //ÕÅ½Ü»ªµ÷ÊÔÌí¼Ó@2016-06-25
+	//qDebug() << "updateFlowInPcMode() flow = " << flow; //å¼ æ°åè°ƒè¯•æ·»åŠ @2016-06-25
 
-	emit(updateFlowDisplay(QString::number(flow, 'f', 4)));			//¸üĞÂÁ÷ËÙÏÔÊ¾;
-	//syncFlowFromPc();                     //ÕÅ½Ü»ªÉ¾³ı@2016-06-15£¬È¥µôPC¶Ë¸üĞÂÁ÷ËÙºóÉè±¸Á¢¼´Æô¶¯µÄ¹¦ÄÜ
+	emit(updateFlowDisplay(QString::number(flow, 'f', 4)));			//æ›´æ–°æµé€Ÿæ˜¾ç¤º;
+	//syncFlowFromPc();                     //å¼ æ°ååˆ é™¤@2016-06-15ï¼Œå»æ‰PCç«¯æ›´æ–°æµé€Ÿåè®¾å¤‡ç«‹å³å¯åŠ¨çš„åŠŸèƒ½
 }
 
 void MachineStat::updateFlowInGradientMode( double flow )
 {
-	//Á÷ËÙx°Ù·Ö±È;
+	//æµé€Ÿxç™¾åˆ†æ¯”;
 	flow = flow * m_dFlowPercent;
 
-	//¸üĞÂÏÔÊ¾;
-	emit(updateFlowDisplay(QString::number(flow, 'f', 4)));			//¸üĞÂÁ÷ËÙÏÔÊ¾;
+	//æ›´æ–°æ˜¾ç¤º;
+	emit(updateFlowDisplay(QString::number(flow, 'f', 4)));			//æ›´æ–°æµé€Ÿæ˜¾ç¤º;
 
 	syncFlowToMcu(flow);
 
@@ -1440,33 +1442,33 @@ void MachineStat::updateFlowInDebugMode( double flow )
 
 void MachineStat::syncFlowFromPc()
 {
-	static double last_flow = 0;//ÕÅ½Ü»ª²âÊÔÌí¼Ó@2016-06-25
+	static double last_flow = 0;//å¼ æ°åæµ‹è¯•æ·»åŠ @2016-06-25
 	if(last_flow != m_dCurrentflowValInPc)
 	{
 		last_flow = m_dCurrentflowValInPc;
 
-		//emit(updateFlowDisplay(QString::number(m_dCurrentflowValInPc, 'f', 4)));			//¸üĞÂÁ÷ËÙÏÔÊ¾;
+		//emit(updateFlowDisplay(QString::number(m_dCurrentflowValInPc, 'f', 4)));			//æ›´æ–°æµé€Ÿæ˜¾ç¤º;
 
 		//qDebug() << "syncFlowFromPc() flow = " << m_dCurrentflowValInPc;
 	}
 
-	if(bOverPress)//ÕÅ½Ü»ªÌí¼Ó@2016-07-26
+	if(bOverPress)//å¼ æ°åæ·»åŠ @2016-07-26
 		return;
 
-	m_machineStat.m_bUpdateFlowFromPc = false;//ÕÅ½Ü»ªÌí¼Ó@2016-06-25£¬½â¾öpc¶ËÍ¬²½Á÷ËÙÊ±µÄÏÔÊ¾ÎÊÌâ
+	m_machineStat.m_bUpdateFlowFromPc = false;//å¼ æ°åæ·»åŠ @2016-06-25ï¼Œè§£å†³pcç«¯åŒæ­¥æµé€Ÿæ—¶çš„æ˜¾ç¤ºé—®é¢˜
 	syncFlowToMcu(m_dCurrentflowValInPc);
 }
 
 void MachineStat::syncFlowToMcu( double flow )
 {
-	static double last_flow = 0;//ÕÅ½Ü»ª²âÊÔÌí¼Ó@2016-06-25
+	static double last_flow = 0;//å¼ æ°åæµ‹è¯•æ·»åŠ @2016-06-25
 	if(last_flow != flow)
 	{
 		last_flow = flow;
 		//qDebug() << "syncFlowToMcu() flow = " << flow;
 	}
 
-	//¹ıÁ÷¼ì²â;
+	//è¿‡æµæ£€æµ‹;
 	if( checkFlowOverLoaded(flow) )
 	{
 		overFlow = flow;
@@ -1476,11 +1478,11 @@ void MachineStat::syncFlowToMcu( double flow )
 	else
 		sysError(OVERFLOW_ERR, 0);
 
-	/***************************Á÷ËÙ²¹³¥*********************************/
+	/***************************æµé€Ÿè¡¥å¿*********************************/
 	flow = compensationForFlow(flow);
 
 
-	/********************×ª»»³Émcu¿ØÖÆ×Ö,Ğ´ÈëMCU*************************/
+	/********************è½¬æ¢æˆmcuæ§åˆ¶å­—,å†™å…¥MCU*************************/
 	//quint32 ret = flow*CONTROL_WORD_FACTOR;
 	quint32 ret = flow*GetWordFactor();
 	
@@ -1492,25 +1494,25 @@ void MachineStat::syncFlowToMcu( double flow )
 
 		reSendMcuCmdFlag = 0;
 
-		//¸üĞÂ¿ØÖÆ×Öµ½MCU;
+		//æ›´æ–°æ§åˆ¶å­—åˆ°MCU;
 		//m_pCommunicationCoupling->sendMcuCmd(1, MCU_WAVEADD_MOTOR, ret);
 
-		//Í¹ÂÖ²¹³¥Í¬²½;
+		//å‡¸è½®è¡¥å¿åŒæ­¥;
 		//BugleCompensation::getInstance()->updateOutput(ret, flow);
 		
-		//qDebug() << "sendMcuCmd" << ret;//ÕÅ½Ü»ªµ÷ÊÔÌí¼Ó@2016-06-25
+		//qDebug() << "sendMcuCmd" << ret;//å¼ æ°åè°ƒè¯•æ·»åŠ @2016-06-25
 	}
 
 	if(reSendMcuCmdFlag <= 3)
 	{
 		reSendMcuCmdFlag++;
 
-		//¸üĞÂ¿ØÖÆ×Öµ½MCU;
+		//æ›´æ–°æ§åˆ¶å­—åˆ°MCU;
 		//if(reSendMcuCmdFlag%2 == 1)
 			m_pCommunicationCoupling->sendMcuCmd(1, MCU_WAVEADD_MOTOR, ret);
 	}
 	
-	//Ê¹ÄÜÁ÷ËÙ¸üĞÂ;
+	//ä½¿èƒ½æµé€Ÿæ›´æ–°;
 	MachineStat::getInstance()->enableUpdateFlow();
 }
 
@@ -1537,15 +1539,15 @@ void MachineStat::clearPressWarn()
 	if(bOverPress)
 	{
 		bOverPress = false;
-		sysError(OVERPRESS_ERR, false);//È¡Ïû±¨¾¯;
+		sysError(OVERPRESS_ERR, false);//å–æ¶ˆæŠ¥è­¦;
 	}
 }
 
 double MachineStat::getGradientTableFlow(quint32 nWhich, quint32 nRow /*= 0*/)
 {   
     if(nWhich != 12)
-        pDb->readGradientTableIntoList(nWhich);			        //¶ÁÈ¡Ìİ¶È±í¸ñµ½ÄÚ´æ;
-    QList<LineUint> &gradientList = pDb->getGradientList();     //Á÷Á¿±í¸ñ;
+        pDb->readGradientTableIntoList(nWhich);			        //è¯»å–æ¢¯åº¦è¡¨æ ¼åˆ°å†…å­˜;
+    QList<LineUint> &gradientList = pDb->getGradientList();     //æµé‡è¡¨æ ¼;
 
     if(gradientList.count() <= 0 )
         return 0;

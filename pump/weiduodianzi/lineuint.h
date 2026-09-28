@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-//ÏßĞÔµ¥Ôª
+//çº¿æ€§å•å…ƒ
 class LineUint : public QObject
 {
 	Q_OBJECT
@@ -21,7 +21,7 @@ public:
 	double getValueByXAndK(double x)const;
 	QString getFlowStr()const;
 
-	//Ìİ¶ÈÊ±ºòÓÃµ½°Ù·Ö±È;
+	//æ¢¯åº¦æ—¶å€™ç”¨åˆ°ç™¾åˆ†æ¯”;
 	quint32 getPercentVal()const;
 	void setPercentVal(quint32 per);
 
@@ -30,9 +30,9 @@ private:
 	double y1;
 	double x2;
 	double y2;
-	double k;//Ğ±ÂÊ;
+	double k;//æ–œç‡;
 	QString str;
-	quint32 percent;//°Ù·Ö±È£¬Ìİ¶ÈÊ±ºòÓÃ;
+	quint32 percent;//ç™¾åˆ†æ¯”ï¼Œæ¢¯åº¦æ—¶å€™ç”¨;
 	
 };
 

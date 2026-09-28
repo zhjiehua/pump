@@ -1,7 +1,7 @@
 #ifndef FLOWCTRL_H
 #define FLOWCTRL_H
 
-//´ú±íÁ÷ËÙ¿ØÖÆ£¬´Ó»úÆ÷Ä£¿éÖĞ¶ÀÁ¢³öÀ´,Õâ¸öÄ£¿éÔİÊ±²»¹¤×÷£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡£¡
+//ä»£è¡¨æµé€Ÿæ§åˆ¶ï¼Œä»æœºå™¨æ¨¡å—ä¸­ç‹¬ç«‹å‡ºæ¥,è¿™ä¸ªæ¨¡å—æš‚æ—¶ä¸å·¥ä½œï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼
 
 
 #include <QObject>
@@ -15,25 +15,25 @@ public:
 
 	static FlowCtrl *getInstance();
 
-	//°Ù·Ö±È¸üĞÂ;
-	void updateFlowPercentInPcMode(quint32 percent);				//°Ù·Ö±È¸üĞÂÏÔÊ¾(PCÄ£Ê½);
-	void updateFlowPercent(quint32 percent);						//Ìİ¶ÈÄ£Ê½ÏÂµÄÁ÷ËÙ¸üĞÂ;
+	//ç™¾åˆ†æ¯”æ›´æ–°;
+	void updateFlowPercentInPcMode(quint32 percent);				//ç™¾åˆ†æ¯”æ›´æ–°æ˜¾ç¤º(PCæ¨¡å¼);
+	void updateFlowPercent(quint32 percent);						//æ¢¯åº¦æ¨¡å¼ä¸‹çš„æµé€Ÿæ›´æ–°;
 
-	//²»Í¬Ä£Ê½ÏÂµÄÁ÷ËÙ¿ØÖÆ;
-	void updateFlowInPcMode(double flow);							//PCÄ£Ê½ÏÂµÄÁ÷ËÙ¿ØÖÆ;
-	void updateFlowInGradientMode(double flow);						//µ¥»úÌİ¶ÈÄ£Ê½ÏÂµÄÁ÷ËÙ¿ØÖÆ;
-	void updateFlowInPumpPurgeMode(double flow);					//µ¥»ú±Ã¡¢ÇåÏ´Ä£Ê½ÏÂµÄÁ÷ËÙ¿ØÖÆ;
-	void updateFlowInDebugMode(double flow);						//µ÷ÊÔÄ£Ê½ÏÂµÄÁ÷ËÙ¿ØÖÆ;
+	//ä¸åŒæ¨¡å¼ä¸‹çš„æµé€Ÿæ§åˆ¶;
+	void updateFlowInPcMode(double flow);							//PCæ¨¡å¼ä¸‹çš„æµé€Ÿæ§åˆ¶;
+	void updateFlowInGradientMode(double flow);						//å•æœºæ¢¯åº¦æ¨¡å¼ä¸‹çš„æµé€Ÿæ§åˆ¶;
+	void updateFlowInPumpPurgeMode(double flow);					//å•æœºæ³µã€æ¸…æ´—æ¨¡å¼ä¸‹çš„æµé€Ÿæ§åˆ¶;
+	void updateFlowInDebugMode(double flow);						//è°ƒè¯•æ¨¡å¼ä¸‹çš„æµé€Ÿæ§åˆ¶;
 
-	void enableUpdateFlow();										//¸üĞÂÁ÷ËÙµç»úÊ¹ÄÜ;
-	void disableUpdateFlow();										//¸üĞÂÁ÷ËÙµç»ú³ıÄÜ;
+	void enableUpdateFlow();										//æ›´æ–°æµé€Ÿç”µæœºä½¿èƒ½;
+	void disableUpdateFlow();										//æ›´æ–°æµé€Ÿç”µæœºé™¤èƒ½;
 
 private:
 	FlowCtrl(QObject *parent = 0);
 	double m_dFlowPercent;
 
 signals:
-	void updatePercentDisplay(QString);						//¸üĞÂ°Ù·Ö±ÈÏÔÊ¾ĞÅºÅ;
+	void updatePercentDisplay(QString);						//æ›´æ–°ç™¾åˆ†æ¯”æ˜¾ç¤ºä¿¡å·;
 	
 };
 

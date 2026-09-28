@@ -15,14 +15,14 @@ public:
 	BottomWidget(QWidget *parent = 0);
 	~BottomWidget();
 
-	void changeNavigatorDisp(quint8 index);//¸Ä±äµ¼º½À¸ÏÔÊ¾;
-	void updateLanguage();						//¸üĞÂÓïÑÔÏÔÊ¾;
+	void changeNavigatorDisp(quint8 index);//æ”¹å˜å¯¼èˆªæ æ˜¾ç¤º;
+	void updateLanguage();						//æ›´æ–°è¯­è¨€æ˜¾ç¤º;
 
 private:
 	Ui::BottomWidget ui;
 	QList<QPushButton *>m_btnList;
 
-	void initNavigator();						//µ¼º½°´Å¥³õÊ¼»¯;
+	void initNavigator();						//å¯¼èˆªæŒ‰é’®åˆå§‹åŒ–;
 	
 
 private slots:

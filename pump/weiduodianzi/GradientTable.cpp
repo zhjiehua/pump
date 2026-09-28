@@ -65,13 +65,13 @@ void GradientTable::initDisplay()
 	ui.tableView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	ui.tableView->setEditTriggers(QAbstractItemView::AnyKeyPressed);
 
-	//ÎªÃ¿Ò»ÁÐÉèÖÃ´úÀí;
-	ui.tableView->setItemDelegateForColumn(0, new EditorDelegate("000.0"));//Ê±¼ä;
-	if(DataBase::getInstance()->queryData("pumptype").toInt() == 0)//10ml±Ã
-		ui.tableView->setItemDelegateForColumn(1, new EditorDelegate("0000.0000"));//Á÷ËÙ;
+	//ä¸ºæ¯ä¸€åˆ—è®¾ç½®ä»£ç†;
+	ui.tableView->setItemDelegateForColumn(0, new EditorDelegate("000.0"));//æ—¶é—´;
+	if(DataBase::getInstance()->queryData("pumptype").toInt() == 0)//10mlæ³µ
+		ui.tableView->setItemDelegateForColumn(1, new EditorDelegate("0000.0000"));//æµé€Ÿ;
 	else
-		ui.tableView->setItemDelegateForColumn(1, new EditorDelegate("0000.000"));//Á÷ËÙ;
-	//ui.tableView->setItemDelegateForColumn(1, new EditorDelegate("0000.0000"));//Á÷ËÙ;
+		ui.tableView->setItemDelegateForColumn(1, new EditorDelegate("0000.000"));//æµé€Ÿ;
+	//ui.tableView->setItemDelegateForColumn(1, new EditorDelegate("0000.0000"));//æµé€Ÿ;
 	
 	//ui.tableView->setItemDelegateForColumn(2, new EditorDelegate("000.0"));//A;
 	//ui.tableView->setItemDelegateForColumn(3, new EditorDelegate("000.0"));//B;
@@ -82,13 +82,13 @@ void GradientTable::initDisplay()
 
 void GradientTable::getOutTableFocus(int dir)
 {
-	if(dir == 0)//ÉÏ
+	if(dir == 0)//ä¸Š
 		ui.backBtn->setFocus();
-	else if(dir == 1)//ÏÂ;
+	else if(dir == 1)//ä¸‹;
 		ui.saveBtn->setFocus();
-	else if(dir == 2)//×ó
+	else if(dir == 2)//å·¦
 		ui.backBtn->setFocus();
-	else if(dir == 3)//ÓÒ
+	else if(dir == 3)//å³
 		ui.saveBtn->setFocus();
 }
 

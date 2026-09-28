@@ -31,7 +31,7 @@ void RunPage::initFocusList()
 
 void RunPage::updateTime(quint32 startupTime)
 {
-	//¸üĞÂ¿ª»úÊ±¼ä;
+	//æ›´æ–°å¼€æœºæ—¶é—´;
 	int hour = startupTime/3600;
 	int minute = (startupTime%3600)/60;
 	int second = (startupTime%3600)%60;
@@ -54,14 +54,14 @@ void RunPage::initDisplay()
 		pumpType = 0;
 	double maxFlow = array[pumpType];*/
 	double maxFlow = MachineStat::getInstance()->getMaxFlow();
-	if(DataBase::getInstance()->queryData("pumptype").toInt() == 0)//10ml±Ã
-		ui.rateFlow->setValRange("pumpPurgeFlowVal", 0, maxFlow, 4);//ÕÅ½Ü»ªĞŞ¸Ä@2016-06-28£¬½«Ğ¡ÊıµãÎ»Êı¸Ä³É1¸ö£¬ÎŞĞ§£¿£¿
+	if(DataBase::getInstance()->queryData("pumptype").toInt() == 0)//10mlæ³µ
+		ui.rateFlow->setValRange("pumpPurgeFlowVal", 0, maxFlow, 4);//å¼ æ°åä¿®æ”¹@2016-06-28ï¼Œå°†å°æ•°ç‚¹ä½æ•°æ”¹æˆ1ä¸ªï¼Œæ— æ•ˆï¼Ÿï¼Ÿ
 	else
 		ui.rateFlow->setValRange("pumpPurgeFlowVal", 0, maxFlow, 3);
 
 	//setStyleSheet( BTNGLOBALSTYLE);
 
-	//ÊµÊ±Öµ;
+	//å®æ—¶å€¼;
 	connect(MachineStat::getInstance(),SIGNAL(updatePressDisplay(QString, quint8)), this, SLOT(updatePresVal(QString, quint8)));
 	connect(MachineStat::getInstance(), SIGNAL(updateFlowDisplay(QString)), this, SLOT(updateFlowVal(QString)));
 	connect(MachineStat::getInstance(), SIGNAL(machineStatChanged(MachineStat::MachineStatment)), this,  SLOT(updateMachineStat(MachineStat::MachineStatment)));
@@ -71,7 +71,7 @@ void RunPage::initDisplay()
 	connect(ui.statCombo, SIGNAL(currentIndexChanged(int)), this, SLOT(changeMachineStat(int)));
 	connect(ui.rateFlow, SIGNAL(dataChanging(QString)), this, SLOT(changeFlow(QString)) );
 
-	//Èç¹ûPC¶Ë¸üĞÂÁËÁ÷ËÙÔòÏÔÊ¾×îĞÂµÄPCÉèÖÃÖµ;
+	//å¦‚æœPCç«¯æ›´æ–°äº†æµé€Ÿåˆ™æ˜¾ç¤ºæœ€æ–°çš„PCè®¾ç½®å€¼;
 	MachineStat::getInstance()->isUpdateFlowFromPC();
 }
 
@@ -103,12 +103,12 @@ bool RunPage::eventFilter(QObject *obj, QEvent *event)
 	//		QKeyEvent *ke = static_cast<QKeyEvent *>(event);
 	//		if(ke->key() == Qt::Key_Return)
 	//		{
-	//			//²éÕÒµ±Ç°µÄ»úÆ÷×´Ì¬;
-	//			//µ±ÔËĞĞ×´Ì¬´¦ÓÚÔËĞĞ¡¢±ÃÒº¡¢ÇåÏ´¡¢ÔİÍ£Ê±£¬Ëø¶¨Ìİ¶ÈÀ¸²»ÄÜ±»ĞŞ¸Ä
+	//			//æŸ¥æ‰¾å½“å‰çš„æœºå™¨çŠ¶æ€;
+	//			//å½“è¿è¡ŒçŠ¶æ€å¤„äºè¿è¡Œã€æ³µæ¶²ã€æ¸…æ´—ã€æš‚åœæ—¶ï¼Œé”å®šæ¢¯åº¦æ ä¸èƒ½è¢«ä¿®æ”¹
 	//			if(MachineStat::getInstance()->getCurrentStat() != MachineStat::STOP)
 	//				return true;
 	//			else
-	//				return false; //¼ÌĞø´«µİ
+	//				return false; //ç»§ç»­ä¼ é€’
 	//		}
 	//		else
 	//			return CBasePage::eventFilter(obj, event);
@@ -138,7 +138,7 @@ void RunPage::changeMachineStat( int stat)
 
 void RunPage::updatePercentVal( QString disp )
 {
-	if(disp.indexOf("%") == -1)//Îâ½ÜÄÜÌí¼Ó@2016-06-19
+	if(disp.indexOf("%") == -1)//å´æ°èƒ½æ·»åŠ @2016-06-19
 	{
 		disp=disp + "%";
 	}

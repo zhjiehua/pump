@@ -27,11 +27,11 @@ private slots:
 	void on_utcBtn_clicked();
 	void on_btcBtn_clicked();
 
-	void on_rstBtn_clicked();//»Ö¸´³ö³§ÉèÖÃ£¬²âÊÔÓÃ;
+	void on_rstBtn_clicked();//æ¢å¤å‡ºå‚è®¾ç½®ï¼Œæµ‹è¯•ç”¨;
 
-	void tryDayChanged(QString val);//Çå³ıÊ¹ÓÃÊ±¼ä£¬ÖØĞÂ¼ÆÊ±;
+	void tryDayChanged(QString val);//æ¸…é™¤ä½¿ç”¨æ—¶é—´ï¼Œé‡æ–°è®¡æ—¶;
 
-	void changePcPro(int idx);//¸ü¸ÄĞ­Òé;
+	void changePcPro(int idx);//æ›´æ”¹åè®®;
 	void changeConnectPort(int idx);
 
 	void on_saveDataBtn_clicked();

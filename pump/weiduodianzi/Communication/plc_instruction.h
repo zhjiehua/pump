@@ -9,7 +9,7 @@ extern "C"{
 
 #ifdef _WIN32
 
-//ÓÃÓÚÓ³Éä
+//ç”¨äºæ˜ å°„
 enum e_insMap{
 	//insNULL,		//null instruction
 	insLD,	
@@ -69,7 +69,7 @@ enum e_insMap{
 	insP
 };
 
-//ÈıÁâPLCÖ¸ÁîÏµÍ³
+//ä¸‰è±PLCæŒ‡ä»¤ç³»ç»Ÿ
 enum e_sinsMap{
 	sinsLD = 0x00,	
 	sinsLDI = 0x01,
@@ -111,7 +111,7 @@ enum e_sinsMap{
 	sinsSTL = 0x6c0123,
 	sinsRET = 0x6c0124,
 	sinsSET1 = 0x2302,
-	sinsRST1 = 0x2402,		//T¡¢CÍ¬Ò»¸ö
+	sinsRST1 = 0x2402,		//Tã€CåŒä¸€ä¸ª
 
 	sinsADD = 0x490728,
 	sinsSUB = 0x49072A,
@@ -137,28 +137,28 @@ enum e_sinsMap{
 
 
 enum e_elementMap{
-	scoilX=0x9c,	//ÊäÈë¼ÌµçÆ÷ 0~160
-	scoilY=0x9d,	//Êä³ö¼ÌµçÆ÷ 0~160
-	scoilM=0x90,	//¸¨Öú¼ÌµçÆ÷ 0~9000
-	scoilS=0x98,	//×´Ì¬		 0~1000
-	scoilT=0xc2,	//¶¨Ê±Æ÷		 0~255
-	scoilC=0xc5,	//¼ÆÊıÆ÷		 0~255
-	scoilD=0xa8,	//Êı¾İ¼Ä´æÆ÷ 0~9000
-	scoilR='R',	//À©Õ¹
-	scoilP=0xd0,	//Ö¸Õë
-	scoilN=0xd2,	//Ç¶Ì×
-	scoilK=0xe8,	//³£Á¿
+	scoilX=0x9c,	//è¾“å…¥ç»§ç”µå™¨ 0~160
+	scoilY=0x9d,	//è¾“å‡ºç»§ç”µå™¨ 0~160
+	scoilM=0x90,	//è¾…åŠ©ç»§ç”µå™¨ 0~9000
+	scoilS=0x98,	//çŠ¶æ€		 0~1000
+	scoilT=0xc2,	//å®šæ—¶å™¨		 0~255
+	scoilC=0xc5,	//è®¡æ•°å™¨		 0~255
+	scoilD=0xa8,	//æ•°æ®å¯„å­˜å™¨ 0~9000
+	scoilR='R',	//æ‰©å±•
+	scoilP=0xd0,	//æŒ‡é’ˆ
+	scoilN=0xd2,	//åµŒå¥—
+	scoilK=0xe8,	//å¸¸é‡
 
-	scoilZ='Z',	//ÄÚ²¿ÖĞ¼ä¼ÌµçÆ÷		0~255
-	scoilL='L',	//ÄÚ²¿ÖĞ¼ä±£³Ö¼ÌµçÆ÷	0~9000 bit
-	scoilU='U'	//ÄÚ²¿16Î»
+	scoilZ='Z',	//å†…éƒ¨ä¸­é—´ç»§ç”µå™¨		0~255
+	scoilL='L',	//å†…éƒ¨ä¸­é—´ä¿æŒç»§ç”µå™¨	0~9000 bit
+	scoilU='U'	//å†…éƒ¨16ä½
 };
 
 #endif
 
-//DSPÖ¸ÁîÏµÍ³
+//DSPæŒ‡ä»¤ç³»ç»Ÿ
 enum e_dinsMap{
-	//»ù±¾Ö¸Áî µÍ8Î»
+	//åŸºæœ¬æŒ‡ä»¤ ä½8ä½
 	dinsLD = 0x10,	
 	dinsLDI = 0x11,
 	dinsLDP = 0x12,
@@ -203,7 +203,7 @@ enum e_dinsMap{
 	dinsSET1 = 0x52,
 	dinsRST1 = 0x53,
 
-	//²Ù×÷Ö¸Áî
+	//æ“ä½œæŒ‡ä»¤
 	dinsADD = 0x0100,
 	dinsSUB = 0x0101,
 	dinsMUL = 0x0102,
@@ -224,18 +224,18 @@ enum e_dinsMap{
 };
 
 enum e_delementMap{
-	dcoilX=0x90,	//ÊäÈë¼ÌµçÆ÷
-	dcoilY=0x91,	//Êä³ö¼ÌµçÆ÷
-	dcoilM=0x92,	//¸¨Öú¼ÌµçÆ÷
-	dcoilS=0x93,	//×´Ì¬		
-	dcoilT=0x94,	//¶¨Ê±Æ÷		
-	dcoilC=0x95,	//¼ÆÊıÆ÷		
-	dcoilD=0x96,	//Êı¾İ¼Ä´æÆ÷ 
+	dcoilX=0x90,	//è¾“å…¥ç»§ç”µå™¨
+	dcoilY=0x91,	//è¾“å‡ºç»§ç”µå™¨
+	dcoilM=0x92,	//è¾…åŠ©ç»§ç”µå™¨
+	dcoilS=0x93,	//çŠ¶æ€		
+	dcoilT=0x94,	//å®šæ—¶å™¨		
+	dcoilC=0x95,	//è®¡æ•°å™¨		
+	dcoilD=0x96,	//æ•°æ®å¯„å­˜å™¨ 
 	dcoilP=0x97,
-	dcoilDT=0xa0,	//¶¨Ê±Æ÷Êı¾İ	
-	dcoilDC=0xa1,	//¼ÆÊıÆ÷Êı¾İ
-	dcoilK=0xf0,	//³£Á¿
-	dcoilDK=0xf1	//³£Á¿Ë«×Ö½Ú
+	dcoilDT=0xa0,	//å®šæ—¶å™¨æ•°æ®	
+	dcoilDC=0xa1,	//è®¡æ•°å™¨æ•°æ®
+	dcoilK=0xf0,	//å¸¸é‡
+	dcoilDK=0xf1	//å¸¸é‡åŒå­—èŠ‚
 };
 
 #ifdef __cplusplus

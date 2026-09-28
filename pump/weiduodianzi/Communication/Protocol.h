@@ -80,7 +80,7 @@ void API_InitProtocol( void );
 void SetProtocolConf( LPProtocolConf conf, unsigned int uFlag );
 int API_ProtocolSend( mbyte* pData, uint16 sz );
 void API_CmdSend(mbyte type, uint32 cmd, uint32 arg);
-void API_SetPumpType(int pumpType);//ÉèÖÃ±ÃµÄÀàĞÍ£¬ÀàĞÍ²»Í¬,¾ÉÉÏÎ»»úĞ­ÒéÁ÷ËÙÃüÁî³¤¶È²»Í¬;
+void API_SetPumpType(int pumpType);//è®¾ç½®æ³µçš„ç±»å‹ï¼Œç±»å‹ä¸åŒ,æ—§ä¸Šä½æœºåè®®æµé€Ÿå‘½ä»¤é•¿åº¦ä¸åŒ;
 
 void API_CmdSendClarity(uint32 hAI, uint32 hPFC, uint32 hVal);
 

@@ -11,34 +11,34 @@ public:
 	EditCtrl(QWidget *parent);
 	~EditCtrl();
 
-	//ÉèÖÃÊı¾İ¿â±äÁ¿Ãû³Æ£¬¿ÉÒÔÊäÈëµÄÓĞĞ§·¶Î§£¬×îĞ¡Öµ¡¢×î´óÖµºÍĞ¡ÊıµãÎ»Êı
+	//è®¾ç½®æ•°æ®åº“å˜é‡åç§°ï¼Œå¯ä»¥è¾“å…¥çš„æœ‰æ•ˆèŒƒå›´ï¼Œæœ€å°å€¼ã€æœ€å¤§å€¼å’Œå°æ•°ç‚¹ä½æ•°
 	void setValRange(QString var, double min, double max, quint8 nDecimal = 0, int nWidth= -1, bool bReadOnly = false);
 	bool isEditMode(){return !isReadOnly();}
 	void disableAutoSave(){m_bAutoSave = false;}
-	void restoreData();						//»Ö¸´Ö®Ç°µÄÊı¾İ;
+	void restoreData();						//æ¢å¤ä¹‹å‰çš„æ•°æ®;
 	void saveData(QString data);
-	void setTextMode(bool mode = true);		//½øÈëÎÄ±¾ÊäÈëÄ£Ê½£¬¼´²»½øĞĞÊıÖµ·¶Î§µÄÊäÈëÏŞÖÆ¡£
+	void setTextMode(bool mode = true);		//è¿›å…¥æ–‡æœ¬è¾“å…¥æ¨¡å¼ï¼Œå³ä¸è¿›è¡Œæ•°å€¼èŒƒå›´çš„è¾“å…¥é™åˆ¶ã€‚
 
 
 protected:
 	void keyPressEvent(QKeyEvent *event);
 
 private:
-	bool m_bAutoSave;//×Ô¶¯±£´æ;
-	double m_minVal;//×îĞ¡Öµ,Ä¬ÈÏ0;
-	double m_maxVal;//×î´óÖµ£¬Ä¬ÈÏ100;
-	quint8 m_nDecimal;//Ğ¡ÊıµãÎ»Êı£¬Ä¬ÈÏ0;
-	bool   m_bReadOnly;//Ö»¶Á£¬²»×÷ÊäÈë;
-	int  m_nWidth;//¶àÉÙÎ»¶ÔÆë,²»¹»¸ßÎ»²¹Áã;
-	QString tempData;//ÁÙÊ±Êı¾İ;
-	QString m_varName;//±äÁ¿Ãû³Æ;
-	bool m_bTextMode;//ÎÄ±¾ÊäÈëÄ£Ê½;
+	bool m_bAutoSave;//è‡ªåŠ¨ä¿å­˜;
+	double m_minVal;//æœ€å°å€¼,é»˜è®¤0;
+	double m_maxVal;//æœ€å¤§å€¼ï¼Œé»˜è®¤100;
+	quint8 m_nDecimal;//å°æ•°ç‚¹ä½æ•°ï¼Œé»˜è®¤0;
+	bool   m_bReadOnly;//åªè¯»ï¼Œä¸ä½œè¾“å…¥;
+	int  m_nWidth;//å¤šå°‘ä½å¯¹é½,ä¸å¤Ÿé«˜ä½è¡¥é›¶;
+	QString tempData;//ä¸´æ—¶æ•°æ®;
+	QString m_varName;//å˜é‡åç§°;
+	bool m_bTextMode;//æ–‡æœ¬è¾“å…¥æ¨¡å¼;
 
-	int len;//ÊäÈëÄÚÈİµÄ³¤¶È;
-	int bei;//±¶Êı;
-	QStringList data;//ÊäÈëÊı¾İµÄ»º´æ;
+	int len;//è¾“å…¥å†…å®¹çš„é•¿åº¦;
+	int bei;//å€æ•°;
+	QStringList data;//è¾“å…¥æ•°æ®çš„ç¼“å­˜;
 
-	void checkValidity(QString val);//¼ì²éÊäÈëÊı¾İµÄÓĞĞ§ĞÔ;
+	void checkValidity(QString val);//æ£€æŸ¥è¾“å…¥æ•°æ®çš„æœ‰æ•ˆæ€§;
 
 private slots:
 	void dateChanged(QString var, QString val);

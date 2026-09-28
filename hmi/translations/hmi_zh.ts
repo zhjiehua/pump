@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="zh_CN">
+<context>
+    <name>MainWindow</name>
+    <message>
+        <source>Run</source>
+        <translation>运行</translation>
+    </message>
+    <message>
+        <source>Parameters</source>
+        <translation>参数</translation>
+    </message>
+    <message>
+        <source>Setup</source>
+        <translation>设置</translation>
+    </message>
+    <message>
+        <source>Calibration</source>
+        <translation>校正</translation>
+    </message>
+    <message>
+        <source>Admin</source>
+        <translation>管理员</translation>
+    </message>
+    <message>
+        <source>Language</source>
+        <translation>语言</translation>
+    </message>
+    <message>
+        <source>About</source>
+        <translation>关于</translation>
+    </message>
+    <message>
+        <source>Permission</source>
+        <translation>权限</translation>
+    </message>
+    <message>
+        <source>Password</source>
+        <translation>密码</translation>
+    </message>
+    <message>
+        <source>Warning</source>
+        <translation>警告</translation>
+    </message>
+    <message>
+        <source>Pwd error!!!</source>
+        <translation>密码错误!!!</translation>
+    </message>
+    <message>
+        <source>Tips</source>
+        <translation>温馨提示</translation>
+    </message>
+</context>
+<context>
+    <name>BottomBar</name>
+    <message>
+        <source>Run</source>
+        <translation>运行</translation>
+    </message>
+    <message>
+        <source>Param</source>
+        <translation>参数</translation>
+    </message>
+    <message>
+        <source>Setup</source>
+        <translation>设置</translation>
+    </message>
+</context>
+<context>
+    <name>RunPage</name>
+    <message>
+        <source>Flow:</source>
+        <translation>流速:</translation>
+    </message>
+    <message>
+        <source>Press:</source>
+        <translation>压力:</translation>
+    </message>
+    <message>
+        <source>State:</source>
+        <translation>状态:</translation>
+    </message>
+    <message>
+        <source>Time:</source>
+        <translation>时间:</translation>
+    </message>
+    <message>
+        <source>Stop</source>
+        <translation>停止</translation>
+    </message>
+    <message>
+        <source>Pause</source>
+        <translation>暂停</translation>
+    </message>
+    <message>
+        <source>Runnning</source>
+        <translation>运行</translation>
+    </message>
+    <message>
+        <source>Pump</source>
+        <translation>泵</translation>
+    </message>
+    <message>
+        <source>Purge</source>
+        <translation>清洗</translation>
+    </message>
+    <message>
+        <source>PC</source>
+        <translation>上位机</translation>
+    </message>
+</context>
+</TS>

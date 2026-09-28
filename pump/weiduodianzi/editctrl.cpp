@@ -16,7 +16,7 @@ EditCtrl::EditCtrl(QWidget *parent)
 	, m_bTextMode(false)
 {
 	//setStyleSheet("QLineEdit:focus{border:2px solid rgb(155,200,33);}");
-	setStyleSheet("QLineEdit:focus{border: 2px solid blue;outline: 5px;}");//ÕÅ½Ü»ªĞŞ¸Ä@2016-06-23
+	setStyleSheet("QLineEdit:focus{border: 2px solid blue;outline: 5px;}");//å¼ æ°åä¿®æ”¹@2016-06-23
 	setReadOnly(true);
 }
 
@@ -51,7 +51,7 @@ void EditCtrl::setValRange(QString var, double dMin, double dMax, quint8 nDecima
 	}
 	
 
-	//¶ÁÈ¡Êı¾İ¿â;
+	//è¯»å–æ•°æ®åº“;
 	DataBase *pDb = DataBase::getInstance();
 	tempData = pDb->queryData(m_varName);
 	setText(tempData);
@@ -82,7 +82,7 @@ void EditCtrl::checkValidity(QString val)
 	}
 	setText(strDisplay);
 
-	//¸üĞÂÊı¾İ¿â;
+	//æ›´æ–°æ•°æ®åº“;
 	if(m_bAutoSave)
 	{
 		saveData(strDisplay);
@@ -96,24 +96,24 @@ void EditCtrl::keyPressEvent(QKeyEvent *event)
 	if(event->key() == KEY_RETURN)
 	{
 		selectAll();
-		if(isReadOnly())//½øÈë±à¼­×´Ì¬
+		if(isReadOnly())//è¿›å…¥ç¼–è¾‘çŠ¶æ€
 		{
 			g_pMainWindow->setShortCutDisable(true);
 			setReadOnly(false);
 			for(int i=0;i<text().length();i++)
 				data.append(text().at(i));
 		}
-		else//½øÈë±£´æ×´Ì¬;
+		else//è¿›å…¥ä¿å­˜çŠ¶æ€;
 		{
 			setReadOnly(true);
 			g_pMainWindow->setShortCutDisable(false);
 
-			//½â¾öĞí¿ÉÖ¤²»ÄÜÒÔ0¿ªÍ·µÄÎÊÌâ£¬ÕÅ½Ü»ªÌí¼Ó@2016-08-10
+			//è§£å†³è®¸å¯è¯ä¸èƒ½ä»¥0å¼€å¤´çš„é—®é¢˜ï¼Œå¼ æ°åæ·»åŠ @2016-08-10
 			if(m_bTextMode)
 			{
 				setText(text());
 
-				//¸üĞÂÊı¾İ¿â;
+				//æ›´æ–°æ•°æ®åº“;
 				if(m_bAutoSave)
 				{
 					saveData(text());

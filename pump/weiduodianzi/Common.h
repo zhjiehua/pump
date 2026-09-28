@@ -1,11 +1,11 @@
 #ifndef _COMMON_H
 #define _COMMON_H
 
-//5¥Á
+//5ÂØ∏
 //#define SCREEN_WIDTH 640
 //#define SCREEN_HEIGH 480
 
-//320*240
+//3.5ÂØ∏ 320*240
 #define SCREEN_WIDTH 320
 #define SCREEN_HEIGH 240
 #define CONTROL_OFFSET 45
@@ -25,11 +25,11 @@
 
 //xhs
 #define FIXPAGE_INDEX			8
-#define FLOWFIXPAGE_INDEX		9//¡˜¡ø–ﬁ’˝
+#define FLOWFIXPAGE_INDEX		9//ÊµÅÈáè‰øÆÊ≠£
 #define TIMEPAGE_INDEX			10
-#define WAVEFIXPAGE_INDEX		11//≤®≥§(—π¡¶±√)–ﬁ’˝
-#define GRADIENTPAGE_INDEX		12//Ã›∂»—°‘Ò“≥√Ê;
-#define GRADIENTTABLE_INDEX		13//Ã›∂»±Ì∏Ò…Ë÷√;
+#define WAVEFIXPAGE_INDEX		11//Ê≥¢Èïø(ÂéãÂäõÊ≥µ)‰øÆÊ≠£
+#define GRADIENTPAGE_INDEX		12//Ê¢ØÂ∫¶ÈÄâÊã©È°µÈù¢;
+#define GRADIENTTABLE_INDEX		13//Ê¢ØÂ∫¶Ë°®Ê†ºËÆæÁΩÆ;
 #define DEBUGPRESS_INDEX		14
 #define LOGOPAGE_INDEX			15
 #define NETPAGE_INDEX			16
@@ -45,11 +45,15 @@
 #define ENGLISH					0
 #define CHINESE					1
 
-#if 0
-#define KEY_UP					Qt::Key_Up
-#define KEY_DOWN				Qt::Key_Down
-#define KEY_LEFT				Qt::Key_Left		
-#define KEY_RIGHT				Qt::Key_Right
+#if 1
+// #define KEY_UP					Qt::Key_Up
+// #define KEY_DOWN				Qt::Key_Down
+// #define KEY_LEFT				Qt::Key_Left		
+// #define KEY_RIGHT				Qt::Key_Right
+#define KEY_UP					Qt::Key_W
+#define KEY_DOWN				Qt::Key_S
+#define KEY_LEFT				Qt::Key_A	
+#define KEY_RIGHT				Qt::Key_D
 #define KEY_BACKSPACE			Qt::Key_Backspace
 #define KEY_RETURN				Qt::Key_Return
 #define KEY_PUMPSTOP			Qt::Key_F6

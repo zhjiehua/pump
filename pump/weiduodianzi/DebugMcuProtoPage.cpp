@@ -27,7 +27,7 @@ DebugMcuProtoPage::DebugMcuProtoPage(QWidget *parent /*= 0*/, quint8 index, quin
 	ui.setupUi(this);
 	m_strTitle = tr("DebugPressPage");
 	initDisplay();
-	//Í¼±í³õÊ¼»¯;
+	//å›¾è¡¨åˆå§‹åŒ–;
 	initPlotDisp();
 }
 
@@ -79,12 +79,12 @@ void DebugMcuProtoPage::initDisplay()
 	ui.tableView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 	ui.tableView->setEditTriggers(QAbstractItemView::AnyKeyPressed);
 
-	//ÎªÃ¿Ò»ÁÐÉèÖÃ´úÀí;
-	ui.tableView->setItemDelegateForColumn(0, new EditorDelegate("000.0000"));//Ñ¹Á¦;
-	ui.tableView->setItemDelegateForColumn(1, new EditorDelegate("000.0000"));//Ð£×¼;
+	//ä¸ºæ¯ä¸€åˆ—è®¾ç½®ä»£ç†;
+	ui.tableView->setItemDelegateForColumn(0, new EditorDelegate("000.0000"));//åŽ‹åŠ›;
+	ui.tableView->setItemDelegateForColumn(1, new EditorDelegate("000.0000"));//æ ¡å‡†;
 	ui.tableView->initIndex();
 
-	//Òþ²ØÏßÍ¼;
+	//éšè—çº¿å›¾;
 	//ui.qwtPlot->hide();
 
 	/*int array[7]={42, 25 , 20, 20, 15, 10, 10};
@@ -147,7 +147,7 @@ void DebugMcuProtoPage::on_collectBtn_clicked()
 	else
 	{
 		m_curveData.clear();
-		//±£´æÎÄ¼þ;
+		//ä¿å­˜æ–‡ä»¶;
 
 		DataBase::getInstance()->saveTableToFile(QString(PRESSPATH), gradient_model->getTableData());
 	}
@@ -163,7 +163,7 @@ void DebugMcuProtoPage::on_startBtn_clicked()
 	m_bStartFlag = !m_bStartFlag;
 	if(m_bStartFlag)
 	{
-		MachineStat::getInstance()->updateFlow(ui.flowEdit->text().toDouble(), MachineStat::DEBUG_MODE);//¿ªÊ¼
+		MachineStat::getInstance()->updateFlow(ui.flowEdit->text().toDouble(), MachineStat::DEBUG_MODE);//å¼€å§‹
 		ui.startBtn->setText(tr("Stop"));
 		
 	}
@@ -224,10 +224,10 @@ void DebugMcuProtoPage::initPlotDisp()
 {
 #if 0
 	m_curve.setSamples(m_curveData);
-	//¼Óµ½plot£¬plotÓÉIDE´´½¨
+	//åŠ åˆ°plotï¼Œplotç”±IDEåˆ›å»º
 	m_curve.attach(ui.qwtPlot);
-	m_curve.setCurveAttribute(QwtPlotCurve::Fitted, true);//ÊÇÇúÏß¸ü¹â»¬  
-	m_curve.setPen(QPen(Qt::blue));//ÉèÖÃ»­±Ê  
+	m_curve.setCurveAttribute(QwtPlotCurve::Fitted, true);//æ˜¯æ›²çº¿æ›´å…‰æ»‘  
+	m_curve.setPen(QPen(Qt::blue));//è®¾ç½®ç”»ç¬”  
 	//ui.qwtPlot->setAxisScale(QwtPlot::yLeft, 0, 10);
 	ui.qwtPlot->setAxisScale(QwtPlot::xBottom, 0, X_AXIS_EXTEND);
 	ui.qwtPlot->setAxisScale(QwtPlot::yLeft, 0, Y_AXIS_EXTEND);

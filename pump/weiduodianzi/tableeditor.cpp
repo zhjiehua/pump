@@ -35,7 +35,7 @@ void TableEditor::keyPressEvent( QKeyEvent *event )
 		if(MachineStat::getInstance()->pwdOK)
 			MachineStat::getInstance()->pwdNeed = false;
 		MachineStat::getInstance()->pwdOK = false;
-		if(MachineStat::getInstance()->pwdNeed) //ÕÅ½Ü»ªÌí¼Ó@2016-07-31
+		if(MachineStat::getInstance()->pwdNeed) //å¼ æ°åŽæ·»åŠ @2016-07-31
 		{
 			MachineStat::getInstance()->whichPage = g_pMainWindow->GetPageIndex();
 			MachineStat::getInstance()->usrType = MachineStat::USER;

@@ -12,10 +12,10 @@
 #include <asm-generic/ioctl.h>
 #include <fcntl.h>
 
-//IOCTLµÄÃüÁî
+//IOCTLçš„å‘½ä»¤
 #define IOC_MAGIC  'A'
-#define PWM_IOCTL_WHICH_EDGE	_IO(IOC_MAGIC, 10)//ÉèÖÃÊÇ¼ì²âÏÂ½µÑØ»¹ÊÇÉÏÉýÑØ;
-#define PWM_IOCTL_SET_FALLING	_IO(IOC_MAGIC, 9)//ÉèÖÃÏÂ½µÑØ;
+#define PWM_IOCTL_WHICH_EDGE	_IO(IOC_MAGIC, 10)//è®¾ç½®æ˜¯æ£€æµ‹ä¸‹é™æ²¿è¿˜æ˜¯ä¸Šå‡æ²¿;
+#define PWM_IOCTL_SET_FALLING	_IO(IOC_MAGIC, 9)//è®¾ç½®ä¸‹é™æ²¿;
 #define PWM_IOCTL_GET_EDG		_IO(IOC_MAGIC, 8)
 #define PWM_IOCTL_GET_IO		_IO(IOC_MAGIC, 7)
 #define PWM_IOCTL_CLS_IO		_IO(IOC_MAGIC, 6)
@@ -27,7 +27,7 @@
 #define PWM_IOCTL_STOP			_IO(IOC_MAGIC, 0)
 #endif
 
-//IOÑÚÂë
+//IOæŽ©ç 
 #define IO_PUL_MASK				((unsigned long)1<<0)
 #define IO_DIR_MASK				((unsigned long)1<<1)
 #define IO_RST_MASK				((unsigned long)1<<2)
@@ -45,7 +45,7 @@
 #define IO_MOTORSTOP_MASK		((unsigned long)1<<12)
 #define IO_BULGE_MASK			((unsigned long)1<<13)
 
-//Í¹ÂÖ²¹³¥ÓÃ;
+//å‡¸è½®è¡¥å¿ç”¨;
 #define IO_BUGLE_COMPEN_MASK	((unsigned long)1<<14)
 #define IO_BUGLE_COMPRESV_MASK	((unsigned long)1<<15)
 #define IO_BUGLE_COMPLVL_MASK	((unsigned long)1<<16)
@@ -62,10 +62,10 @@ public:
 	void logic_set_io(quint32 io, bool val);
 	bool logic_get_io(quint32 io);
 
-//¼ì²âÆ÷ÓÃ
+//æ£€æµ‹å™¨ç”¨
 	void logic_init_lamp_operation();
 
-	void doWarn(bool on);//·äÃùÆ÷Ïì3s¾¯¸æ;
+	void doWarn(bool on);//èœ‚é¸£å™¨å“3sè­¦å‘Š;
 
 private:
 	QTimer *m_pTimer;
@@ -77,16 +77,16 @@ private:
 
 signals:
 	void initLampSuccess();
-	void bulge();//Í¹ÂÖÐÅºÅ³öÏÖ;
-	void weeping(bool flag);//Â©Òº
+	void bulge();//å‡¸è½®ä¿¡å·å‡ºçŽ°;
+	void weeping(bool flag);//æ¼æ¶²
 	void testPress(quint32);
 
 private slots:
-	void init_s1();//CTL1Êä³ö0µçÆ½¡¢CTL0Êä³ö1µçÆ½
-	void init_s2();//CTL0Êä³ö0µçÆ½;
-	void init_s3();//CTL1Êä³ö1µçÆ½£¬´ËÊ±ë®µÆÓ¦µãÁÁ;
-	void init_s4();//DIN4Îª0µçÆ½Ôòë®µÆÕý³££»ÈçÎª1µçÆ½Ôòë®µÆ´íÎó
-	void operation_s();//²Ù×÷Ä£Ê½;
+	void init_s1();//CTL1è¾“å‡º0ç”µå¹³ã€CTL0è¾“å‡º1ç”µå¹³
+	void init_s2();//CTL0è¾“å‡º0ç”µå¹³;
+	void init_s3();//CTL1è¾“å‡º1ç”µå¹³ï¼Œæ­¤æ—¶æ°˜ç¯åº”ç‚¹äº®;
+	void init_s4();//DIN4ä¸º0ç”µå¹³åˆ™æ°˜ç¯æ­£å¸¸ï¼›å¦‚ä¸º1ç”µå¹³åˆ™æ°˜ç¯é”™è¯¯
+	void operation_s();//æ“ä½œæ¨¡å¼;
 
 	void readingIO();
 	

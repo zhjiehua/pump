@@ -103,7 +103,7 @@ void BottomWidget::updateLanguage()
 	ui.paramBtn->setText(tr("Param"));
 	ui.setBtn->setText(tr("Setup"));
 	ui.dbgBtn->setText(tr("Debug"));
-	MachineStat::getInstance()->updateWarning();//Îâ½ÜÄÜÌí¼Ó@2016-06-18
+	MachineStat::getInstance()->updateWarning();//å´æ°èƒ½æ·»åŠ @2016-06-18
 }
 
 extern double overPress;
