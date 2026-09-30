@@ -1,4 +1,4 @@
-#include "protocol/qinfineclient.h"
+#include "protocol/mcu/qinfine/qinfineclient.h"
 #include "utils/eventlog.h"
 
 QinFineClient::QinFineClient(QObject *parent)

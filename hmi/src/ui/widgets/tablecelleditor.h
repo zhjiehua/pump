@@ -11,6 +11,8 @@ public:
     explicit TableCellEditor(QWidget *parent = nullptr, const QString &inputMask = QString());
 
 protected:
+    bool event(QEvent *event) override;
+    void showEvent(QShowEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
 
 private:

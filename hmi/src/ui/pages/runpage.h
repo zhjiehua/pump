@@ -5,9 +5,9 @@
 
 class MachineController;
 class MainWindow;
+class ComboCtrl;
 class EditCtrl;
 class QLabel;
-class QComboBox;
 
 class RunPage : public FocusPage
 {
@@ -17,7 +17,6 @@ public:
 
 protected:
     void initFocusList() override;
-    bool handleFocusNavKey(int key) override;
 
 private slots:
     void onStatActivated(int index);
@@ -32,7 +31,7 @@ private:
     EditCtrl *m_flow = nullptr;
     QLabel *m_percent = nullptr;
     QLabel *m_press = nullptr;
-    QComboBox *m_stat = nullptr;
+    ComboCtrl *m_stat = nullptr;
     QLabel *m_time = nullptr;
 };
 

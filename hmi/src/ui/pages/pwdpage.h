@@ -6,31 +6,32 @@
 class MachineController;
 class MainWindow;
 class QLabel;
-class QLineEdit;
-class QPushButton;
+class EditCtrl;
+class BtnCtrl;
 
-/** Password gate before admin / protected pages. */
+/** Password gate before admin / protected pages (weiduodianzi PwdPage). */
 class PwdPage : public FocusPage
 {
     Q_OBJECT
 public:
-    /** @a adminLogin true → Admin label; false → User (MainWindow::pendingAdmin()). */
     PwdPage(MachineController *c, MainWindow *main, bool adminLogin = true,
             QWidget *parent = nullptr);
 
 protected:
     void initFocusList() override;
+    void retranslateUi() override;
 
 private slots:
     void onLogin();
-    void onBack();
 
 private:
     MachineController *m_c = nullptr;
     MainWindow *m_main = nullptr;
-    QLabel *m_usr = nullptr;
-    QLineEdit *m_pwd = nullptr;
-    QPushButton *m_login = nullptr;
+    QLabel *m_usrCap = nullptr;
+    QLabel *m_pwdCap = nullptr;
+    EditCtrl *m_usr = nullptr;
+    EditCtrl *m_pwd = nullptr;
+    BtnCtrl *m_login = nullptr;
     bool m_adminLogin = true;
 };
 

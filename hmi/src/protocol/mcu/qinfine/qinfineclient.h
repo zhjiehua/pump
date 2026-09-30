@@ -1,9 +1,9 @@
-#ifndef QINFINECLIENT_H
-#define QINFINECLIENT_H
+#ifndef PROTOCOL_MCU_QINFINE_CLIENT_H
+#define PROTOCOL_MCU_QINFINE_CLIENT_H
 
 #include <QObject>
 #include "platform/hmiserialport.h"
-#include "protocol/qinfinecodec.h"
+#include "protocol/mcu/qinfine/qinfinecodec.h"
 
 class QinFineClient : public QObject
 {

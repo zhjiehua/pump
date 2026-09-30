@@ -5,11 +5,12 @@
 
 class MachineController;
 class MainWindow;
-class QComboBox;
-class QLineEdit;
-class QPushButton;
+class EditCtrl;
+class ComboCtrl;
+class BtnCtrl;
+class QLabel;
 
-/** Full admin settings (password-protected entry). */
+/** Full admin settings (weiduodianzi AdminPage). */
 class AdminPage : public FocusPage
 {
     Q_OBJECT
@@ -18,15 +19,16 @@ public:
 
 protected:
     void initFocusList() override;
+    void retranslateUi() override;
 
 private slots:
     void onCancelActive();
     void onClearSys();
     void onClearPump();
     void onRestore();
-    void onImportJson();
-    void onSave();
-    void onBack();
+    void onSaveData();
+    void onUpdateData();
+    void onFieldChanged();
 
 private:
     void loadFromSettings();
@@ -35,28 +37,36 @@ private:
     MachineController *m_c = nullptr;
     MainWindow *m_main = nullptr;
 
-    QPushButton *m_cancelActive = nullptr;
-    QPushButton *m_clearSys = nullptr;
-    QPushButton *m_clearPump = nullptr;
-    QPushButton *m_restore = nullptr;
-    QPushButton *m_importJson = nullptr;
-    QPushButton *m_save = nullptr;
-    QPushButton *m_back = nullptr;
+    BtnCtrl *m_cancelActive = nullptr;
+    BtnCtrl *m_clearSys = nullptr;
+    BtnCtrl *m_clearPump = nullptr;
+    BtnCtrl *m_restore = nullptr;
+    BtnCtrl *m_saveData = nullptr;
+    BtnCtrl *m_updateData = nullptr;
 
-    QLineEdit *m_manufYear = nullptr;
-    QLineEdit *m_manufMonth = nullptr;
-    QLineEdit *m_manufDay = nullptr;
-    QLineEdit *m_instYear = nullptr;
-    QLineEdit *m_instMonth = nullptr;
-    QLineEdit *m_instDay = nullptr;
-    QLineEdit *m_repairYear = nullptr;
-    QLineEdit *m_repairMonth = nullptr;
-    QLineEdit *m_repairDay = nullptr;
-    QLineEdit *m_license = nullptr;
-    QLineEdit *m_serial = nullptr;
-    QComboBox *m_pcProto = nullptr;
-    QComboBox *m_connect = nullptr;
-    QLineEdit *m_pmax = nullptr;
+    QLabel *m_manufCap = nullptr;
+    QLabel *m_instCap = nullptr;
+    QLabel *m_repairCap = nullptr;
+    QLabel *m_licenCap = nullptr;
+    QLabel *m_protoCap = nullptr;
+    QLabel *m_serialCap = nullptr;
+    QLabel *m_conneCap = nullptr;
+    QLabel *m_pmaxCap = nullptr;
+
+    EditCtrl *m_manufYear = nullptr;
+    EditCtrl *m_manufMonth = nullptr;
+    EditCtrl *m_manufDay = nullptr;
+    EditCtrl *m_instYear = nullptr;
+    EditCtrl *m_instMonth = nullptr;
+    EditCtrl *m_instDay = nullptr;
+    EditCtrl *m_repairYear = nullptr;
+    EditCtrl *m_repairMonth = nullptr;
+    EditCtrl *m_repairDay = nullptr;
+    EditCtrl *m_license = nullptr;
+    EditCtrl *m_serial = nullptr;
+    ComboCtrl *m_pcProto = nullptr;
+    ComboCtrl *m_connect = nullptr;
+    EditCtrl *m_pmax = nullptr;
 };
 
 #endif

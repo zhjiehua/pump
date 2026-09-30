@@ -1,5 +1,5 @@
-#ifndef QINFINECODEC_H
-#define QINFINECODEC_H
+#ifndef PROTOCOL_MCU_QINFINE_CODEC_H
+#define PROTOCOL_MCU_QINFINE_CODEC_H
 
 #include <QByteArray>
 #include <QtGlobal>
@@ -36,6 +36,11 @@ constexpr quint8 PES_PRESS_DATA = 0x07;
 constexpr quint8 PES_PULSE_CMD = 0x08;
 constexpr quint8 PES_PULSE_DATA = 0x09;
 
+constexpr quint8 TBL_END = 0;
+constexpr quint8 TBL_BEGIN = 1;
+constexpr quint8 TBL_SAVE = 2;
+constexpr quint8 TBL_CLEAR = 3;
+
 constexpr quint8 WORK_FLOWCALIB = 0x01;
 constexpr quint8 WORK_PRESSCALIB = 0x02;
 constexpr quint8 WORK_PULSECOMPEN = 0x08;
@@ -60,6 +65,7 @@ struct Frame {
 QByteArray hexToAscii(const QByteArray &hex);
 QByteArray asciiToHex(const QByteArray &ascii);
 Frame decode(const QByteArray &asciiInnerWithCrc);
+QByteArray floatBytes(float v);
 float beFloat(const QByteArray &data, int off = 0);
 quint8 beU8(const QByteArray &data, int off = 0);
 

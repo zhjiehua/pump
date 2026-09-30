@@ -4,10 +4,11 @@
 #include "ui/focuspage.h"
 
 class MainWindow;
-class QPushButton;
+class BtnCtrl;
+class ImgButton;
 class QSignalMapper;
 
-/** Calibration entry: press / flow (+ optional QinFine extras). */
+/** Calibration entry: press / flow (weiduodianzi FixPage). */
 class FixPage : public FocusPage
 {
     Q_OBJECT
@@ -16,18 +17,17 @@ public:
 
 protected:
     void initFocusList() override;
+    void retranslateUi() override;
 
 private slots:
     void goPage(int page);
-    void onBack();
 
 private:
     MainWindow *m_main = nullptr;
     QSignalMapper *m_mapper = nullptr;
-    QPushButton *m_pressCal = nullptr;
-    QPushButton *m_flowCal = nullptr;
-    QPushButton *m_pulseCal = nullptr;
-    QPushButton *m_pressCompen = nullptr;
+    ImgButton *m_icon = nullptr;
+    BtnCtrl *m_pressCal = nullptr;
+    BtnCtrl *m_flowCal = nullptr;
 };
 
 #endif

@@ -1,0 +1,7 @@
+# Do NOT use --compile-commands-dir in multi-root workspaces; it overrides all folders.
+# clangd discovers this file by walking up from each source path.
+CompileFlags:
+  CompilationDatabase: .
+
+Index:
+  Background: Build

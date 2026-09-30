@@ -1,11 +1,11 @@
-#ifndef LEGACYMCUCODEC_H
-#define LEGACYMCUCODEC_H
+#ifndef PROTOCOL_MCU_CXTH_CODEC_H
+#define PROTOCOL_MCU_CXTH_CODEC_H
 
 #include <QByteArray>
 #include <QtGlobal>
 #include <QVector>
 
-namespace LegacyMcu {
+namespace CxthMcu {
 
 constexpr quint8 kCmdHead = 0x80;
 constexpr int kFrameSize = 5;
@@ -33,6 +33,6 @@ QVector<Frame> feed(QByteArray *rx, const QByteArray &chunk);
 
 Frame decodeFrame(const QByteArray &five);
 
-} // namespace LegacyMcu
+} // namespace CxthMcu
 
 #endif

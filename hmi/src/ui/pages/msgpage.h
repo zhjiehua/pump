@@ -6,9 +6,7 @@
 class MachineController;
 class MainWindow;
 class QLabel;
-
-/** About / program info (weiduodianzi MsgPage). */
-class QPushButton;
+class BtnCtrl;
 
 class MsgPage : public FocusPage
 {
@@ -18,6 +16,7 @@ public:
 
 protected:
     void initFocusList() override;
+    void retranslateUi() override;
 
 private slots:
     void updateProgram();
@@ -27,10 +26,13 @@ private:
 
     MachineController *m_c = nullptr;
     MainWindow *m_main = nullptr;
+    QLabel *m_versionCap = nullptr;
+    QLabel *m_licenseCap = nullptr;
+    QLabel *m_serialCap = nullptr;
     QLabel *m_version = nullptr;
     QLabel *m_license = nullptr;
     QLabel *m_serial = nullptr;
-    QPushButton *m_update = nullptr;
+    BtnCtrl *m_update = nullptr;
 };
 
 #endif

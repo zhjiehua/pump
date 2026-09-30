@@ -6,8 +6,7 @@
 class MachineController;
 class MainWindow;
 class QTextEdit;
-
-class QPushButton;
+class BtnCtrl;
 
 class DebugMcuProtoPage : public FocusPage
 {
@@ -29,8 +28,8 @@ private:
     MachineController *m_c = nullptr;
     MainWindow *m_main = nullptr;
     QTextEdit *m_log = nullptr;
-    QPushButton *m_reconnect = nullptr;
-    QPushButton *m_back = nullptr;
+    BtnCtrl *m_reconnect = nullptr;
+    BtnCtrl *m_back = nullptr;
 };
 
 #endif

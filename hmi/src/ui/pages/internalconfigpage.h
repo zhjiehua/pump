@@ -5,8 +5,8 @@
 
 class MachineController;
 class MainWindow;
-class QComboBox;
-class QLineEdit;
+class ComboCtrl;
+class EditCtrl;
 class QLabel;
 class QPushButton;
 
@@ -19,6 +19,7 @@ public:
 
 protected:
     void initFocusList() override;
+    void retranslateUi() override;
 
 private slots:
     void onMcuProtocolChanged(int index);
@@ -37,23 +38,24 @@ private:
     MachineController *m_c = nullptr;
     MainWindow *m_main = nullptr;
 
-    QComboBox *m_mcuProto = nullptr;
-    QComboBox *m_mcuPort = nullptr;
-    QLineEdit *m_mcuBaud = nullptr;
-    QLineEdit *m_mcuAddr = nullptr;
-    QComboBox *m_pumpType = nullptr;
-    QLineEdit *m_wordFactor = nullptr;
-    QLineEdit *m_pressScale = nullptr;
+    ComboCtrl *m_mcuProto = nullptr;
+    QLabel *m_mcuTypeLabel = nullptr;
+    ComboCtrl *m_mcuPort = nullptr;
+    EditCtrl *m_mcuBaud = nullptr;
+    EditCtrl *m_mcuAddr = nullptr;
+    ComboCtrl *m_pumpType = nullptr;
+    EditCtrl *m_wordFactor = nullptr;
+    EditCtrl *m_pressScale = nullptr;
 
-    QComboBox *m_pcProto = nullptr;
-    QComboBox *m_pcPortType = nullptr;
-    QComboBox *m_pcSerial = nullptr;
-    QLineEdit *m_pcBaud = nullptr;
-    QLineEdit *m_localUdp = nullptr;
-    QLineEdit *m_remoteIp = nullptr;
-    QLineEdit *m_remotePort = nullptr;
-    QLineEdit *m_machineCode = nullptr;
-    QComboBox *m_scale = nullptr;
+    ComboCtrl *m_pcProto = nullptr;
+    ComboCtrl *m_pcPortType = nullptr;
+    ComboCtrl *m_pcSerial = nullptr;
+    EditCtrl *m_pcBaud = nullptr;
+    EditCtrl *m_localUdp = nullptr;
+    EditCtrl *m_remoteIp = nullptr;
+    EditCtrl *m_remotePort = nullptr;
+    EditCtrl *m_machineCode = nullptr;
+    ComboCtrl *m_scale = nullptr;
     QLabel *m_pathLbl = nullptr;
 
     QPushButton *m_save = nullptr;

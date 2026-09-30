@@ -1,15 +1,15 @@
-#ifndef LEGACYMCUCLIENT_H
-#define LEGACYMCUCLIENT_H
+#ifndef PROTOCOL_MCU_CXTH_CLIENT_H
+#define PROTOCOL_MCU_CXTH_CLIENT_H
 
 #include <QObject>
 #include "platform/hmiserialport.h"
 
-/** Old weiduodianzi MCU UART client: 5-byte 0x80 frames @ typically 9600 8N1. */
-class LegacyMcuClient : public QObject
+/** CXTH MCU UART client: 5-byte 0x80 frames @ typically 9600 8N1. */
+class CxthMcuClient : public QObject
 {
     Q_OBJECT
 public:
-    explicit LegacyMcuClient(QObject *parent = nullptr);
+    explicit CxthMcuClient(QObject *parent = nullptr);
 
     bool open(const QString &port, int baud);
     void close();

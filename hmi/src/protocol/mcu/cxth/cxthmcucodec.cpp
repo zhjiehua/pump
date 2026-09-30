@@ -1,7 +1,7 @@
-#include "protocol/legacymcucodec.h"
+#include "protocol/mcu/cxth/cxthmcucodec.h"
 #include <QVector>
 
-namespace LegacyMcu {
+namespace CxthMcu {
 
 QByteArray encodeCmd(quint8 cmd, quint32 arg)
 {
@@ -81,4 +81,4 @@ QVector<Frame> feed(QByteArray *rx, const QByteArray &chunk)
     return out;
 }
 
-} // namespace LegacyMcu
+} // namespace CxthMcu

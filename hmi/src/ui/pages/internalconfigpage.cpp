@@ -1,14 +1,14 @@
 #include "ui/pages/internalconfigpage.h"
 #include "core/machinecontroller.h"
 #include "ui/mainwindow.h"
+#include "ui/widgets/comboctrl.h"
+#include "ui/widgets/editctrl.h"
 #include "ui/widgets/pagescroll.h"
 
-#include <QComboBox>
 #include <QWidget>
 #include <QFormLayout>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QLineEdit>
 #include <QPushButton>
 #include <QScrollArea>
 #include "platform/hmiserialport.h"
@@ -30,41 +30,53 @@ InternalConfigPage::InternalConfigPage(MachineController *c, MainWindow *main, Q
     form->setContentsMargins(4, 4, 4, 4);
     form->setSpacing(4);
 
-    m_mcuProto = new QComboBox;
-    m_mcuProto->addItem(tr("Legacy MCU (0x80)"), int(AppSettings::Legacy));
-    m_mcuProto->addItem(tr("QinFine (:…!)"), int(AppSettings::QinFine));
+    m_mcuTypeLabel = new QLabel;
+    m_mcuProto = new ComboCtrl;
+    m_mcuProto->addItem(tr("CXTH"), int(AppSettings::Cxth));
+    m_mcuProto->addItem(tr("QinFine"), int(AppSettings::QinFine));
 
-    m_mcuPort = new QComboBox;
+    m_mcuPort = new ComboCtrl;
     m_mcuPort->setEditable(true);
-    m_mcuBaud = new QLineEdit;
-    m_mcuAddr = new QLineEdit;
-    m_pumpType = new QComboBox;
+    m_mcuBaud = new EditCtrl;
+    m_mcuBaud->setValRange(0, 10000000, 0);
+    m_mcuAddr = new EditCtrl;
+    m_mcuAddr->setValRange(0, 255, 0, true);
+    m_pumpType = new ComboCtrl;
     for (const char *name : {"10mL", "50mL", "100mL", "150mL", "250mL", "300mL",
                              "500mL", "800mL", "1000mL", "2000mL", "3000mL"})
         m_pumpType->addItem(QString::fromLatin1(name));
-    m_wordFactor = new QLineEdit;
-    m_pressScale = new QLineEdit;
+    m_wordFactor = new EditCtrl;
+    m_wordFactor->setValRange(0, 1e12, 6);
+    m_pressScale = new EditCtrl;
+    m_pressScale->setValRange(0, 1000, 8);
 
-    m_pcProto = new QComboBox;
-    m_pcProto->addItem(tr("CXTH legacy"), int(AppSettings::LegacyPc));
+    m_pcProto = new ComboCtrl;
+    m_pcProto->addItem(tr("CXTH"), int(AppSettings::LegacyPc));
     m_pcProto->addItem(tr("Clarity"), int(AppSettings::Clarity));
-    m_pcPortType = new QComboBox;
+    m_pcProto->addItem(tr("QinFine"), int(AppSettings::QinFinePc));
+    m_pcPortType = new ComboCtrl;
     m_pcPortType->addItem(tr("RS232"), int(AppSettings::Serial));
     m_pcPortType->addItem(tr("UDP"), int(AppSettings::Udp));
-    m_pcSerial = new QComboBox;
+    m_pcPortType->addItem(tr("TCP Server"), int(AppSettings::TcpServer));
+    m_pcSerial = new ComboCtrl;
     m_pcSerial->setEditable(true);
-    m_pcBaud = new QLineEdit;
-    m_localUdp = new QLineEdit;
-    m_remoteIp = new QLineEdit;
-    m_remotePort = new QLineEdit;
-    m_machineCode = new QLineEdit;
-    m_scale = new QComboBox;
+    m_pcBaud = new EditCtrl;
+    m_pcBaud->setValRange(0, 10000000, 0);
+    m_localUdp = new EditCtrl;
+    m_localUdp->setValRange(0, 65535, 0);
+    m_remoteIp = new EditCtrl;
+    m_remoteIp->setValRange(0, 255, 0, true);
+    m_remotePort = new EditCtrl;
+    m_remotePort->setValRange(0, 65535, 0);
+    m_machineCode = new EditCtrl;
+    m_machineCode->setValRange(0, 255, 0, true);
+    m_scale = new ComboCtrl;
     m_scale->addItems({QStringLiteral("1x"), QStringLiteral("2x"), QStringLiteral("3x")});
     m_pathLbl = new QLabel;
     m_pathLbl->setWordWrap(true);
     m_pathLbl->setTextInteractionFlags(Qt::TextSelectableByMouse);
 
-    form->addRow(tr("MCU protocol"), m_mcuProto);
+    form->addRow(m_mcuTypeLabel, m_mcuProto);
     form->addRow(tr("MCU port"), m_mcuPort);
     form->addRow(tr("MCU baud"), m_mcuBaud);
     form->addRow(tr("MCU addr (QinFine)"), m_mcuAddr);
@@ -99,6 +111,17 @@ InternalConfigPage::InternalConfigPage(MachineController *c, MainWindow *main, Q
     refreshPortLists();
     loadFromSettings();
 
+    const QList<EditCtrl *> edits = QList<EditCtrl *>()
+        << m_mcuBaud << m_mcuAddr << m_wordFactor << m_pressScale << m_pcBaud
+        << m_localUdp << m_remoteIp << m_remotePort << m_machineCode;
+    for (int i = 0; i < edits.size(); ++i)
+        connect(edits.at(i), SIGNAL(editingChanged(bool)), m_main, SLOT(onEditCtrlEditingChanged(bool)));
+    const QList<ComboCtrl *> combos = QList<ComboCtrl *>()
+        << m_mcuProto << m_mcuPort << m_pumpType << m_pcProto << m_pcPortType
+        << m_pcSerial << m_scale;
+    for (int i = 0; i < combos.size(); ++i)
+        connect(combos.at(i), SIGNAL(popupChanged(bool)), m_main, SLOT(onEditCtrlEditingChanged(bool)));
+
     connect(m_mcuProto, SIGNAL(currentIndexChanged(int)), this, SLOT(onMcuProtocolChanged(int)));
     connect(m_pumpType, SIGNAL(currentIndexChanged(int)), this, SLOT(onPumpTypeChanged(int)));
     connect(m_save, SIGNAL(clicked()), this, SLOT(onSave()));
@@ -106,6 +129,7 @@ InternalConfigPage::InternalConfigPage(MachineController *c, MainWindow *main, Q
     connect(m_debug, SIGNAL(clicked()), this, SLOT(onDebug()));
     connect(m_scale, SIGNAL(currentIndexChanged(int)), this, SLOT(onScaleChanged(int)));
     connect(m_back, SIGNAL(clicked()), this, SLOT(onBack()));
+    retranslateUi();
 }
 
 void InternalConfigPage::initFocusList()
@@ -122,6 +146,28 @@ void InternalConfigPage::initFocusList()
     xList.append(m_debug);
     xList.append(m_back);
     yList = xList;
+}
+
+void InternalConfigPage::retranslateUi()
+{
+    m_mcuTypeLabel->setText(tr("MCU protocol"));
+    if (m_mcuProto->count() >= 2)
+    {
+        m_mcuProto->setItemText(0, tr("CXTH"));
+        m_mcuProto->setItemText(1, tr("QinFine"));
+    }
+    if (m_pcProto->count() >= 1)
+        m_pcProto->setItemText(0, tr("CXTH"));
+    if (m_pcPortType->count() >= 3)
+    {
+        m_pcPortType->setItemText(0, tr("RS232"));
+        m_pcPortType->setItemText(1, tr("UDP"));
+        m_pcPortType->setItemText(2, tr("TCP Server"));
+    }
+    m_save->setText(tr("Save"));
+    m_reconnect->setText(tr("Reconnect"));
+    m_debug->setText(tr("MCU Debug"));
+    m_back->setText(tr("Back"));
 }
 
 void InternalConfigPage::onPumpTypeChanged(int i)
@@ -196,7 +242,10 @@ void InternalConfigPage::refreshPortLists()
 void InternalConfigPage::loadFromSettings()
 {
     auto *s = m_c->settings();
-    m_mcuProto->setCurrentIndex(int(s->mcuProtocol));
+    int mcuIdx = m_mcuProto->findData(int(s->mcuProtocol));
+    if (mcuIdx < 0)
+        mcuIdx = 0;
+    m_mcuProto->setCurrentIndex(mcuIdx);
     hmiComboSetCurrentText(m_mcuPort, s->mcuPort);
     m_mcuBaud->setText(QString::number(s->mcuBaud));
     m_mcuAddr->setText(QStringLiteral("0x%1").arg(s->mcuAddress, 2, 16, QChar('0')));
@@ -204,10 +253,13 @@ void InternalConfigPage::loadFromSettings()
     m_wordFactor->setText(QString::number(s->mcuWordFactor, 'g', 12));
     m_pressScale->setText(QString::number(s->pressRawScale, 'g', 8));
     m_pcProto->setCurrentIndex(int(s->pcProtocol));
-    m_pcPortType->setCurrentIndex(int(s->pcPort));
+    int pcIdx = m_pcPortType->findData(int(s->pcPort));
+    if (pcIdx < 0)
+        pcIdx = m_pcPortType->findData(int(AppSettings::Udp));
+    m_pcPortType->setCurrentIndex(qMax(0, pcIdx));
     hmiComboSetCurrentText(m_pcSerial, s->pcSerialPort);
     m_pcBaud->setText(QString::number(s->pcSerialBaud));
-    m_localUdp->setText(QString::number(s->localUdpPort));
+    m_localUdp->setText(QString::number(s->localPort));
     m_remoteIp->setText(s->remoteIp);
     m_remotePort->setText(QString::number(s->remotePort));
     m_machineCode->setText(QString::number(s->machineCode, 16));
@@ -218,9 +270,9 @@ void InternalConfigPage::loadFromSettings()
     onMcuProtocolChanged(m_mcuProto->currentIndex());
 }
 
-void InternalConfigPage::onMcuProtocolChanged(int index)
+void InternalConfigPage::onMcuProtocolChanged(int)
 {
-    const bool qf = (index == int(AppSettings::QinFine));
+    const bool qf = hmiComboCurrentData(m_mcuProto).toInt() == int(AppSettings::QinFine);
     m_mcuAddr->setEnabled(qf);
     m_pumpType->setEnabled(!qf);
     m_wordFactor->setEnabled(!qf);
@@ -252,7 +304,7 @@ void InternalConfigPage::applyToSettings()
     s->pcPort = AppSettings::PcPort(hmiComboCurrentData(m_pcPortType).toInt());
     s->pcSerialPort = m_pcSerial->currentText().trimmed();
     s->pcSerialBaud = m_pcBaud->text().toInt();
-    s->localUdpPort = quint16(m_localUdp->text().toUInt());
+    s->localPort = quint16(m_localUdp->text().toUInt());
     s->remoteIp = m_remoteIp->text().trimmed();
     s->remotePort = quint16(m_remotePort->text().toUInt());
     s->machineCode = quint8(m_machineCode->text().toUInt(nullptr, 16));

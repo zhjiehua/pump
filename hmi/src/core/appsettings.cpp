@@ -152,6 +152,13 @@ void AppSettings::applyPumpTypeFactor()
     mcuWordFactor = defaultWordFactorForPump(pumpType);
 }
 
+double AppSettings::defaultMaxFlowForPump() const
+{
+    static const double kMax[] = {10, 50, 100, 150, 250, 300, 500, 800, 1000, 2000, 3000};
+    const int i = (pumpType < 0 || pumpType > 10) ? 0 : pumpType;
+    return kMax[i];
+}
+
 double AppSettings::defaultMaxPressForPump() const
 {
     static const double kMax[] = {42, 25, 20, 20, 20, 15, 15, 10, 10, 10, 10};
@@ -161,28 +168,27 @@ double AppSettings::defaultMaxPressForPump() const
 
 void AppSettings::ensureGradients()
 {
-    if (gradients.size() < 10)
-        gradients.resize(10);
-    for (int i = 0; i < 10; ++i)
+    if (gradients.size() > 1)
+        gradients.resize(1);
+    if (gradients.isEmpty())
+        gradients.resize(1);
+    if (gradients[0].isEmpty())
     {
-        if (gradients[i].isEmpty())
-        {
-            const GradientPoint p0(0.0, 1.0);
-            const GradientPoint p1(10.0, 1.0);
-            gradients[i] = {p0, p1};
-        }
+        const GradientPoint p0(0.0, 1.0);
+        const GradientPoint p1(10.0, 1.0);
+        gradients[0] = {p0, p1};
     }
 }
 
-QVector<GradientPoint> &AppSettings::gradientTable(int which)
+QVector<GradientPoint> &AppSettings::gradientTable()
 {
     ensureGradients();
-    return gradients[qBound(0, which, 9)];
+    return gradients[0];
 }
 
-const QVector<GradientPoint> &AppSettings::gradientTable(int which) const
+const QVector<GradientPoint> &AppSettings::gradientTable() const
 {
-    return const_cast<AppSettings *>(this)->gradientTable(which);
+    return const_cast<AppSettings *>(this)->gradientTable();
 }
 
 bool AppSettings::parseDeviceInfoJson(const QByteArray &raw)
@@ -209,6 +215,17 @@ bool AppSettings::parseDeviceInfoJson(const QByteArray &raw)
     repairYear = o.value(QStringLiteral("repairYear")).toString(repairYear);
     repairMonth = o.value(QStringLiteral("repairMonth")).toString(repairMonth);
     repairDay = o.value(QStringLiteral("repairDay")).toString(repairDay);
+    pmaxLimit = o.value(QStringLiteral("pmaxLimit")).toDouble(pmaxLimit);
+    if (o.contains(QStringLiteral("pumpType")))
+        pumpType = o.value(QStringLiteral("pumpType")).toInt(0);
+    if (o.contains(QStringLiteral("wordFactor")))
+        mcuWordFactor = o.value(QStringLiteral("wordFactor")).toDouble();
+    else if (o.contains(QStringLiteral("pumpType")))
+        applyPumpTypeFactor();
+    if (o.contains(QStringLiteral("pressRawV0")))
+        pressRawV0 = quint32(o.value(QStringLiteral("pressRawV0")).toDouble(0));
+    if (o.contains(QStringLiteral("pressRawScale")))
+        pressRawScale = o.value(QStringLiteral("pressRawScale")).toDouble(0.0128);
     return true;
 }
 
@@ -225,31 +242,28 @@ bool AppSettings::parseSystemJson(const QByteArray &raw)
     const QJsonObject net = o.value(QStringLiteral("net")).toObject();
     const QJsonObject calib = o.value(QStringLiteral("calib")).toObject();
 
-    mcuProtocol = McuProtocol(mcu.value(QStringLiteral("protocol")).toInt(int(Legacy)));
+    mcuProtocol = McuProtocol(mcu.value(QStringLiteral("protocol")).toInt(int(Cxth)));
+    if (mcuProtocol != QinFine)
+        mcuProtocol = Cxth;
     mcuPort = mcu.value(QStringLiteral("port")).toString();
     mcuBaud = mcu.value(QStringLiteral("baud")).toInt(mcuProtocol == QinFine ? 115200 : 9600);
     mcuAddress = quint8(mcu.value(QStringLiteral("address")).toInt(1));
-    pumpType = mcu.value(QStringLiteral("pumpType")).toInt(0);
-    if (mcu.contains(QStringLiteral("wordFactor")))
-        mcuWordFactor = mcu.value(QStringLiteral("wordFactor")).toDouble();
-    else
-        applyPumpTypeFactor();
-    pressRawV0 = quint32(mcu.value(QStringLiteral("pressRawV0")).toDouble(0));
-    pressRawScale = mcu.value(QStringLiteral("pressRawScale")).toDouble(0.0128);
 
     pcProtocol = PcProtocol(pc.value(QStringLiteral("protocol")).toInt(int(Clarity)));
     pcPort = PcPort(pc.value(QStringLiteral("portType")).toInt(int(Udp)));
+    if (pcPort != Serial && pcPort != Udp && pcPort != TcpServer)
+        pcPort = Udp;
     pcSerialPort = pc.value(QStringLiteral("serial")).toString();
     pcSerialBaud = pc.value(QStringLiteral("serialBaud")).toInt(9600);
-    localUdpPort = quint16(pc.value(QStringLiteral("localUdp")).toInt(8080));
+    localPort = quint16(pc.value(QStringLiteral("localPort")).toInt(8080));
     remoteIp = pc.value(QStringLiteral("remoteIp")).toString(QStringLiteral("127.0.0.1"));
     remotePort = quint16(pc.value(QStringLiteral("remotePort")).toInt(8081));
     machineCode = quint8(pc.value(QStringLiteral("machineCode")).toInt(0x12));
 
-    if (net.contains(QStringLiteral("localIp")))
-        localIp = net.value(QStringLiteral("localIp")).toString(localIp);
-    else if (pc.contains(QStringLiteral("localIp")))
-        localIp = pc.value(QStringLiteral("localIp")).toString(localIp);
+    dhcp = net.value(QStringLiteral("dhcp")).toBool(false);
+    localIp = net.value(QStringLiteral("localIp")).toString(localIp);
+    subnet = net.value(QStringLiteral("subnet")).toString(subnet);
+    gateway = net.value(QStringLiteral("gateway")).toString(gateway);
 
     scale = qBound(1, ui.value(QStringLiteral("scale")).toInt(1), 3);
     autoConnect = ui.value(QStringLiteral("autoConnect")).toBool(true);
@@ -297,115 +311,12 @@ bool AppSettings::parseDataJson(const QByteArray &raw)
     coefficient = o.value(QStringLiteral("coefficient")).toDouble(100.0);
     pressMin = o.value(QStringLiteral("pmin")).toDouble(0.0);
     pressMax = o.value(QStringLiteral("pmax")).toDouble(42.0);
-    pmaxLimit = o.value(QStringLiteral("pmaxLimit")).toDouble(0.0);
+    if (o.contains(QStringLiteral("pmaxLimit")))
+        pmaxLimit = o.value(QStringLiteral("pmaxLimit")).toDouble(0.0);
     purgeFlow = o.value(QStringLiteral("purgeFlow")).toDouble(5.0);
     gradientIndex = o.value(QStringLiteral("gradient")).toInt(0);
     currentGradient = o.value(QStringLiteral("currentGradient")).toInt(0);
-    return true;
-}
-
-bool AppSettings::parseLegacyMonolithicJson(const QByteArray &raw)
-{
-    const QJsonDocument doc = QJsonDocument::fromJson(raw);
-    if (!doc.isObject())
-        return false;
-    const QJsonObject o = doc.object();
-    if (!o.contains(QStringLiteral("glp")) && !o.contains(QStringLiteral("run")))
-        return false;
-
-    const QJsonObject mcu = o.value(QStringLiteral("mcu")).toObject();
-    const QJsonObject pc = o.value(QStringLiteral("pc")).toObject();
-    const QJsonObject ui = o.value(QStringLiteral("ui")).toObject();
-    const QJsonObject run = o.value(QStringLiteral("run")).toObject();
-    const QJsonObject glp = o.value(QStringLiteral("glp")).toObject();
-    const QJsonObject sec = o.value(QStringLiteral("security")).toObject();
-    const QJsonObject net = o.value(QStringLiteral("net")).toObject();
-
-    mcuProtocol = McuProtocol(mcu.value(QStringLiteral("protocol")).toInt(int(Legacy)));
-    mcuPort = mcu.value(QStringLiteral("port")).toString();
-    mcuBaud = mcu.value(QStringLiteral("baud")).toInt(mcuProtocol == QinFine ? 115200 : 9600);
-    mcuAddress = quint8(mcu.value(QStringLiteral("address")).toInt(1));
-    pumpType = mcu.value(QStringLiteral("pumpType")).toInt(0);
-    if (mcu.contains(QStringLiteral("wordFactor")))
-        mcuWordFactor = mcu.value(QStringLiteral("wordFactor")).toDouble();
-    else
-        applyPumpTypeFactor();
-    pressRawV0 = quint32(mcu.value(QStringLiteral("pressRawV0")).toDouble(0));
-    pressRawScale = mcu.value(QStringLiteral("pressRawScale")).toDouble(0.0128);
-
-    pcProtocol = PcProtocol(pc.value(QStringLiteral("protocol")).toInt(int(Clarity)));
-    pcPort = PcPort(pc.value(QStringLiteral("portType")).toInt(int(Udp)));
-    pcSerialPort = pc.value(QStringLiteral("serial")).toString();
-    pcSerialBaud = pc.value(QStringLiteral("serialBaud")).toInt(9600);
-    localUdpPort = quint16(pc.value(QStringLiteral("localUdp")).toInt(8080));
-    remoteIp = pc.value(QStringLiteral("remoteIp")).toString(QStringLiteral("127.0.0.1"));
-    remotePort = quint16(pc.value(QStringLiteral("remotePort")).toInt(8081));
-    machineCode = quint8(pc.value(QStringLiteral("machineCode")).toInt(0x12));
-
-    if (net.contains(QStringLiteral("localIp")))
-        localIp = net.value(QStringLiteral("localIp")).toString(localIp);
-    else if (pc.contains(QStringLiteral("localIp")))
-        localIp = pc.value(QStringLiteral("localIp")).toString(localIp);
-
-    scale = qBound(1, ui.value(QStringLiteral("scale")).toInt(1), 3);
-    autoConnect = ui.value(QStringLiteral("autoConnect")).toBool(true);
-    language = Language(ui.value(QStringLiteral("language")).toInt(int(English)));
-
-    flowSet = run.value(QStringLiteral("flow")).toDouble(1.0);
-    percent = run.value(QStringLiteral("percent")).toDouble(100.0);
-    coefficient = run.value(QStringLiteral("coefficient")).toDouble(100.0);
-    pressMin = run.value(QStringLiteral("pmin")).toDouble(0.0);
-    pressMax = run.value(QStringLiteral("pmax")).toDouble(42.0);
-    pmaxLimit = run.value(QStringLiteral("pmaxLimit")).toDouble(0.0);
-    purgeFlow = run.value(QStringLiteral("purgeFlow")).toDouble(5.0);
-    gradientIndex = run.value(QStringLiteral("gradient")).toInt(0);
-    currentGradient = run.value(QStringLiteral("currentGradient")).toInt(0);
-
-    license = glp.value(QStringLiteral("license")).toString(license);
-    serial = glp.value(QStringLiteral("serial")).toString(serial);
-    bActive = glp.value(QStringLiteral("bActive")).toBool(false);
-    tryDay = glp.value(QStringLiteral("tryDay")).toInt(14);
-    bugleCnt = quint32(glp.value(QStringLiteral("bugleCnt")).toDouble(0));
-    sysUsedSec = quint32(glp.value(QStringLiteral("sysUsedSec")).toDouble(0));
-    pumpUsedSec = quint32(glp.value(QStringLiteral("pumpUsedSec")).toDouble(0));
-    manufYear = glp.value(QStringLiteral("manufYear")).toString(manufYear);
-    manufMonth = glp.value(QStringLiteral("manufMonth")).toString(manufMonth);
-    manufDay = glp.value(QStringLiteral("manufDay")).toString(manufDay);
-    instYear = glp.value(QStringLiteral("instYear")).toString(instYear);
-    instMonth = glp.value(QStringLiteral("instMonth")).toString(instMonth);
-    instDay = glp.value(QStringLiteral("instDay")).toString(instDay);
-    repairYear = glp.value(QStringLiteral("repairYear")).toString(repairYear);
-    repairMonth = glp.value(QStringLiteral("repairMonth")).toString(repairMonth);
-    repairDay = glp.value(QStringLiteral("repairDay")).toString(repairDay);
-
-    adminPwd = sec.value(QStringLiteral("adminPwd")).toString(adminPwd);
-    userPwd = sec.value(QStringLiteral("userPwd")).toString(userPwd);
-
-    gradients.clear();
-    const QJsonArray garr = o.value(QStringLiteral("gradients")).toArray();
-    for (const QJsonValue &tv : garr)
-    {
-        QVector<GradientPoint> table;
-        for (const QJsonValue &pv : tv.toArray())
-        {
-            const QJsonObject po = pv.toObject();
-            GradientPoint gp;
-            gp.timeMin = po.value(QStringLiteral("t")).toDouble();
-            gp.flow = po.value(QStringLiteral("f")).toDouble();
-            table.append(gp);
-        }
-        gradients.append(table);
-    }
-    ensureGradients();
-
-    const QJsonObject calib = o.value(QStringLiteral("calib")).toObject();
-    flowTable = parseFlowTable(calib.value(QStringLiteral("flowTable")).toArray());
-    pressTable = parsePressTable(calib.value(QStringLiteral("pressTable")).toArray());
-    pulseTable = parsePulseTable(calib.value(QStringLiteral("pulseTable")).toArray());
-    pressCompen = quint8(calib.value(QStringLiteral("pressCompen")).toInt(0));
-    loadRate = calib.value(QStringLiteral("loadRate")).toDouble(0);
-    loadReal = calib.value(QStringLiteral("loadReal")).toDouble(0);
-    loadPress = calib.value(QStringLiteral("loadPress")).toDouble(0);
+    gradientMode = o.value(QStringLiteral("gradientMode")).toInt(0);
     return true;
 }
 
@@ -426,23 +337,15 @@ bool AppSettings::load()
     bool systemOk = false;
     bool dataOk = false;
 
-    if (deviceResult.source != JsonDualBackup::Source::None)
-        deviceOk = parseDeviceInfoJson(deviceResult.data);
     if (systemResult.source != JsonDualBackup::Source::None)
         systemOk = parseSystemJson(systemResult.data);
+    if (deviceResult.source != JsonDualBackup::Source::None)
+        deviceOk = parseDeviceInfoJson(deviceResult.data);
     if (dataResult.source != JsonDualBackup::Source::None)
         dataOk = parseDataJson(dataResult.data);
 
     if (deviceOk && systemOk && dataOk)
         return true;
-
-    if (systemResult.source != JsonDualBackup::Source::None
-        && parseLegacyMonolithicJson(systemResult.data))
-    {
-        qInfo() << "Migrating legacy monolithic system.json to split config files";
-        save();
-        return true;
-    }
 
     if (!deviceOk && !systemOk && !dataOk)
     {
@@ -451,7 +354,7 @@ bool AppSettings::load()
         return false;
     }
 
-    if (!systemOk)
+    if (!deviceOk)
         applyPumpTypeFactor();
     ensureGradients();
     return deviceOk || systemOk || dataOk;
@@ -469,9 +372,7 @@ bool AppSettings::importFromJson(const QString &path)
     const QJsonObject o = doc.object();
 
     bool ok = false;
-    if (o.contains(QStringLiteral("glp")) || o.contains(QStringLiteral("run")))
-        ok = parseLegacyMonolithicJson(raw);
-    else if (o.contains(QStringLiteral("serial")) || o.contains(QStringLiteral("manufYear")))
+    if (o.contains(QStringLiteral("serial")) || o.contains(QStringLiteral("manufYear")))
         ok = parseDeviceInfoJson(raw);
     else if (o.contains(QStringLiteral("mcu")) || o.contains(QStringLiteral("gradients")))
         ok = parseSystemJson(raw);
@@ -507,6 +408,11 @@ QByteArray AppSettings::serializeDeviceInfoJson() const
     o.insert(QStringLiteral("repairYear"), repairYear);
     o.insert(QStringLiteral("repairMonth"), repairMonth);
     o.insert(QStringLiteral("repairDay"), repairDay);
+    o.insert(QStringLiteral("pmaxLimit"), pmaxLimit);
+    o.insert(QStringLiteral("pumpType"), pumpType);
+    o.insert(QStringLiteral("wordFactor"), mcuWordFactor);
+    o.insert(QStringLiteral("pressRawV0"), double(pressRawV0));
+    o.insert(QStringLiteral("pressRawScale"), pressRawScale);
     return QJsonDocument(o).toJson(QJsonDocument::Indented);
 }
 
@@ -517,23 +423,22 @@ QByteArray AppSettings::serializeSystemJson() const
     mcu.insert(QStringLiteral("port"), mcuPort);
     mcu.insert(QStringLiteral("baud"), mcuBaud);
     mcu.insert(QStringLiteral("address"), int(mcuAddress));
-    mcu.insert(QStringLiteral("pumpType"), pumpType);
-    mcu.insert(QStringLiteral("wordFactor"), mcuWordFactor);
-    mcu.insert(QStringLiteral("pressRawV0"), double(pressRawV0));
-    mcu.insert(QStringLiteral("pressRawScale"), pressRawScale);
 
     QJsonObject pc;
     pc.insert(QStringLiteral("protocol"), int(pcProtocol));
     pc.insert(QStringLiteral("portType"), int(pcPort));
     pc.insert(QStringLiteral("serial"), pcSerialPort);
     pc.insert(QStringLiteral("serialBaud"), pcSerialBaud);
-    pc.insert(QStringLiteral("localUdp"), int(localUdpPort));
+    pc.insert(QStringLiteral("localPort"), int(localPort));
     pc.insert(QStringLiteral("remoteIp"), remoteIp);
     pc.insert(QStringLiteral("remotePort"), int(remotePort));
     pc.insert(QStringLiteral("machineCode"), int(machineCode));
 
     QJsonObject net;
+    net.insert(QStringLiteral("dhcp"), dhcp);
     net.insert(QStringLiteral("localIp"), localIp);
+    net.insert(QStringLiteral("subnet"), subnet);
+    net.insert(QStringLiteral("gateway"), gateway);
 
     QJsonObject ui;
     ui.insert(QStringLiteral("scale"), scale);
@@ -589,10 +494,10 @@ QByteArray AppSettings::serializeDataJson() const
     o.insert(QStringLiteral("coefficient"), coefficient);
     o.insert(QStringLiteral("pmin"), pressMin);
     o.insert(QStringLiteral("pmax"), pressMax);
-    o.insert(QStringLiteral("pmaxLimit"), pmaxLimit);
     o.insert(QStringLiteral("purgeFlow"), purgeFlow);
     o.insert(QStringLiteral("gradient"), gradientIndex);
     o.insert(QStringLiteral("currentGradient"), currentGradient);
+    o.insert(QStringLiteral("gradientMode"), gradientMode);
     return QJsonDocument(o).toJson(QJsonDocument::Indented);
 }
 

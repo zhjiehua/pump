@@ -53,3 +53,6 @@ pump/weiduodianzi/GeneratedFiles
 /hmi/build_qt4
 /hmi/.cache
 /pump/weiduodianzi/build_qt4_desktop
+compile_commands.json
+.clangd-target
+.cache

@@ -2,6 +2,8 @@
 #include "core/machinecontroller.h"
 #include "core/picturemanager.h"
 #include "ui/mainwindow.h"
+#include "ui/widgets/btnctrl.h"
+#include "ui/widgets/imgbutton.h"
 #include "ui/widgets/pagescroll.h"
 #include "utils/version.h"
 
@@ -9,7 +11,6 @@
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QMessageBox>
-#include <QPushButton>
 #include <QVBoxLayout>
 
 namespace {
@@ -34,11 +35,10 @@ MsgPage::MsgPage(MachineController *c, MainWindow *main, QWidget *parent)
 
     auto *iconCol = new QVBoxLayout;
     iconCol->addStretch(1);
-    auto *icon = new QPushButton;
-    icon->setEnabled(false);
+    auto *icon = new ImgButton;
     icon->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     icon->setMinimumSize(48, 48);
-    icon->setStyleSheet(PictureManager::instance().pushButtonBorderImage(PictureManager::Message));
+    icon->setBkImage(PictureManager::Message);
     iconCol->addWidget(icon, 3);
     iconCol->addStretch(1);
     body->addLayout(iconCol, 5);
@@ -46,20 +46,20 @@ MsgPage::MsgPage(MachineController *c, MainWindow *main, QWidget *parent)
 
     auto *info = new QVBoxLayout;
     info->addStretch(1);
-    auto addRow = [&](const QString &cap, QLabel **value) {
+    auto addRow = [&](QLabel **cap, QLabel **value) {
         auto *row = new QHBoxLayout;
-        auto *lab = new QLabel(cap);
-        lab->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+        *cap = new QLabel;
+        (*cap)->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         *value = new QLabel;
         (*value)->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        row->addWidget(lab, 1);
+        row->addWidget(*cap, 1);
         row->addWidget(*value, 3);
         info->addLayout(row, 2);
         info->addStretch(1);
     };
-    addRow(tr("Version:"), &m_version);
-    addRow(tr("License:"), &m_license);
-    addRow(tr("Serial:"), &m_serial);
+    addRow(&m_versionCap, &m_version);
+    addRow(&m_licenseCap, &m_license);
+    addRow(&m_serialCap, &m_serial);
     body->addLayout(info, 10);
     body->addStretch(1);
 
@@ -67,7 +67,7 @@ MsgPage::MsgPage(MachineController *c, MainWindow *main, QWidget *parent)
 
     auto *btns = new QHBoxLayout;
     btns->addStretch(1);
-    m_update = new QPushButton(tr("Update Program"));
+    m_update = new BtnCtrl;
     m_update->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     btns->addWidget(m_update, 5);
     btns->addStretch(1);
@@ -75,11 +75,21 @@ MsgPage::MsgPage(MachineController *c, MainWindow *main, QWidget *parent)
     root->addStretch(1);
 
     installPageScroll(this, inner);
+    retranslateUi();
 
     m_version->setText(QString::fromLatin1(HMI_APP_VERSION));
     refreshLabels();
 
     connect(m_update, SIGNAL(clicked()), this, SLOT(updateProgram()));
+}
+
+void MsgPage::retranslateUi()
+{
+    m_versionCap->setText(tr("Version:"));
+    m_licenseCap->setText(tr("License:"));
+    m_serialCap->setText(tr("Serial:"));
+    m_update->setText(tr("UpdatePro"));
+    refreshLabels();
 }
 
 void MsgPage::initFocusList()

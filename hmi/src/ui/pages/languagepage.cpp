@@ -3,26 +3,14 @@
 #include "core/i18nmanager.h"
 #include "core/picturemanager.h"
 #include "ui/mainwindow.h"
+#include "ui/widgets/btnctrl.h"
+#include "ui/widgets/imgbutton.h"
 #include "ui/widgets/pagescroll.h"
 
 #include <QHBoxLayout>
+#include <QLabel>
 #include <QMessageBox>
-#include <QPushButton>
 #include <QVBoxLayout>
-
-namespace {
-
-QPushButton *langBtn(PictureManager::Picture normal, PictureManager::Picture focus)
-{
-    auto *b = new QPushButton;
-    b->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    b->setMinimumSize(80, 60);
-    b->setMaximumSize(150, 150);
-    b->setStyleSheet(PictureManager::instance().iconButtonStyle(normal, focus));
-    return b;
-}
-
-} // namespace
 
 LanguagePage::LanguagePage(MachineController *c, MainWindow *main, QWidget *parent)
     : FocusPage(parent)
@@ -31,26 +19,58 @@ LanguagePage::LanguagePage(MachineController *c, MainWindow *main, QWidget *pare
 {
     auto *inner = new QWidget;
     auto *root = new QHBoxLayout(inner);
-    root->setContentsMargins(4, 4, 4, 4);
+    root->setContentsMargins(0, 0, 0, 0);
+    root->setSpacing(0);
     root->addStretch(1);
 
-    m_chinese = langBtn(PictureManager::Chinese, PictureManager::ChineseFocus);
-    m_english = langBtn(PictureManager::English, PictureManager::EnglishFocus);
-
-    auto wrap = [](QPushButton *btn) {
-        auto *col = new QVBoxLayout;
-        col->addStretch(1);
-        col->addWidget(btn, 3);
-        col->addStretch(1);
-        return col;
-    };
-    root->addLayout(wrap(m_chinese), 4);
+    auto *globeCol = new QVBoxLayout;
+    globeCol->setSpacing(0);
+    globeCol->addStretch(1);
+    m_globe = new ImgButton;
+    m_globe->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_globe->setMaximumSize(150, 150);
+    m_globe->setFocusPolicy(Qt::NoFocus);
+    m_globe->setBkImage(PictureManager::Global);
+    globeCol->addWidget(m_globe, 3);
+    globeCol->addStretch(1);
+    root->addLayout(globeCol, 4);
     root->addStretch(2);
-    root->addLayout(wrap(m_english), 6);
+
+    auto *langCol = new QVBoxLayout;
+    langCol->setSpacing(12);
+    langCol->addStretch(1);
+
+    m_chinese = new BtnCtrl;
+    m_chinese->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_chinese->setMaximumSize(120, 80);
+    m_chinese->setStyleSheet(PictureManager::instance().iconButtonStyle(
+        PictureManager::Chinese, PictureManager::ChineseFocus));
+    langCol->addWidget(m_chinese, 6);
+
+    m_chineseLabel = new QLabel;
+    m_chineseLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_chineseLabel->setAlignment(Qt::AlignCenter);
+    langCol->addWidget(m_chineseLabel, 1);
+    langCol->addStretch(1);
+
+    m_english = new BtnCtrl;
+    m_english->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_english->setMaximumSize(120, 80);
+    m_english->setStyleSheet(PictureManager::instance().iconButtonStyle(
+        PictureManager::English, PictureManager::EnglishFocus));
+    langCol->addWidget(m_english, 6);
+
+    m_englishLabel = new QLabel;
+    m_englishLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_englishLabel->setAlignment(Qt::AlignCenter);
+    langCol->addWidget(m_englishLabel, 1);
+    langCol->addStretch(1);
+
+    root->addLayout(langCol, 6);
     root->addStretch(2);
 
     installPageScroll(this, inner);
-    refreshIcons();
+    retranslateUi();
 
     connect(m_chinese, SIGNAL(clicked()), this, SLOT(onChinese()));
     connect(m_english, SIGNAL(clicked()), this, SLOT(onEnglish()));
@@ -74,25 +94,22 @@ void LanguagePage::onEnglish()
     setLanguage(AppSettings::English);
 }
 
-void LanguagePage::setLanguage(AppSettings::Language lang)
+void LanguagePage::retranslateUi()
 {
-    auto *s = m_c->settings();
-    if (s->language == lang)
-        return;
-    m_c->i18n()->applyLanguage(int(lang));
-    refreshIcons();
-    if (m_main)
-    {
-        m_main->retranslateUi();
-        QMessageBox::information(this, tr("Tips"),
-                                 lang == AppSettings::Chinese ? tr("Language: Chinese")
-                                                              : tr("Language: English"));
-    }
+    refreshLabels();
 }
 
-void LanguagePage::refreshIcons()
+void LanguagePage::setLanguage(AppSettings::Language lang)
 {
-    const bool cn = m_c->settings()->language == AppSettings::Chinese;
-    m_chinese->setEnabled(!cn);
-    m_english->setEnabled(cn);
+    if (!m_c->i18n()->applyLanguage(int(lang)))
+        return;
+    if (m_main)
+        m_main->retranslateUi();
+    QMessageBox::information(this, tr("Tips"), tr("Change Language Success"));
+}
+
+void LanguagePage::refreshLabels()
+{
+    m_chineseLabel->setText(tr("Chinese"));
+    m_englishLabel->setText(tr("English"));
 }

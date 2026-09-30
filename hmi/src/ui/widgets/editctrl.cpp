@@ -5,14 +5,14 @@
 #include <QKeyEvent>
 #include <QMouseEvent>
 
-#include <cmath>
-
 EditCtrl::EditCtrl(QWidget *parent)
     : QLineEdit(parent)
 {
     setReadOnly(true);
-    setAlignment(Qt::AlignCenter);
-    setStyleSheet(QStringLiteral("QLineEdit:focus{border:2px solid blue;outline:0;}"));
+    setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    setStyleSheet(QStringLiteral(
+        "QLineEdit:focus{border:2px solid blue;outline:0;}"
+        "QLineEdit:disabled{background:#e0e0e0;color:#707070;}"));
 }
 
 void EditCtrl::setValRange(double minVal, double maxVal, quint8 decimals, bool textMode)
@@ -26,14 +26,41 @@ void EditCtrl::setValRange(double minVal, double maxVal, quint8 decimals, bool t
 
 void EditCtrl::rebuildDigitScale()
 {
-    QString temp = QString::number(m_max, 'f', m_decimals);
-    const int dotIndex = temp.indexOf(QLatin1Char('.'));
-    temp.remove(QLatin1Char('.'));
-    m_digitLen = temp.length();
-    if (dotIndex == -1)
+    if (m_textMode)
+    {
         m_digitScale = 1;
-    else
-        m_digitScale = static_cast<int>(std::pow(10.0, m_digitLen - dotIndex));
+        m_digitLen = 32;
+        return;
+    }
+
+    m_digitScale = 1;
+    for (int i = 0; i < m_decimals; ++i)
+        m_digitScale *= 10;
+
+    const double bound = qMax(qAbs(m_min), qAbs(m_max));
+    QString temp = QString::number(bound, 'f', m_decimals);
+    temp.remove(QLatin1Char('.'));
+    temp.remove(QLatin1Char('-'));
+    m_digitLen = temp.length();
+    if (m_digitLen < 1)
+        m_digitLen = 1;
+}
+
+void EditCtrl::loadDigitsFromText()
+{
+    m_digits.clear();
+    const QString t = text();
+    if (m_textMode)
+    {
+        for (int i = 0; i < t.length(); ++i)
+            m_digits.append(t.at(i));
+        return;
+    }
+    for (int i = 0; i < t.length(); ++i)
+    {
+        if (t.at(i).isDigit())
+            m_digits.append(t.at(i));
+    }
 }
 
 void EditCtrl::startEditing()
@@ -41,11 +68,9 @@ void EditCtrl::startEditing()
     if (m_editing || !isReadOnly())
         return;
     m_saved = text();
-    m_digits.clear();
-    const QString t = text();
-    for (int i = 0; i < t.length(); ++i)
-        m_digits.append(t.at(i));
+    loadDigitsFromText();
     m_editing = true;
+    selectAll();
     setReadOnly(false);
     selectAll();
     emit editingChanged(true);
@@ -78,7 +103,7 @@ void EditCtrl::syncDisplayFromDigits()
         return;
     }
     const double scaled = joined.toDouble() / static_cast<double>(m_digitScale);
-    setText(QString::number(scaled));
+    setText(QString::number(scaled, 'f', m_decimals));
 }
 
 bool EditCtrl::event(QEvent *event)
@@ -87,6 +112,9 @@ bool EditCtrl::event(QEvent *event)
     {
         const int key = static_cast<QKeyEvent *>(event)->key();
         if ((key >= Qt::Key_0 && key <= Qt::Key_9)
+            || (m_textMode && key >= Qt::Key_A && key <= Qt::Key_Z)
+            || (m_textMode && (key == Qt::Key_Period || key == Qt::Key_Colon
+                               || key == Qt::Key_X))
             || key == KEY_LEFT || key == PANEL_KEY_LEFT
             || key == KEY_RETURN || key == Qt::Key_Enter
             || key == KEY_BACKSPACE || key == Qt::Key_Escape)
@@ -122,21 +150,31 @@ void EditCtrl::keyPressEvent(QKeyEvent *event)
 
     if (key == KEY_LEFT || key == PANEL_KEY_LEFT)
     {
-        QString temp;
         if (hasSelectedText())
         {
             clearDigitsForNewEntry();
-            temp.clear();
+            return;
         }
-        else
+        if (!m_digits.isEmpty())
+            m_digits.removeLast();
+        syncDisplayFromDigits();
+        return;
+    }
+
+    if (m_textMode)
+    {
+        const QString t = event->text();
+        if (!t.isEmpty() && t.at(0).isPrint())
         {
-            temp = text();
-            if (!temp.isEmpty())
-                temp.chop(1);
-            if (!m_digits.isEmpty())
-                m_digits.removeLast();
+            if (hasSelectedText())
+                clearDigitsForNewEntry();
+            if (m_digits.length() >= m_digitLen)
+                m_digits.clear();
+            m_digits.append(t);
+            syncDisplayFromDigits();
+            return;
         }
-        setText(temp);
+        event->ignore();
         return;
     }
 
@@ -145,10 +183,9 @@ void EditCtrl::keyPressEvent(QKeyEvent *event)
         if (hasSelectedText())
             clearDigitsForNewEntry();
 
-        if (m_digits.length() == m_digitLen)
+        if (m_digits.length() >= m_digitLen)
             m_digits.clear();
-        else
-            m_digits.append(event->text());
+        m_digits.append(event->text());
 
         syncDisplayFromDigits();
         return;

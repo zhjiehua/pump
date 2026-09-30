@@ -12,7 +12,7 @@ class GradientEngine : public QObject
 public:
     explicit GradientEngine(AppSettings *settings, QObject *parent = nullptr);
 
-    void reload(int tableIndex);
+    void reload();
     quint32 endTimeSec() const { return m_endSec; }
     double flowAtElapsed(quint32 elapsedSec) const;
     bool flowChangedAt(quint32 elapsedSec, double *flowOut) const;

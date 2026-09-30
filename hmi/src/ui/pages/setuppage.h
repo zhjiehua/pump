@@ -4,7 +4,8 @@
 #include "ui/focuspage.h"
 
 class MainWindow;
-class QPushButton;
+class BtnCtrl;
+class QLabel;
 
 /** Setup icon grid (weiduodianzi order). */
 class SetupPage : public FocusPage
@@ -15,6 +16,7 @@ public:
 
 protected:
     void initFocusList() override;
+    void retranslateUi() override;
 
 private slots:
     void goLanguage();
@@ -30,16 +32,26 @@ private slots:
 
 private:
     MainWindow *m_main = nullptr;
-    QPushButton *m_lang = nullptr;
-    QPushButton *m_cal = nullptr;
-    QPushButton *m_perm = nullptr;
-    QPushButton *m_clock = nullptr;
-    QPushButton *m_msg = nullptr;
-    QPushButton *m_net = nullptr;
-    QPushButton *m_grid = nullptr;
-    QPushButton *m_glp = nullptr;
-    QPushButton *m_admin = nullptr;
-    QPushButton *m_internal = nullptr;
+    BtnCtrl *m_lang = nullptr;
+    BtnCtrl *m_cal = nullptr;
+    BtnCtrl *m_perm = nullptr;
+    BtnCtrl *m_clock = nullptr;
+    BtnCtrl *m_msg = nullptr;
+    BtnCtrl *m_net = nullptr;
+    BtnCtrl *m_grid = nullptr;
+    BtnCtrl *m_glp = nullptr;
+    BtnCtrl *m_admin = nullptr;
+    BtnCtrl *m_internal = nullptr;
+    QLabel *m_langLabel = nullptr;
+    QLabel *m_calLabel = nullptr;
+    QLabel *m_permLabel = nullptr;
+    QLabel *m_clockLabel = nullptr;
+    QLabel *m_msgLabel = nullptr;
+    QLabel *m_netLabel = nullptr;
+    QLabel *m_gridLabel = nullptr;
+    QLabel *m_glpLabel = nullptr;
+    QLabel *m_adminLabel = nullptr;
+    QLabel *m_internalLabel = nullptr;
 };
 
 #endif

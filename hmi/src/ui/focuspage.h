@@ -14,16 +14,25 @@ public:
     QObjectList xList;
     QObjectList yList;
 
-    void initFocus();
+    void initFocus(bool grabFocus = true);
+    /** Drop leftover child focus (e.g. when returning to the bottom navigator). */
+    void releaseChildFocus();
 
     QWidget *defaultFocusWidget() const;
+    QWidget *lastFocusWidget() const;
     bool moveSpatialFocus(int key);
 
     /** Return true if the key was handled (e.g. combo prev/next). */
     virtual bool handleFocusNavKey(int key);
 
+private slots:
+    void restoreLastFocus();
+
 protected:
+    void changeEvent(QEvent *event) override;
+    bool eventFilter(QObject *obj, QEvent *event) override;
     virtual void initFocusList() {}
+    virtual void retranslateUi() {}
 
     static void prepareFocusWidget(QWidget *w);
 };

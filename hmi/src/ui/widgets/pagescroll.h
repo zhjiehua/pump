@@ -13,6 +13,11 @@ inline void applyPageScrollStyle(QScrollArea *scroll)
     scroll->setFrameShape(QFrame::NoFrame);
     scroll->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     scroll->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+    // Do not participate in keyboard focus; otherwise showing a stacked page
+    // restores the last icon/button instead of the bottom navigator.
+    scroll->setFocusPolicy(Qt::NoFocus);
+    if (scroll->viewport())
+        scroll->viewport()->setFocusPolicy(Qt::NoFocus);
     scroll->setStyleSheet(QStringLiteral(
         "QScrollArea{background:transparent;border:0;}"
         "QScrollBar:vertical{width:10px;background:transparent;}"
@@ -27,6 +32,21 @@ inline QScrollArea *makePageScroll(QWidget *parent = nullptr)
     return scroll;
 }
 
+/** Keep the focused control inside the page scroll viewport. */
+inline void ensureWidgetInScroll(QWidget *w)
+{
+    if (!w)
+        return;
+    for (QWidget *p = w->parentWidget(); p; p = p->parentWidget())
+    {
+        if (auto *scroll = qobject_cast<QScrollArea *>(p))
+        {
+            scroll->ensureWidgetVisible(w, 6, 12);
+            return;
+        }
+    }
+}
+
 /** Host fills with a vertical scroll area whose content is `content`. */
 inline void installPageScroll(QWidget *host, QWidget *content)
 {
@@ -34,6 +54,10 @@ inline void installPageScroll(QWidget *host, QWidget *content)
     root->setContentsMargins(0, 0, 0, 0);
     root->setSpacing(0);
     auto *scroll = makePageScroll();
+    if (content)
+        content->setFocusPolicy(Qt::NoFocus);
+    if (host)
+        host->setFocusPolicy(Qt::NoFocus);
     scroll->setWidget(content);
     root->addWidget(scroll);
 }

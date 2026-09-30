@@ -17,6 +17,9 @@ public:
     void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option,
                               const QModelIndex &index) const override;
 
+protected:
+    bool eventFilter(QObject *object, QEvent *event) override;
+
 private:
     QString m_inputMask;
 };

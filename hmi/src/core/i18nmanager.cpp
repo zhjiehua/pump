@@ -3,13 +3,44 @@
 
 #include <QApplication>
 #include <QCoreApplication>
+#include <QDebug>
 #include <QDir>
-#include <QFileInfo>
 
 I18nManager::I18nManager(AppSettings *settings, QObject *parent)
     : QObject(parent)
     , m_settings(settings)
 {
+}
+
+bool I18nManager::ensureLoaded()
+{
+    if (m_loaded)
+        return true;
+
+    // Same pattern as weiduodianzi: qm is compiled into the qrc.
+    if (m_translator.load(QStringLiteral(":/hmi/translations/hmi_zh.qm"))
+        || m_translator.load(QStringLiteral("hmi_zh.qm"), QStringLiteral(":/hmi/translations")))
+    {
+        m_loaded = true;
+        return true;
+    }
+
+    const QString base = QCoreApplication::applicationDirPath();
+    const QStringList fallbacks = {
+        QDir(base).filePath(QStringLiteral("hmi_zh.qm")),
+        QDir(base).filePath(QStringLiteral("translations/hmi_zh.qm")),
+    };
+    for (int i = 0; i < fallbacks.size(); ++i)
+    {
+        if (m_translator.load(fallbacks.at(i)))
+        {
+            m_loaded = true;
+            return true;
+        }
+    }
+
+    qWarning() << "failed to load Chinese translator hmi_zh.qm";
+    return false;
 }
 
 bool I18nManager::applyLanguage(int lang)
@@ -18,24 +49,17 @@ bool I18nManager::applyLanguage(int lang)
     if (!app)
         return false;
 
-    app->removeTranslator(&m_translator);
     if (lang == int(AppSettings::Chinese))
     {
-        const QString base = QCoreApplication::applicationDirPath();
-        const QStringList paths = {
-            QDir(base).filePath(QStringLiteral("hmi_zh.qm")),
-            QDir(base).filePath(QStringLiteral("translations/hmi_zh.qm")),
-            QStringLiteral(":/translations/hmi_zh.qm"),
-        };
-        for (const QString &p : paths)
-        {
-            if (m_translator.load(p))
-            {
-                app->installTranslator(&m_translator);
-                break;
-            }
-        }
+        if (!ensureLoaded())
+            return false;
+        app->installTranslator(&m_translator);
     }
+    else
+    {
+        app->removeTranslator(&m_translator);
+    }
+
     if (m_settings)
     {
         m_settings->language = AppSettings::Language(lang);

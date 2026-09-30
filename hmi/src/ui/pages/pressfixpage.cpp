@@ -1,16 +1,44 @@
 #include "ui/pages/pressfixpage.h"
 #include "core/machinecontroller.h"
-#include "protocol/qinfinecodec.h"
 #include "ui/mainwindow.h"
+#include "ui/widgets/btnctrl.h"
+#include "ui/widgets/editctrl.h"
 #include "ui/widgets/hmitablewidget.h"
 #include "ui/widgets/pagescroll.h"
 #include "ui/widgets/tableitemdelegate.h"
+
 #include <QHBoxLayout>
 #include <QHeaderView>
+#include <QHideEvent>
 #include <QLabel>
-#include <QPushButton>
-#include <QTableWidgetItem>
+#include <QMessageBox>
+#include <QShowEvent>
+#include <QSizePolicy>
+#include <QStringList>
 #include <QVBoxLayout>
+
+namespace {
+
+void expand(QWidget *w)
+{
+    w->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+}
+
+QHBoxLayout *labeledRow(QLabel **nameLab, QWidget *value, QLabel **unitLab)
+{
+    auto *h = new QHBoxLayout;
+    *nameLab = new QLabel;
+    expand(*nameLab);
+    expand(value);
+    *unitLab = new QLabel;
+    expand(*unitLab);
+    h->addWidget(*nameLab, 2);
+    h->addWidget(value, 5);
+    h->addWidget(*unitLab, 2);
+    return h;
+}
+
+} // namespace
 
 PressFixPage::PressFixPage(MachineController *c, MainWindow *main, QWidget *parent)
     : FocusPage(parent)
@@ -18,34 +46,60 @@ PressFixPage::PressFixPage(MachineController *c, MainWindow *main, QWidget *pare
     , m_main(main)
 {
     auto *inner = new QWidget;
-    auto *v = new QVBoxLayout(inner);
+    auto *root = new QVBoxLayout(inner);
+    root->setContentsMargins(4, 4, 4, 4);
+    root->setSpacing(6);
+
+    auto *top = new QHBoxLayout;
     m_table = new HmiTableWidget;
-    m_table->setColumnCount(2);
-    m_table->setHorizontalHeaderLabels({tr("adc"), tr("MPa")});
+    m_table->setDataColumnCount(2);
     m_table->horizontalHeader()->setStretchLastSection(true);
     m_table->setMinimumHeight(80);
-    m_table->setItemDelegateForColumn(0, new TableItemDelegate(QStringLiteral("000.0000")));
-    m_table->setItemDelegateForColumn(1, new TableItemDelegate(QStringLiteral("000.0000")));
-    v->addWidget(m_table, 1);
-    auto *ops = new QHBoxLayout;
-    m_add = new QPushButton(tr("+"));
-    m_zero = new QPushButton(tr("Zero"));
-    m_get = new QPushButton(tr("Get"));
-    m_set = new QPushButton(tr("Set"));
-    m_back = new QPushButton(tr("Back"));
-    ops->addWidget(m_add);
-    ops->addWidget(m_zero);
-    ops->addWidget(m_get);
-    ops->addWidget(m_set);
-    ops->addWidget(m_back);
-    v->addLayout(ops);
-    m_press = new QLabel;
-    v->addWidget(m_press);
+    m_table->setDataDelegate(0, new TableItemDelegate(QStringLiteral("000.0000")));
+    m_table->setDataDelegate(1, new TableItemDelegate(QStringLiteral("000.0000")));
+    top->addWidget(m_table, 6);
 
-    connect(m_add, SIGNAL(clicked()), this, SLOT(onAdd()));
-    connect(m_zero, SIGNAL(clicked()), this, SLOT(onZero()));
-    connect(m_get, SIGNAL(clicked()), this, SLOT(onGet()));
-    connect(m_set, SIGNAL(clicked()), this, SLOT(onSet()));
+    auto *right = new QVBoxLayout;
+    right->setSpacing(6);
+
+    m_flow = new EditCtrl;
+    connect(m_flow, SIGNAL(editingChanged(bool)), m_main, SLOT(onEditCtrlEditingChanged(bool)));
+    right->addLayout(labeledRow(&m_flowLabel, m_flow, &m_flowUnit), 1);
+    right->addStretch(1);
+
+    m_press = new QLabel(QStringLiteral("0"));
+    right->addLayout(labeledRow(&m_pressLabel, m_press, &m_pressUnit), 1);
+    right->addStretch(1);
+
+    m_clear = new BtnCtrl;
+    expand(m_clear);
+    right->addWidget(m_clear, 1);
+    right->addStretch(1);
+
+    m_start = new BtnCtrl;
+    expand(m_start);
+    right->addWidget(m_start, 1);
+
+    top->addLayout(right, 5);
+    root->addLayout(top, 7);
+
+    auto *bottom = new QHBoxLayout;
+    m_save = new BtnCtrl;
+    m_back = new BtnCtrl;
+    expand(m_save);
+    expand(m_back);
+    bottom->addWidget(m_save, 1);
+    bottom->addWidget(m_back, 1);
+    root->addLayout(bottom, 1);
+
+    installPageScroll(this, inner);
+    applyFlowRange();
+    m_flow->setText(QString::number(m_c->flow(), 'f', m_c->settings()->pumpType == 0 ? 4 : 3));
+    retranslateUi();
+
+    connect(m_clear, SIGNAL(clicked()), this, SLOT(onClearPress()));
+    connect(m_start, SIGNAL(clicked()), this, SLOT(onStart()));
+    connect(m_save, SIGNAL(clicked()), this, SLOT(onSave()));
     connect(m_back, SIGNAL(clicked()), this, SLOT(onBack()));
     connect(m_c, SIGNAL(tablesChanged()), this, SLOT(loadTable()));
     connect(m_c, SIGNAL(pressureChanged()), this, SLOT(onPressureChanged()));
@@ -53,69 +107,110 @@ PressFixPage::PressFixPage(MachineController *c, MainWindow *main, QWidget *pare
     connect(m_table, SIGNAL(panelShortcutsEnabled(bool)), m_main,
             SLOT(setPanelShortcutsEnabled(bool)));
 
+    m_table->setEditAuthPage(m_main, int(MainWindow::PressFix));
     loadTable();
     m_table->initIndex();
-    installPageScroll(this, inner);
+    onPressureChanged();
+}
+
+PressFixPage::~PressFixPage()
+{
+    stopRun();
+    m_c->setPressCalibActive(false);
 }
 
 void PressFixPage::initFocusList()
 {
     xList.append(m_table);
-    xList.append(m_add);
-    xList.append(m_zero);
-    xList.append(m_get);
-    xList.append(m_set);
+    xList.append(m_flow);
+    xList.append(m_clear);
+    xList.append(m_start);
+    xList.append(m_save);
     xList.append(m_back);
+
     yList.append(m_table);
-    yList.append(m_set);
-    yList.append(m_add);
-    yList.append(m_zero);
-    yList.append(m_get);
+    yList.append(m_save);
+    yList.append(m_flow);
+    yList.append(m_clear);
+    yList.append(m_start);
     yList.append(m_back);
+    m_table->refreshEditAuth();
 }
 
-void PressFixPage::onOutOfTableFocus(int dir)
+void PressFixPage::retranslateUi()
 {
-    if (dir == 0 || dir == 2)
-        m_back->setFocus();
-    else if (dir == 1)
-        m_set->setFocus();
-    else if (dir == 3)
-        m_add->setFocus();
+    m_table->setDataHeaders({tr("Press"), tr("Real Press")});
+    m_flowLabel->setText(tr("Flow:"));
+    m_flowUnit->setText(tr("mL"));
+    m_pressLabel->setText(tr("Press:"));
+    m_pressUnit->setText(tr("MPa"));
+    m_clear->setText(tr("Clear Press"));
+    refreshStartText();
+    m_save->setText(tr("Save"));
+    m_back->setText(tr("Back"));
+}
+
+void PressFixPage::showEvent(QShowEvent *event)
+{
+    FocusPage::showEvent(event);
+    m_c->setPressCalibActive(true);
+    applyFlowRange();
     loadTable();
+    m_c->requestPressTable();
+    onPressureChanged();
 }
 
-void PressFixPage::onAdd()
+void PressFixPage::hideEvent(QHideEvent *event)
 {
-    const int r = m_table->rowCount();
-    m_table->insertRow(r);
-    m_table->setItem(r, 0, new QTableWidgetItem(QStringLiteral("0")));
-    m_table->setItem(r, 1, new QTableWidgetItem(QStringLiteral("0")));
+    stopRun();
+    m_c->setPressCalibActive(false);
+    FocusPage::hideEvent(event);
 }
 
-void PressFixPage::onZero()
+void PressFixPage::applyFlowRange()
+{
+    const double maxFlow = m_c->settings()->defaultMaxFlowForPump();
+    const quint8 decimals = (m_c->settings()->pumpType == 0) ? 4 : 3;
+    m_flow->setValRange(0, maxFlow, decimals);
+}
+
+void PressFixPage::refreshStartText()
+{
+    m_start->setText(m_running ? tr("Stop") : tr("Start"));
+}
+
+void PressFixPage::stopRun()
+{
+    if (!m_running)
+        return;
+    m_running = false;
+    refreshStartText();
+    m_c->stop();
+}
+
+void PressFixPage::onStart()
+{
+    if (m_running)
+    {
+        stopRun();
+        return;
+    }
+    m_c->setFlow(m_flow->text().toDouble());
+    m_c->start();
+    m_running = true;
+    refreshStartText();
+}
+
+void PressFixPage::onClearPress()
 {
     m_c->pressZero();
 }
 
-void PressFixPage::onGet()
+void PressFixPage::onSave()
 {
-    m_c->requestPressTable();
-}
-
-void PressFixPage::onSet()
-{
-    QVector<PressPoint> t;
-    for (int i = 0; i < m_table->rowCount(); ++i)
-    {
-        PressPoint p;
-        p.adc = m_table->item(i, 0) ? m_table->item(i, 0)->text().toDouble() : 0;
-        p.pressure = m_table->item(i, 1) ? m_table->item(i, 1)->text().toDouble() : 0;
-        t.append(p);
-    }
-    m_c->setWorkMode(QinFine::WORK_PRESSCALIB, 1);
-    m_c->writePressTable(t);
-    m_c->setWorkMode(QinFine::WORK_PRESSCALIB, 0);
+    m_table->commitActiveEditor();
+    m_c->writePressTable(collectTable());
+    QMessageBox::information(this, tr("Tips"), tr("save success!"));
 }
 
 void PressFixPage::onBack()
@@ -125,16 +220,40 @@ void PressFixPage::onBack()
 
 void PressFixPage::onPressureChanged()
 {
-    m_press->setText(tr("Press %1 MPa").arg(m_c->pressure(), 0, 'f', 3));
+    m_press->setText(QString::number(m_c->pressure(), 'f', 2));
+}
+
+void PressFixPage::onOutOfTableFocus(int dir)
+{
+    if (dir == 0 || dir == 2)
+        m_back->setFocus();
+    else if (dir == 1)
+        m_save->setFocus();
+    else if (dir == 3)
+        m_flow->setFocus();
 }
 
 void PressFixPage::loadTable()
 {
+    QVector<QStringList> rows;
     const auto t = m_c->pressTable();
-    m_table->setRowCount(t.size());
     for (int i = 0; i < t.size(); ++i)
+        rows.append({QString::number(t[i].adc, 'f', 4),
+                     QString::number(t[i].pressure, 'f', 4)});
+    m_table->setFilledRowTexts(rows);
+}
+
+QVector<PressPoint> PressFixPage::collectTable() const
+{
+    QVector<PressPoint> t;
+    for (int i = 0; i < m_table->rowCount(); ++i)
     {
-        m_table->setItem(i, 0, new QTableWidgetItem(QString::number(t[i].adc, 'f', 3)));
-        m_table->setItem(i, 1, new QTableWidgetItem(QString::number(t[i].pressure, 'f', 3)));
+        if (m_table->isDataRowEmpty(i))
+            continue;
+        PressPoint p;
+        p.adc = m_table->dataText(i, 0).toDouble();
+        p.pressure = m_table->dataText(i, 1).toDouble();
+        t.append(p);
     }
+    return t;
 }

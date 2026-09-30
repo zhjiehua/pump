@@ -10,9 +10,9 @@ namespace EventLog {
 void key(const QString &category, const QString &msg);
 
 const char *runStatName(int stat);
-QString pcLegacyCmdName(quint8 cmd);
+QString pcCxthCmdName(quint8 cmd);
 QString pcClarityPfcName(quint8 pfc);
-QString mcuLegacyCmdName(quint8 cmd);
+QString mcuCxthCmdName(quint8 cmd);
 QString alarmName(int kind);
 
 } // namespace EventLog

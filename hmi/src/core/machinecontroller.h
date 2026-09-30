@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QVector>
 #include <QPair>
+#include <QByteArray>
 
 class QTimer;
 #include "core/appsettings.h"
@@ -16,8 +17,9 @@ class QTimer;
 #include "core/i18nmanager.h"
 
 class QinFineClient;
-class LegacyMcuClient;
-class CxthPcServer;
+class CxthMcuClient;
+class PcServer;
+class QinFinePcServer;
 
 class MachineController : public QObject
 {
@@ -34,8 +36,10 @@ public:
     UsageTracker *usage() { return &m_usage; }
     I18nManager *i18n() { return &m_i18n; }
     QinFineClient *qinFine() { return m_qinFine; }
-    LegacyMcuClient *legacyMcu() { return m_legacy; }
+    CxthMcuClient *cxthMcu() { return m_cxthMcu; }
     bool usingQinFine() const { return m_settings.mcuProtocol == AppSettings::QinFine; }
+    bool usingCxthMcu() const { return !usingQinFine(); }
+    bool usingQinFinePc() const { return m_settings.pcProtocol == AppSettings::QinFinePc; }
 
     Stat stat() const { return m_runState.stat(); }
     double flow() const { return m_flow; }
@@ -74,6 +78,8 @@ public:
     void setLoadParams(double rate, double real, double press);
 
     void setWorkMode(quint8 mode, quint8 flag);
+    void setFlowCalibActive(bool on);
+    void setPressCalibActive(bool on);
     void writeFlowTable(const QVector<RatePoint> &t);
     void writePressTable(const QVector<PressPoint> &t);
     void writePulseTable(const QVector<PulsePoint> &t, bool save);
@@ -82,7 +88,8 @@ public:
     void requestPressTable();
     void requestPulseTable();
 
-    void applyCalibCmd(quint8 ai, quint32 value);
+    void applyQinFineExtSet(quint8 sub, const QByteArray &payload);
+    void requestQinFineDump(int kind);
     void armDump(int kind);
     void replyPressureToPc();
     void dumpFlowToPc();
@@ -106,7 +113,7 @@ private slots:
     void onPollTick();
     void onSecondTick();
     void onQinFinePressure(float mpa);
-    void onLegacyPressureRaw(quint32 raw);
+    void onCxthPressureRaw(quint32 raw);
     void onExtPoint(quint8 sub, float a, float b);
     void onExtFloat(quint8 sub, float v);
     void onExtU8(quint8 sub, quint8 v);
@@ -118,6 +125,7 @@ private:
     void sendStopToMcu();
     bool qinFineReady() const;
     void updatePressureAlarms();
+    PcServer *activePc() const;
 
     AppSettings m_settings;
     RunStateMachine m_runState;
@@ -128,8 +136,10 @@ private:
     CommWorker m_commWorker;
     I18nManager m_i18n;
     QinFineClient *m_qinFine = nullptr;
-    LegacyMcuClient *m_legacy = nullptr;
-    CxthPcServer *m_pc = nullptr;
+    CxthMcuClient *m_cxthMcu = nullptr;
+    PcServer *m_cxthPc = nullptr;
+    PcServer *m_clarityPc = nullptr;
+    QinFinePcServer *m_qinFinePc = nullptr;
     double m_flow = 1.0;
     double m_percent = 100.0;
     double m_pressure = 0;
@@ -143,12 +153,20 @@ private:
     double m_loadRate = 0;
     double m_loadReal = 0;
     double m_loadPress = 0;
-    int m_pendingKind = 0;
-    double m_pendingA = 0;
-    bool m_hasPendingA = false;
     int m_dumpKind = 0;
     QTimer *m_dumpTimer = nullptr;
     QTimer *m_secondTimer = nullptr;
+    int m_flowDumpId = 0;
+    int m_flowDumpOpen = 0;
+    bool m_flowDumpStarted = false;
+    int m_pressDumpId = 0;
+    int m_pressDumpOpen = 0;
+    bool m_pressDumpStarted = false;
+    int m_pulseDumpId = 0;
+    int m_pulseDumpOpen = 0;
+    bool m_pulseDumpStarted = false;
+    bool m_flowCalibActive = false;
+    bool m_pressCalibActive = false;
 };
 
 #endif

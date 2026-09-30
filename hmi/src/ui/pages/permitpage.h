@@ -6,9 +6,9 @@
 class MachineController;
 class MainWindow;
 class EditCtrl;
+class BtnCtrl;
+class ImgButton;
 class QLabel;
-
-class QPushButton;
 
 class PermitPage : public FocusPage
 {
@@ -18,6 +18,7 @@ public:
 
 protected:
     void initFocusList() override;
+    void retranslateUi() override;
 
 private slots:
     void refreshDays();
@@ -27,10 +28,14 @@ private slots:
 private:
     MachineController *m_c;
     MainWindow *m_main;
-    QLabel *m_days;
+    QLabel *m_tips = nullptr;
+    QLabel *m_probation = nullptr;
+    QLabel *m_days = nullptr;
+    QLabel *m_dayUnit = nullptr;
     EditCtrl *m_license;
-    QPushButton *m_serialBtn = nullptr;
-    QPushButton *m_register = nullptr;
+    ImgButton *m_icon = nullptr;
+    BtnCtrl *m_serialBtn = nullptr;
+    BtnCtrl *m_register = nullptr;
 };
 
 #endif

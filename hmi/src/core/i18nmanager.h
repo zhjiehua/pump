@@ -16,8 +16,11 @@ public:
     bool applyFromSettings();
 
 private:
+    bool ensureLoaded();
+
     AppSettings *m_settings = nullptr;
     QTranslator m_translator;
+    bool m_loaded = false;
 };
 
 #endif

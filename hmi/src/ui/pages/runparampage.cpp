@@ -1,52 +1,88 @@
 #include "ui/pages/runparampage.h"
 #include "core/machinecontroller.h"
 #include "ui/mainwindow.h"
+#include "ui/widgets/comboctrl.h"
+#include "ui/widgets/editctrl.h"
 
-#include <QComboBox>
-#include <QFormLayout>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
 #include <QVBoxLayout>
+#include <QWidget>
 
 RunParamPage::RunParamPage(MachineController *c, MainWindow *main, QWidget *parent)
     : FocusPage(parent)
     , m_c(c)
     , m_main(main)
 {
-    auto *root = new QVBoxLayout(this);
-    root->setContentsMargins(8, 8, 8, 8);
+    auto *outer = new QHBoxLayout(this);
+    outer->setContentsMargins(8, 4, 8, 4);
+    outer->addStretch(1);
 
-    auto *form = new QFormLayout;
-    m_min = new QLineEdit;
-    m_max = new QLineEdit;
-    m_coeff = new QLineEdit;
-    m_gradient = new QComboBox;
-    for (int i = 1; i <= 10; ++i)
-        m_gradient->addItem(QStringLiteral("RG%1").arg(i), i - 1);
+    auto *col = new QVBoxLayout;
+    col->setSpacing(4);
+    col->addStretch(1);
 
-    form->addRow(tr("Pmin (MPa)"), m_min);
-    form->addRow(tr("Pmax (MPa)"), m_max);
-    form->addRow(tr("Coefficient (%)"), m_coeff);
-    form->addRow(tr("Gradient"), m_gradient);
-    root->addLayout(form);
+    auto makeRow = [&](QWidget *w) { col->addWidget(w, 1); };
 
-    auto *btns = new QHBoxLayout;
-    m_save = new QPushButton(tr("Save"));
-    m_grad = new QPushButton(tr("Grad"));
-    m_back = new QPushButton(tr("Back"));
-    btns->addWidget(m_save);
-    btns->addWidget(m_grad);
-    btns->addWidget(m_back);
-    root->addLayout(btns);
-    root->addStretch(1);
+    {
+        auto *row = new QWidget;
+        auto *h = new QHBoxLayout(row);
+        h->setContentsMargins(0, 0, 0, 0);
+        h->addWidget(new QLabel(tr("Max Press:")), 2);
+        m_max = new EditCtrl;
+        connect(m_max, SIGNAL(valueCommitted(QString)), this, SLOT(onMaxCommitted(QString)));
+        connect(m_max, SIGNAL(editingChanged(bool)), m_main, SLOT(onEditCtrlEditingChanged(bool)));
+        h->addWidget(m_max, 2);
+        h->addWidget(new QLabel(tr("MPa")), 5);
+        makeRow(row);
+    }
+    col->addStretch(1);
+    {
+        auto *row = new QWidget;
+        auto *h = new QHBoxLayout(row);
+        h->setContentsMargins(0, 0, 0, 0);
+        h->addWidget(new QLabel(tr("Min Press:")), 2);
+        m_min = new EditCtrl;
+        connect(m_min, SIGNAL(valueCommitted(QString)), this, SLOT(onMinCommitted(QString)));
+        connect(m_min, SIGNAL(editingChanged(bool)), m_main, SLOT(onEditCtrlEditingChanged(bool)));
+        h->addWidget(m_min, 2);
+        h->addWidget(new QLabel(tr("MPa")), 5);
+        makeRow(row);
+    }
+    col->addStretch(1);
+    {
+        auto *row = new QWidget;
+        auto *h = new QHBoxLayout(row);
+        h->setContentsMargins(0, 0, 0, 0);
+        h->addWidget(new QLabel(tr("Grad Mode:")), 2);
+        m_gradient = new ComboCtrl;
+        m_gradient->addItem(tr("high"), 0);
+        m_gradient->addItem(tr("low"), 1);
+        connect(m_gradient, SIGNAL(activated(int)), this, SLOT(onGradientActivated(int)));
+        connect(m_gradient, SIGNAL(popupChanged(bool)), m_main, SLOT(onEditCtrlEditingChanged(bool)));
+        h->addWidget(m_gradient, 2);
+        h->addStretch(5);
+        makeRow(row);
+    }
+    col->addStretch(1);
+    {
+        auto *row = new QWidget;
+        auto *h = new QHBoxLayout(row);
+        h->setContentsMargins(0, 0, 0, 0);
+        h->addWidget(new QLabel(tr("Comp Coef:")), 2);
+        m_coeff = new EditCtrl;
+        connect(m_coeff, SIGNAL(valueCommitted(QString)), this, SLOT(onCoeffCommitted(QString)));
+        connect(m_coeff, SIGNAL(editingChanged(bool)), m_main, SLOT(onEditCtrlEditingChanged(bool)));
+        h->addWidget(m_coeff, 2);
+        h->addStretch(5);
+        makeRow(row);
+    }
+    col->addStretch(1);
+
+    outer->addLayout(col, 15);
+    outer->addStretch(1);
 
     loadFromSettings();
-
-    connect(m_save, SIGNAL(clicked()), this, SLOT(onSave()));
-    connect(m_grad, SIGNAL(clicked()), this, SLOT(onGrad()));
-    connect(m_back, SIGNAL(clicked()), this, SLOT(onBack()));
 }
 
 void RunParamPage::initFocusList()
@@ -55,45 +91,43 @@ void RunParamPage::initFocusList()
     xList.append(m_min);
     xList.append(m_gradient);
     xList.append(m_coeff);
-    xList.append(m_save);
-    xList.append(m_grad);
-    xList.append(m_back);
     yList.append(m_max);
     yList.append(m_min);
     yList.append(m_gradient);
     yList.append(m_coeff);
-    yList.append(m_save);
-    yList.append(m_grad);
-    yList.append(m_back);
 }
 
-void RunParamPage::onSave()
+void RunParamPage::onMaxCommitted(const QString &value)
+{
+    applyPressLimits(m_min->text().toDouble(), value.toDouble());
+}
+
+void RunParamPage::onMinCommitted(const QString &value)
+{
+    applyPressLimits(value.toDouble(), m_max->text().toDouble());
+}
+
+void RunParamPage::onCoeffCommitted(const QString &value)
 {
     auto *s = m_c->settings();
-    const double pmin = m_min->text().toDouble();
-    double pmax = m_max->text().toDouble();
+    s->coefficient = value.toDouble();
+    s->save();
+}
+
+void RunParamPage::onGradientActivated(int index)
+{
+    auto *s = m_c->settings();
+    s->gradientMode = m_gradient->itemData(index).toInt();
+    s->save();
+}
+
+void RunParamPage::applyPressLimits(double pmin, double pmax)
+{
     const double cap = effectivePmaxCap();
     if (cap > 0 && pmax > cap)
         pmax = cap;
-    s->pressMin = pmin;
-    s->pressMax = pmax;
-    s->coefficient = m_coeff->text().toDouble();
-    s->percent = s->coefficient;
-    s->gradientIndex = m_gradient->itemData(m_gradient->currentIndex()).toInt();
     m_c->setPressLimits(pmin, pmax);
-    m_c->setPercent(s->coefficient);
-    s->save();
-    m_c->postLog(tr("Run parameters saved"));
-}
-
-void RunParamPage::onGrad()
-{
-    m_main->go(MainWindow::Gradient);
-}
-
-void RunParamPage::onBack()
-{
-    m_main->goBack();
+    m_c->settings()->save();
 }
 
 double RunParamPage::effectivePmaxCap() const
@@ -107,8 +141,13 @@ double RunParamPage::effectivePmaxCap() const
 void RunParamPage::loadFromSettings()
 {
     auto *s = m_c->settings();
-    m_min->setText(QString::number(s->pressMin, 'f', 2));
+    const double pumpMax = s->defaultMaxPressForPump();
+    const double cap = effectivePmaxCap();
+    m_min->setValRange(-50, pumpMax, 2);
+    m_max->setValRange(0, cap, 2);
+    m_coeff->setValRange(0, 100, 0);
     m_max->setText(QString::number(s->pressMax, 'f', 2));
+    m_min->setText(QString::number(s->pressMin, 'f', 2));
     m_coeff->setText(QString::number(s->coefficient, 'f', 0));
-    m_gradient->setCurrentIndex(qBound(0, s->gradientIndex, 9));
+    m_gradient->setCurrentIndex(qBound(0, s->gradientMode, 1));
 }

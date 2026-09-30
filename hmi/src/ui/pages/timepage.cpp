@@ -1,13 +1,13 @@
 #include "ui/pages/timepage.h"
 #include "core/machinecontroller.h"
 #include "ui/mainwindow.h"
+#include "ui/widgets/editctrl.h"
 #include "ui/widgets/editfield.h"
 #include "ui/widgets/pagescroll.h"
 
 #include <QDateTime>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QLineEdit>
 #include <QProcess>
 #include <QTimer>
 #include <QVBoxLayout>
@@ -26,12 +26,15 @@ TimePage::TimePage(MachineController *c, MainWindow *main, QWidget *parent)
 
     auto *dateRow = new QHBoxLayout;
     dateRow->setSpacing(2);
-    auto *dateLbl = new QLabel(tr("Current Date:"));
-    dateLbl->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_dateCap = new QLabel;
+    m_dateCap->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     m_year = makeEditField();
+    m_year->setValRange(2015, 2050, 0);
     m_month = makeEditField();
+    m_month->setValRange(1, 12, 0);
     m_day = makeEditField();
-    dateRow->addWidget(dateLbl, 20);
+    m_day->setValRange(1, 31, 0);
+    dateRow->addWidget(m_dateCap, 20);
     dateRow->addWidget(m_year, 30);
     dateRow->addWidget(makeSep(QStringLiteral("-")), 1);
     dateRow->addWidget(m_month, 30);
@@ -43,12 +46,15 @@ TimePage::TimePage(MachineController *c, MainWindow *main, QWidget *parent)
 
     auto *timeRow = new QHBoxLayout;
     timeRow->setSpacing(2);
-    auto *timeLbl = new QLabel(tr("Current Time:"));
-    timeLbl->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_timeCap = new QLabel;
+    m_timeCap->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     m_hour = makeEditField();
+    m_hour->setValRange(0, 23, 0);
     m_min = makeEditField();
+    m_min->setValRange(0, 59, 0);
     m_sec = makeEditField();
-    timeRow->addWidget(timeLbl, 20);
+    m_sec->setValRange(0, 59, 0);
+    timeRow->addWidget(m_timeCap, 20);
     timeRow->addWidget(m_hour, 30);
     timeRow->addWidget(makeSep(QStringLiteral(":")), 1);
     timeRow->addWidget(m_min, 30);
@@ -66,12 +72,22 @@ TimePage::TimePage(MachineController *c, MainWindow *main, QWidget *parent)
     connect(tick, SIGNAL(timeout()), this, SLOT(refreshFromClock()));
     tick->start(1000);
 
-    const QList<QLineEdit *> edits = QList<QLineEdit *>()
+    const QList<EditCtrl *> edits = QList<EditCtrl *>()
         << m_year << m_month << m_day << m_hour << m_min << m_sec;
     for (int i = 0; i < edits.size(); ++i)
-        connect(edits.at(i), SIGNAL(editingFinished()), this, SLOT(applyDateTime()));
+    {
+        connect(edits.at(i), SIGNAL(valueCommitted(QString)), this, SLOT(applyDateTime()));
+        connect(edits.at(i), SIGNAL(editingChanged(bool)), m_main, SLOT(onEditCtrlEditingChanged(bool)));
+    }
 
     installPageScroll(this, inner);
+    retranslateUi();
+}
+
+void TimePage::retranslateUi()
+{
+    m_dateCap->setText(tr("Current Date:"));
+    m_timeCap->setText(tr("Current Time:"));
 }
 
 void TimePage::initFocusList()
@@ -92,8 +108,8 @@ void TimePage::initFocusList()
 
 bool TimePage::anyFieldFocused() const
 {
-    return m_year->hasFocus() || m_month->hasFocus() || m_day->hasFocus()
-           || m_hour->hasFocus() || m_min->hasFocus() || m_sec->hasFocus();
+    return m_year->isEditing() || m_month->isEditing() || m_day->isEditing()
+           || m_hour->isEditing() || m_min->isEditing() || m_sec->isEditing();
 }
 
 void TimePage::refreshFromClock()

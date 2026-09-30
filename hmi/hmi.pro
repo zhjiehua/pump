@@ -46,8 +46,6 @@ lessThan(QT_MAJOR_VERSION, 5) {
 }
 
 TRANSLATIONS += translations/hmi_zh.ts
-CONFIG += lrelease
-QM_FILES_RESOURCE_PREFIX = /translations
 
 HEADERS += \
     utils/crc16.h \
@@ -70,17 +68,23 @@ HEADERS += \
     src/core/i18nmanager.h \
     src/core/picturemanager.h \
     src/core/buglecompensation.h \
+    src/core/calibinterp.h \
     src/core/machinecontroller.h \
     src/platform/platform.h \
     src/platform/iomodule.h \
     src/platform/hmiserialport.h \
-    src/protocol/qinfinecodec.h \
-    src/protocol/qinfineclient.h \
-    src/protocol/legacymcucodec.h \
-    src/protocol/legacymcuclient.h \
-    src/protocol/cxthpcids.h \
-    src/protocol/cxthpccodec.h \
-    src/protocol/cxthpcserver.h \
+    src/protocol/pc/pcserver.h \
+    src/protocol/pc/cxth/cxthpcids.h \
+    src/protocol/pc/cxth/cxthpccodec.h \
+    src/protocol/pc/cxth/cxthpcserver.h \
+    src/protocol/pc/clarity/clarityids.h \
+    src/protocol/pc/clarity/claritycodec.h \
+    src/protocol/pc/clarity/claritypcserver.h \
+    src/protocol/pc/qinfine/qinfinepcserver.h \
+    src/protocol/mcu/cxth/cxthmcucodec.h \
+    src/protocol/mcu/cxth/cxthmcuclient.h \
+    src/protocol/mcu/qinfine/qinfinecodec.h \
+    src/protocol/mcu/qinfine/qinfineclient.h \
     src/ui/mainwindow.h \
     src/ui/focuspage.h \
     utils/hmikeys.h \
@@ -88,6 +92,9 @@ HEADERS += \
     src/ui/bottombar.h \
     src/ui/widgets/keyboarddialog.h \
     src/ui/widgets/editctrl.h \
+    src/ui/widgets/comboctrl.h \
+    src/ui/widgets/btnctrl.h \
+    src/ui/widgets/imgbutton.h \
     src/ui/widgets/hmitablewidget.h \
     src/ui/widgets/tablecelleditor.h \
     src/ui/widgets/tableitemdelegate.h \
@@ -98,8 +105,6 @@ HEADERS += \
     src/ui/pages/fixpage.h \
     src/ui/pages/flowfixpage.h \
     src/ui/pages/pressfixpage.h \
-    src/ui/pages/pulsefixpage.h \
-    src/ui/pages/presscompenpage.h \
     src/ui/pages/adminpage.h \
     src/ui/pages/netpage.h \
     src/ui/pages/internalconfigpage.h \
@@ -109,7 +114,6 @@ HEADERS += \
     src/ui/pages/permitpage.h \
     src/ui/pages/glpinfopage.h \
     src/ui/pages/pwdpage.h \
-    src/ui/pages/gradientpage.h \
     src/ui/pages/gradienttablepage.h \
     src/ui/pages/debugmcuprotopage.h
 
@@ -130,22 +134,30 @@ SOURCES += \
     src/core/i18nmanager.cpp \
     src/core/picturemanager.cpp \
     src/core/buglecompensation.cpp \
+    src/core/calibinterp.cpp \
     src/core/machinecontroller.cpp \
     src/platform/platform.cpp \
     src/platform/iomodule.cpp \
     src/platform/hmiserialport.cpp \
-    src/protocol/qinfinecodec.cpp \
-    src/protocol/qinfineclient.cpp \
-    src/protocol/legacymcucodec.cpp \
-    src/protocol/legacymcuclient.cpp \
-    src/protocol/cxthpccodec.cpp \
-    src/protocol/cxthpcserver.cpp \
+    src/protocol/pc/pcserver.cpp \
+    src/protocol/pc/cxth/cxthpccodec.cpp \
+    src/protocol/pc/cxth/cxthpcserver.cpp \
+    src/protocol/pc/clarity/claritycodec.cpp \
+    src/protocol/pc/clarity/claritypcserver.cpp \
+    src/protocol/pc/qinfine/qinfinepcserver.cpp \
+    src/protocol/mcu/cxth/cxthmcucodec.cpp \
+    src/protocol/mcu/cxth/cxthmcuclient.cpp \
+    src/protocol/mcu/qinfine/qinfinecodec.cpp \
+    src/protocol/mcu/qinfine/qinfineclient.cpp \
     src/ui/mainwindow.cpp \
     src/ui/focuspage.cpp \
     src/ui/topbar.cpp \
     src/ui/bottombar.cpp \
     src/ui/widgets/keyboarddialog.cpp \
     src/ui/widgets/editctrl.cpp \
+    src/ui/widgets/comboctrl.cpp \
+    src/ui/widgets/btnctrl.cpp \
+    src/ui/widgets/imgbutton.cpp \
     src/ui/widgets/hmitablewidget.cpp \
     src/ui/widgets/tablecelleditor.cpp \
     src/ui/widgets/tableitemdelegate.cpp \
@@ -156,8 +168,6 @@ SOURCES += \
     src/ui/pages/fixpage.cpp \
     src/ui/pages/flowfixpage.cpp \
     src/ui/pages/pressfixpage.cpp \
-    src/ui/pages/pulsefixpage.cpp \
-    src/ui/pages/presscompenpage.cpp \
     src/ui/pages/adminpage.cpp \
     src/ui/pages/netpage.cpp \
     src/ui/pages/internalconfigpage.cpp \
@@ -167,7 +177,6 @@ SOURCES += \
     src/ui/pages/permitpage.cpp \
     src/ui/pages/glpinfopage.cpp \
     src/ui/pages/pwdpage.cpp \
-    src/ui/pages/gradientpage.cpp \
     src/ui/pages/gradienttablepage.cpp \
     src/ui/pages/debugmcuprotopage.cpp
 

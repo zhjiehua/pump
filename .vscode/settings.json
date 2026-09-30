@@ -6,7 +6,8 @@
   "clangd.arguments": [
     "--background-index",
     "--clang-tidy=false",
-    "--header-insertion=never"
+    "--header-insertion=never",
+    "--query-driver=/usr/bin/g++,/usr/bin/gcc"
   ],
   "[cpp]": {
     "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd"

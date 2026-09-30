@@ -1,10 +1,10 @@
 #include "ui/pages/debugmcuprotopage.h"
 #include "core/machinecontroller.h"
 #include "ui/mainwindow.h"
+#include "ui/widgets/btnctrl.h"
 #include "ui/widgets/pagescroll.h"
 
 #include <QHBoxLayout>
-#include <QPushButton>
 #include <QTextEdit>
 #include <QVBoxLayout>
 
@@ -20,8 +20,8 @@ DebugMcuProtoPage::DebugMcuProtoPage(MachineController *c, MainWindow *main, QWi
     root->addWidget(m_log, 1);
 
     auto *btns = new QHBoxLayout;
-    m_reconnect = new QPushButton(tr("Reconnect MCU"));
-    m_back = new QPushButton(tr("Back"));
+    m_reconnect = new BtnCtrl(tr("Reconnect MCU"));
+    m_back = new BtnCtrl(tr("Back"));
     btns->addWidget(m_reconnect);
     btns->addWidget(m_back);
     root->addLayout(btns);

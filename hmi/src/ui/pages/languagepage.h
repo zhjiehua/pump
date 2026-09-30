@@ -6,9 +6,11 @@
 
 class MachineController;
 class MainWindow;
-class QPushButton;
+class BtnCtrl;
+class ImgButton;
+class QLabel;
 
-/** Language selection: Chinese / English icon buttons. */
+/** Language selection: globe + Chinese / English (weiduodianzi LanguagePage). */
 class LanguagePage : public FocusPage
 {
     Q_OBJECT
@@ -17,6 +19,7 @@ public:
 
 protected:
     void initFocusList() override;
+    void retranslateUi() override;
 
 private slots:
     void onChinese();
@@ -24,12 +27,15 @@ private slots:
 
 private:
     void setLanguage(AppSettings::Language lang);
-    void refreshIcons();
+    void refreshLabels();
 
     MachineController *m_c = nullptr;
     MainWindow *m_main = nullptr;
-    QPushButton *m_chinese = nullptr;
-    QPushButton *m_english = nullptr;
+    ImgButton *m_globe = nullptr;
+    BtnCtrl *m_chinese = nullptr;
+    BtnCtrl *m_english = nullptr;
+    QLabel *m_chineseLabel = nullptr;
+    QLabel *m_englishLabel = nullptr;
 };
 
 #endif

@@ -1,4 +1,4 @@
-#include "protocol/qinfinecodec.h"
+#include "protocol/mcu/qinfine/qinfinecodec.h"
 #include "utils/crc16.h"
 #include <limits>
 #include <QtEndian>
@@ -6,7 +6,7 @@
 
 namespace QinFine {
 
-static QByteArray be4(float v)
+QByteArray floatBytes(float v)
 {
     quint32 bits = 0;
     static_assert(sizeof(float) == 4, "float");
@@ -80,7 +80,7 @@ QByteArray encodeU8(quint8 addr, quint8 pfc, quint8 v)
 
 QByteArray encodeFloat(quint8 addr, quint8 pfc, float v)
 {
-    return encode(addr, pfc | kSetBit, be4(v));
+    return encode(addr, pfc | kSetBit, floatBytes(v));
 }
 
 QByteArray encodeExtU8(quint8 addr, quint8 sub, quint8 v)
@@ -104,7 +104,7 @@ QByteArray encodeExtFloat(quint8 addr, quint8 sub, float v)
 {
     QByteArray p;
     p.append(char(sub));
-    p.append(be4(v));
+    p.append(floatBytes(v));
     return encode(addr, PFC_EXT_SYSTEM | kSetBit, p);
 }
 
@@ -112,8 +112,8 @@ QByteArray encodeExt2Float(quint8 addr, quint8 sub, float a, float b)
 {
     QByteArray p;
     p.append(char(sub));
-    p.append(be4(a));
-    p.append(be4(b));
+    p.append(floatBytes(a));
+    p.append(floatBytes(b));
     return encode(addr, PFC_EXT_SYSTEM | kSetBit, p);
 }
 

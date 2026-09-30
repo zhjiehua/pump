@@ -6,13 +6,13 @@ GradientEngine::GradientEngine(AppSettings *settings, QObject *parent)
 {
 }
 
-void GradientEngine::reload(int tableIndex)
+void GradientEngine::reload()
 {
     m_points.clear();
     m_endSec = 60;
     if (!m_settings)
         return;
-    m_points = m_settings->gradientTable(tableIndex);
+    m_points = m_settings->gradientTable();
     if (m_points.isEmpty())
         return;
     const double lastMin = m_points.last().timeMin;

@@ -1,12 +1,16 @@
 #include "ui/focuspage.h"
+#include "ui/widgets/hmitablewidget.h"
+#include "ui/widgets/pagescroll.h"
 #include "utils/hmikeys.h"
 
 #include <QCheckBox>
+#include <QEvent>
 #include <QComboBox>
 #include <QLineEdit>
 #include <QListView>
 #include <QPushButton>
 #include <QTextEdit>
+#include <QTimer>
 
 namespace {
 
@@ -26,30 +30,44 @@ QWidget *resolveInList(const QObjectList &list, QWidget *w)
     return nullptr;
 }
 
+bool isFocusable(QWidget *w)
+{
+    return w && w->isVisible() && w->isEnabled();
+}
+
 QWidget *moveInList(const QObjectList &list, QWidget *current, bool next)
 {
-    if (list.isEmpty())
+    const int n = list.size();
+    if (n <= 0)
         return nullptr;
 
     QWidget *obj = resolveInList(list, current);
     int index = obj ? list.indexOf(obj) : -1;
 
-    if (next)
+    for (int i = 0; i < n; ++i)
     {
-        if (index == -1 || index == list.size() - 1)
-            index = -1;
-        index++;
-    }
-    else
-    {
-        if (index == -1)
-            index = 0;
-        if (index == 0)
-            index = list.size();
-        index--;
-    }
+        if (next)
+        {
+            if (index == -1 || index == n - 1)
+                index = -1;
+            index++;
+        }
+        else
+        {
+            if (index == -1)
+                index = 0;
+            if (index == 0)
+                index = n;
+            index--;
+        }
 
-    return asWidget(list.at(index));
+        if (QWidget *w = asWidget(list.at(index)))
+        {
+            if (isFocusable(w))
+                return w;
+        }
+    }
+    return nullptr;
 }
 
 QComboBox *comboForWidget(QWidget *w)
@@ -70,8 +88,28 @@ FocusPage::FocusPage(QWidget *parent)
 {
 }
 
+void FocusPage::changeEvent(QEvent *event)
+{
+    QWidget::changeEvent(event);
+    if (event->type() == QEvent::LanguageChange)
+        retranslateUi();
+}
+
+bool FocusPage::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::FocusIn)
+        ensureWidgetInScroll(qobject_cast<QWidget *>(obj));
+    return QWidget::eventFilter(obj, event);
+}
+
 bool FocusPage::handleFocusNavKey(int key)
 {
+    if (auto *tbl = HmiTableWidget::owningTable(focusWidget()))
+    {
+        if (tbl->handleInnerNavKey(key))
+            return true;
+    }
+
     QComboBox *cb = comboForWidget(focusWidget());
     if (!cb || !cb->view() || !cb->view()->isVisible())
         return false;
@@ -106,6 +144,8 @@ void FocusPage::prepareFocusWidget(QWidget *w)
     if (!w)
         return;
     w->setFocusPolicy(Qt::StrongFocus);
+    if (!w->styleSheet().isEmpty())
+        return;
     if (auto *btn = qobject_cast<QPushButton *>(w))
         btn->setStyleSheet(QStringLiteral(
             "QPushButton{outline:0;}"
@@ -124,21 +164,67 @@ void FocusPage::prepareFocusWidget(QWidget *w)
             "QCheckBox:focus{border:2px solid blue;outline:0;}"));
 }
 
-void FocusPage::initFocus()
+void FocusPage::initFocus(bool grabFocus)
 {
     xList.clear();
     yList.clear();
     initFocusList();
     for (int i = 0; i < xList.size(); ++i)
+    {
         if (QWidget *w = asWidget(xList.at(i)))
+        {
             prepareFocusWidget(w);
+            w->installEventFilter(this);
+        }
+    }
     for (int i = 0; i < yList.size(); ++i)
     {
         if (QWidget *w = asWidget(yList.at(i)))
+        {
             prepareFocusWidget(w);
+            w->installEventFilter(this);
+        }
     }
-    if (QWidget *w = defaultFocusWidget())
+    if (!grabFocus)
+    {
+        releaseChildFocus();
+        return;
+    }
+    QWidget *restore = lastFocusWidget();
+    if (!restore)
+        restore = defaultFocusWidget();
+    if (restore)
+        restore->setFocus();
+    ensureWidgetInScroll(restore);
+    // QStackedWidget may move focus back to the hidden page after show();
+    // restore the entry control on the next event-loop tick.
+    QTimer::singleShot(0, this, SLOT(restoreLastFocus()));
+}
+
+QWidget *FocusPage::lastFocusWidget() const
+{
+    QWidget *w = resolveInList(xList, focusWidget());
+    if (!w)
+        w = resolveInList(yList, focusWidget());
+    if (!w || !w->isEnabled())
+        return nullptr;
+    return w;
+}
+
+void FocusPage::restoreLastFocus()
+{
+    QWidget *w = lastFocusWidget();
+    if (!w)
+        w = defaultFocusWidget();
+    if (w)
         w->setFocus();
+    ensureWidgetInScroll(w);
+}
+
+void FocusPage::releaseChildFocus()
+{
+    if (QWidget *w = focusWidget())
+        w->clearFocus();
 }
 
 QWidget *FocusPage::defaultFocusWidget() const
@@ -201,5 +287,6 @@ bool FocusPage::moveSpatialFocus(int key)
     if (!nextW)
         return false;
     nextW->setFocus();
+    ensureWidgetInScroll(nextW);
     return true;
 }

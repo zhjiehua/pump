@@ -5,11 +5,10 @@
 
 class MachineController;
 class MainWindow;
-class QComboBox;
-class QLineEdit;
-class QPushButton;
+class ComboCtrl;
+class EditCtrl;
 
-/** Run parameters: pressure limits, coefficient, gradient table. */
+/** Run parameters: pressure limits, gradient high/low, compensation coefficient. */
 class RunParamPage : public FocusPage
 {
     Q_OBJECT
@@ -20,23 +19,22 @@ protected:
     void initFocusList() override;
 
 private slots:
-    void onSave();
-    void onGrad();
-    void onBack();
+    void onMaxCommitted(const QString &value);
+    void onMinCommitted(const QString &value);
+    void onCoeffCommitted(const QString &value);
+    void onGradientActivated(int index);
 
 private:
     void loadFromSettings();
+    void applyPressLimits(double pmin, double pmax);
     double effectivePmaxCap() const;
 
     MachineController *m_c = nullptr;
     MainWindow *m_main = nullptr;
-    QLineEdit *m_min = nullptr;
-    QLineEdit *m_max = nullptr;
-    QLineEdit *m_coeff = nullptr;
-    QComboBox *m_gradient = nullptr;
-    QPushButton *m_save = nullptr;
-    QPushButton *m_grad = nullptr;
-    QPushButton *m_back = nullptr;
+    EditCtrl *m_max = nullptr;
+    EditCtrl *m_min = nullptr;
+    EditCtrl *m_coeff = nullptr;
+    ComboCtrl *m_gradient = nullptr;
 };
 
 #endif

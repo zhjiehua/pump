@@ -5,6 +5,7 @@
 #include <QStackedWidget>
 #include <QVector>
 
+class QEvent;
 class QShortcut;
 class MachineController;
 class TopBar;
@@ -26,8 +27,6 @@ public:
         Fix,
         FlowFix,
         PressFix,
-        PulseFix,
-        PressCompen,
         Admin,
         Net,
         Internal,
@@ -37,13 +36,11 @@ public:
         Permit,
         Glp,
         Pwd,
-        Gradient,
         GradientTable,
         DebugMcu
     };
 
     void go(Page p);
-    void goBack();
     void navigate(Page p);
     void rebuildScale();
     void retranslateUi();
@@ -52,14 +49,18 @@ public:
 
     void tryLogin(const QString &pwd);
     void requestAdminAccess();
+    void requestPasswordThen(Page returnPage, bool admin = true);
     bool pendingAdmin() const { return m_pendingAdmin; }
-    void goGradientTable(int which);
-    void setPanelShortcutsEnabled(bool enabled);
+    bool consumeLoginOkFor(Page p);
+    void goGradientTable();
 
 public slots:
+    void goBack();
+    void setPanelShortcutsEnabled(bool enabled);
     void onEditCtrlEditingChanged(bool editing);
 
 protected:
+    void changeEvent(QEvent *e) override;
     void keyPressEvent(QKeyEvent *e) override;
     void closeEvent(QCloseEvent *e) override;
 
@@ -72,6 +73,7 @@ private slots:
     void onAlarmChanged();
     void onProbationExpired();
     void onStackPageChanged(int index);
+    void applyNavigatorFocus();
 
     void focusNextLeftChild();
     void focusNextRightChild();
@@ -106,6 +108,7 @@ private:
     QVector<int> m_history;
     QVector<QShortcut *> m_shortcuts;
     bool m_pendingAdmin = true;
+    bool m_loginOk = false;
     Page m_pwdTarget = Admin;
     bool m_navigatorMode = true;
     int m_navigatorCnt = 3;

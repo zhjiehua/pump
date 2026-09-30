@@ -36,9 +36,13 @@ class AppSettings : public QObject
 {
     Q_OBJECT
 public:
-    enum McuProtocol { Legacy = 0, QinFine = 1 };
-    enum PcProtocol { LegacyPc = 0, Clarity = 1 };
-    enum PcPort { Serial = 0, Udp = 1 };
+    enum McuProtocol {
+        Cxth = 0,     ///< CXTH MCU, legacy 0x80 UART
+        QinFine = 1,  ///< QinFine MCU (reserved)
+        Legacy = Cxth ///< historical name
+    };
+    enum PcProtocol { LegacyPc = 0, Clarity = 1, QinFinePc = 2 };
+    enum PcPort { Serial = 0, Udp = 1, TcpServer = 2 };
     enum Language { English = 0, Chinese = 1 };
 
     explicit AppSettings(QObject *parent = nullptr);
@@ -55,37 +59,44 @@ public:
     QString dataPath() const;
     QString dataBackupPath() const;
 
-    McuProtocol mcuProtocol = Legacy;
-    QString mcuPort;
-    int mcuBaud = 9600;
-    quint8 mcuAddress = 0x01;
+    int pumpType = 0;
+    double pmaxLimit = 0.0; // Admin override; 0 = use pump-type default
     double mcuWordFactor = 6.0 * (4294967296.0) / 125000000.0 / 10.0;
     quint32 pressRawV0 = 0;
     double pressRawScale = 0.0128;
+
+    McuProtocol mcuProtocol = Cxth;
+    QString mcuPort;
+    int mcuBaud = 9600;
+    quint8 mcuAddress = 0x01;
 
     PcProtocol pcProtocol = Clarity;
     PcPort pcPort = Udp;
     QString pcSerialPort;
     int pcSerialBaud = 9600;
-    quint16 localUdpPort = 8080;
+    quint16 localPort = 8080;
     QString remoteIp = QStringLiteral("127.0.0.1");
     quint16 remotePort = 8081;
+
+    bool dhcp = false;
     QString localIp = QStringLiteral("192.168.1.100");
+    QString subnet = QStringLiteral("255.255.255.0");
+    QString gateway = QStringLiteral("192.168.1.1");
 
     int scale = 1; // 1 = native 320×240 (weiduodianzi)
     bool autoConnect = true;
     Language language = English;
     quint8 machineCode = 0x12;
-    int pumpType = 0;
+
     double flowSet = 1.0;
     double percent = 100.0;
     double coefficient = 100.0;
     double pressMin = 0.0;
     double pressMax = 42.0;
-    double pmaxLimit = 0.0; // Admin override; 0 = use pump-type default
     double purgeFlow = 5.0;
-    int gradientIndex = 0; // 0..9 selected RG table
+    int gradientIndex = 0; // 0 = local table; >=10 = PC/FG control
     int currentGradient = 0;
+    int gradientMode = 0; // 0=high, 1=low
 
     QString license = QStringLiteral("1111111111");
     QString serial = QStringLiteral("0000000000");
@@ -108,7 +119,7 @@ public:
     QString repairMonth = QStringLiteral("00");
     QString repairDay = QStringLiteral("0");
 
-    /** 10 gradient tables (RG1–RG10), each a list of time/flow points. */
+    /** One local gradient table (weiduodianzi GRADIENTTABLE0). */
     QVector<QVector<GradientPoint>> gradients;
 
     QVector<RatePoint> flowTable;
@@ -120,16 +131,16 @@ public:
     double loadPress = 0;
 
     void applyPumpTypeFactor();
+    double defaultMaxFlowForPump() const;
     double defaultMaxPressForPump() const;
     void ensureGradients();
-    QVector<GradientPoint> &gradientTable(int which);
-    const QVector<GradientPoint> &gradientTable(int which) const;
+    QVector<GradientPoint> &gradientTable();
+    const QVector<GradientPoint> &gradientTable() const;
 
 signals:
     void changed();
 
 private:
-    bool parseLegacyMonolithicJson(const QByteArray &raw);
     bool parseDeviceInfoJson(const QByteArray &raw);
     bool parseSystemJson(const QByteArray &raw);
     bool parseDataJson(const QByteArray &raw);

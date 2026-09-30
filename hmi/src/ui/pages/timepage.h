@@ -5,7 +5,8 @@
 
 class MachineController;
 class MainWindow;
-class QLineEdit;
+class EditCtrl;
+class QLabel;
 
 /** System date/time editor with live refresh. */
 class TimePage : public FocusPage
@@ -16,6 +17,7 @@ public:
 
 protected:
     void initFocusList() override;
+    void retranslateUi() override;
 
 private slots:
     void refreshFromClock();
@@ -26,12 +28,14 @@ private:
 
     MachineController *m_c = nullptr;
     MainWindow *m_main = nullptr;
-    QLineEdit *m_year = nullptr;
-    QLineEdit *m_month = nullptr;
-    QLineEdit *m_day = nullptr;
-    QLineEdit *m_hour = nullptr;
-    QLineEdit *m_min = nullptr;
-    QLineEdit *m_sec = nullptr;
+    QLabel *m_dateCap = nullptr;
+    QLabel *m_timeCap = nullptr;
+    EditCtrl *m_year = nullptr;
+    EditCtrl *m_month = nullptr;
+    EditCtrl *m_day = nullptr;
+    EditCtrl *m_hour = nullptr;
+    EditCtrl *m_min = nullptr;
+    EditCtrl *m_sec = nullptr;
 };
 
 #endif

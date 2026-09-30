@@ -29,6 +29,7 @@ private:
     void commitEdit();
     bool validateAndFormat(const QString &val, QString *out) const;
     void rebuildDigitScale();
+    void loadDigitsFromText();
     void syncDisplayFromDigits();
     void clearDigitsForNewEntry();
 

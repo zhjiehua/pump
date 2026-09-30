@@ -1,5 +1,6 @@
 #include "ui/mainwindow.h"
 #include "ui/focuspage.h"
+#include "ui/widgets/comboctrl.h"
 #include "ui/widgets/editctrl.h"
 #include "ui/widgets/hmitablewidget.h"
 #include "utils/hmikeys.h"
@@ -15,8 +16,6 @@
 #include "ui/pages/fixpage.h"
 #include "ui/pages/flowfixpage.h"
 #include "ui/pages/pressfixpage.h"
-#include "ui/pages/pulsefixpage.h"
-#include "ui/pages/presscompenpage.h"
 #include "ui/pages/adminpage.h"
 #include "ui/pages/netpage.h"
 #include "ui/pages/internalconfigpage.h"
@@ -26,12 +25,12 @@
 #include "ui/pages/permitpage.h"
 #include "ui/pages/glpinfopage.h"
 #include "ui/pages/pwdpage.h"
-#include "ui/pages/gradientpage.h"
 #include "ui/pages/gradienttablepage.h"
 #include "ui/pages/debugmcuprotopage.h"
 
 #include <QAbstractButton>
 #include <QCloseEvent>
+#include <QEvent>
 #include <QKeyEvent>
 #include <QComboBox>
 #include <QLineEdit>
@@ -39,6 +38,7 @@
 #include <QShortcut>
 #include <QTextEdit>
 #include <QStatusBar>
+#include <QTimer>
 #include <QVBoxLayout>
 
 MainWindow::MainWindow(QWidget *parent)
@@ -71,8 +71,6 @@ MainWindow::MainWindow(QWidget *parent)
     m_stack->addWidget(new FixPage(this));                         // Fix
     m_stack->addWidget(new FlowFixPage(m_ctrl, this));             // FlowFix
     m_stack->addWidget(new PressFixPage(m_ctrl, this));            // PressFix
-    m_stack->addWidget(new PulseFixPage(m_ctrl, this));            // PulseFix
-    m_stack->addWidget(new PressCompenPage(m_ctrl, this));         // PressCompen
     m_stack->addWidget(new AdminPage(m_ctrl, this));               // Admin
     m_stack->addWidget(new NetPage(m_ctrl, this));                 // Net
     m_stack->addWidget(new InternalConfigPage(m_ctrl, this));      // Internal
@@ -83,8 +81,7 @@ MainWindow::MainWindow(QWidget *parent)
     m_stack->addWidget(new GlpInfoPage(m_ctrl, this));             // Glp
     m_pwdPage = new PwdPage(m_ctrl, this, true);
     m_stack->addWidget(m_pwdPage);                                 // Pwd
-    m_stack->addWidget(new GradientPage(m_ctrl, this));            // Gradient
-    m_gradTable = new GradientTablePage(m_ctrl, this, 0);
+    m_gradTable = new GradientTablePage(m_ctrl, this);
     m_stack->addWidget(m_gradTable);                               // GradientTable
     m_stack->addWidget(new DebugMcuProtoPage(m_ctrl, this));         // DebugMcu
 
@@ -107,8 +104,16 @@ MainWindow::MainWindow(QWidget *parent)
 
 void MainWindow::initShortcuts()
 {
+    // Same pattern as weiduodianzi BaseMainPage::initShotCut: QShortcut + setKey().
     auto add = [&](int key, const char *slot) {
-        auto *sc = new QShortcut(QKeySequence(key), this);
+        const QKeySequence seq(key);
+        for (QShortcut *existing : m_shortcuts)
+        {
+            if (existing && existing->key() == seq)
+                return;
+        }
+        auto *sc = new QShortcut(this);
+        sc->setKey(key);
         connect(sc, SIGNAL(activated()), this, slot);
         m_shortcuts.append(sc);
     };
@@ -128,11 +133,7 @@ void MainWindow::initShortcuts()
     add(PANEL_KEY_DOWN, SLOT(focusNextDownChild()));
     add(PANEL_KEY_LEFT, SLOT(focusNextLeftChild()));
     add(PANEL_KEY_RIGHT, SLOT(focusNextRightChild()));
-    {
-        auto *sc = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Up), this);
-        connect(sc, SIGNAL(activated()), this, SLOT(shortCutSuper()));
-        m_shortcuts.append(sc);
-    }
+    add(KEY_SUPER, SLOT(shortCutSuper()));
 }
 
 FocusPage *MainWindow::currentFocusPage() const
@@ -152,6 +153,8 @@ bool MainWindow::panelKeysEnabled() const
         }
         if (auto *ec = qobject_cast<EditCtrl *>(w))
             return !ec->isEditing();
+        if (auto *cb = qobject_cast<ComboCtrl *>(w))
+            return !cb->isPopupOpen();
         w = w->parentWidget();
     }
     return true;
@@ -166,8 +169,8 @@ bool MainWindow::checkNavPermission() const
 void MainWindow::setNavigatorMode(bool mode)
 {
     m_navigatorMode = mode;
-    if (mode && m_bottom)
-        m_bottom->focusNav(m_currentNavigator);
+    if (mode)
+        enterNavigatorMode();
 }
 
 void MainWindow::navigatorPageAt(int index, bool force)
@@ -182,7 +185,7 @@ void MainWindow::navigatorPageAt(int index, bool force)
     m_bottom->setActiveNav(index);
     navigate(navPages[index]);
     if (m_navigatorMode)
-        m_bottom->focusNav(index);
+        enterNavigatorMode();
 }
 
 void MainWindow::setPanelShortcutsEnabled(bool enabled)
@@ -210,10 +213,33 @@ void MainWindow::shortCutActivateFocus()
     QWidget *w = QWidget::focusWidget();
     if (!w)
         return;
+    if (auto *tbl = HmiTableWidget::owningTable(w))
+    {
+        if (qobject_cast<QAbstractButton *>(w) && tbl->isIndexMenuOpen())
+        {
+            auto *btn = qobject_cast<QAbstractButton *>(w);
+            if (btn && btn->isEnabled())
+                btn->click();
+            return;
+        }
+        if (!tbl->isInside())
+            tbl->enterInner();
+        else
+            tbl->activateCurrentCell();
+        return;
+    }
     if (auto *ec = qobject_cast<EditCtrl *>(w))
     {
         if (ec->isReadOnly())
             ec->startEditing();
+        return;
+    }
+    if (auto *cb = qobject_cast<ComboCtrl *>(w))
+    {
+        if (cb->isPopupOpen())
+            cb->hidePopup();
+        else
+            cb->showPopup();
         return;
     }
     if (auto *cb = qobject_cast<QComboBox *>(w))
@@ -242,25 +268,43 @@ void MainWindow::onEscapeKey()
             if (ec->cancelEditing())
                 return;
         }
+        if (auto *cb = qobject_cast<ComboCtrl *>(w))
+        {
+            if (cb->isPopupOpen())
+            {
+                cb->hidePopup();
+                return;
+            }
+        }
+        if (auto *tbl = HmiTableWidget::owningTable(w))
+        {
+            if (tbl->handleBack())
+                return;
+        }
     }
 
-    const Page p = Page(m_stack->currentIndex());
-    if ((p == Run || p == Param || p == Setup) && !m_navigatorMode)
-    {
-        enterNavigatorMode();
-        return;
-    }
     goBack();
 }
 
 void MainWindow::enterNavigatorMode()
 {
     m_navigatorMode = true;
-    if (!m_bottom || m_stack->currentIndex() == int(Logo))
+    applyNavigatorFocus();
+    // QStackedWidget restores the previous page child after setCurrentIndex
+    // returns; re-apply navi focus on the next event-loop tick.
+    QTimer::singleShot(0, this, SLOT(applyNavigatorFocus()));
+}
+
+void MainWindow::applyNavigatorFocus()
+{
+    if (!m_navigatorMode || !m_bottom || m_stack->currentIndex() == int(Logo))
         return;
     const Page p = Page(m_stack->currentIndex());
-    if (p == Run || p == Param || p == Setup)
-        m_bottom->focusNav(m_currentNavigator);
+    if (p != Run && p != Param && p != Setup)
+        return;
+    if (auto *fp = currentFocusPage())
+        fp->releaseChildFocus();
+    m_bottom->focusNav(m_currentNavigator);
 }
 
 void MainWindow::focusNextLeftChild()
@@ -390,8 +434,6 @@ QString MainWindow::titleFor(Page p) const
     case Fix: return tr("Calibration");
     case FlowFix: return tr("Flow Calibration");
     case PressFix: return tr("Press Calibration");
-    case PulseFix: return tr("Pulse Compen");
-    case PressCompen: return tr("Press Compen");
     case Admin: return tr("Admin");
     case Net: return tr("Network Configuration");
     case Internal: return tr("Internal");
@@ -401,7 +443,6 @@ QString MainWindow::titleFor(Page p) const
     case Permit: return tr("Permission");
     case Glp: return tr("GLP Information");
     case Pwd: return tr("Password");
-    case Gradient: return tr("Gradient");
     case GradientTable: return tr("Gradient");
     case DebugMcu: return tr("MCU Debug");
     }
@@ -420,7 +461,7 @@ void MainWindow::syncChrome(Page p)
         m_bottom->setActiveNav(0);
         m_currentNavigator = 0;
     }
-    else if (p == Param || p == Gradient || p == GradientTable)
+    else if (p == Param || p == GradientTable)
     {
         m_bottom->setActiveNav(1);
         m_currentNavigator = 1;
@@ -437,13 +478,11 @@ void MainWindow::onStackPageChanged(int)
     setPanelShortcutsEnabled(true);
 
     const Page p = Page(m_stack->currentIndex());
-    if (m_navigatorMode && m_bottom && (p == Run || p == Param || p == Setup))
-    {
-        m_bottom->focusNav(m_currentNavigator);
-        return;
-    }
+    const bool nav = m_navigatorMode && m_bottom && (p == Run || p == Param || p == Setup);
     if (auto *fp = currentFocusPage())
-        fp->initFocus();
+        fp->initFocus(!nav);
+    if (nav)
+        applyNavigatorFocus();
 }
 
 void MainWindow::setPageTitle(const QString &title)
@@ -464,14 +503,28 @@ void MainWindow::rebuildScale()
     setFixedSize(w, h);
 }
 
+void MainWindow::changeEvent(QEvent *e)
+{
+    QMainWindow::changeEvent(e);
+    if (e->type() == QEvent::LanguageChange)
+        retranslateUi();
+}
+
 void MainWindow::retranslateUi()
 {
+    if (m_bottom)
+        m_bottom->updateLanguage();
     syncChrome(Page(m_stack->currentIndex()));
 }
 
 void MainWindow::go(Page p)
 {
-    m_history.append(m_stack->currentIndex());
+    const Page cur = Page(m_stack->currentIndex());
+    // Password is a gate, not a destination: never push it onto the back stack.
+    if (cur != Pwd)
+        m_history.append(int(cur));
+    if (p != Run && p != Param && p != Setup)
+        m_navigatorMode = false;
     m_stack->setCurrentIndex(int(p));
     syncChrome(p);
 }
@@ -485,6 +538,21 @@ void MainWindow::navigate(Page p)
 
 void MainWindow::goBack()
 {
+    if (auto *tbl = HmiTableWidget::owningTable(QWidget::focusWidget()))
+    {
+        if (tbl->handleBack())
+            return;
+    }
+
+    const Page p = Page(m_stack->currentIndex());
+    // Top-level nav pages: Backspace returns focus to the bottom bar
+    // without switching pages. Left/right on the bar still change pages.
+    if (p == Run || p == Param || p == Setup)
+    {
+        enterNavigatorMode();
+        return;
+    }
+
     if (m_history.isEmpty())
     {
         m_navigatorMode = true;
@@ -492,21 +560,43 @@ void MainWindow::goBack()
         enterNavigatorMode();
         return;
     }
-    const int i = hmiVectorTakeLast(&m_history);
-    const Page p = Page(i);
-    if (p == Run || p == Param || p == Setup)
+    int i = hmiVectorTakeLast(&m_history);
+    while (i == int(Pwd) && !m_history.isEmpty())
+        i = hmiVectorTakeLast(&m_history);
+    if (i == int(Pwd))
+    {
         m_navigatorMode = true;
-    m_stack->setCurrentIndex(i);
-    syncChrome(p);
-    if (p == Run || p == Param || p == Setup)
+        navigate(Run);
         enterNavigatorMode();
+        return;
+    }
+    const Page prev = Page(i);
+    // Stay on the page's entry control; Backspace on Run/Param/Setup goes to navi.
+    if (prev == Run || prev == Param || prev == Setup)
+        m_navigatorMode = false;
+    m_stack->setCurrentIndex(i);
+    syncChrome(prev);
 }
 
 void MainWindow::requestAdminAccess()
 {
-    m_pendingAdmin = true;
-    m_pwdTarget = Admin;
+    requestPasswordThen(Admin, true);
+}
+
+void MainWindow::requestPasswordThen(Page returnPage, bool admin)
+{
+    m_pendingAdmin = admin;
+    m_pwdTarget = returnPage;
+    m_loginOk = false;
     go(Pwd);
+}
+
+bool MainWindow::consumeLoginOkFor(Page p)
+{
+    if (!m_loginOk || m_pwdTarget != p)
+        return false;
+    m_loginOk = false;
+    return true;
 }
 
 void MainWindow::tryLogin(const QString &pwd)
@@ -515,19 +605,24 @@ void MainWindow::tryLogin(const QString &pwd)
     const QString expect = m_pendingAdmin ? s->adminPwd : s->userPwd;
     if (pwd == expect)
     {
-        go(m_pwdTarget);
+        m_loginOk = true;
+        const bool returning = !m_history.isEmpty() && m_history.last() == int(m_pwdTarget);
+        if (returning)
+        {
+            m_stack->setCurrentIndex(int(m_pwdTarget));
+            syncChrome(m_pwdTarget);
+        }
+        else
+            go(m_pwdTarget);
         return;
     }
     QMessageBox::warning(this, tr("Warning"), tr("Pwd error!!!"));
 }
 
-void MainWindow::goGradientTable(int which)
+void MainWindow::goGradientTable()
 {
     if (m_gradTable)
-    {
-        m_gradTable->setWhich(which);
         m_gradTable->reload();
-    }
     go(GradientTable);
 }
 

@@ -1,44 +1,49 @@
-#ifndef CXTHPCSERVER_H
-#define CXTHPCSERVER_H
+#ifndef PROTOCOL_PC_SERVER_H
+#define PROTOCOL_PC_SERVER_H
 
 #include <QObject>
 #include "platform/hmiserialport.h"
+#include <QTcpServer>
+#include <QTcpSocket>
 #include <QUdpSocket>
 #include <QHostAddress>
 #include "core/appsettings.h"
 
 class MachineController;
 
-class CxthPcServer : public QObject
+class PcServer : public QObject
 {
     Q_OBJECT
 public:
-    explicit CxthPcServer(QObject *parent = nullptr);
+    explicit PcServer(QObject *parent = nullptr);
     void setController(MachineController *c) { m_ctrl = c; }
 
     bool start(AppSettings *s);
     void stop();
-    void sendPressure(double mpa);
     void sendBytes(const QByteArray &ba);
-    void sendCalib(quint8 ai, quint32 value);
-    void dumpFlowTable();
-    void dumpPressTable();
-    void dumpPulseTable();
+    virtual void sendPressure(double mpa) = 0;
 
-private slots:
+protected slots:
     void onSerial();
     void onUdp();
+    void onNewConnection();
+    void onTcpReadyRead();
+    void onTcpDisconnected();
 
-private:
-    void handle(const QByteArray &chunk);
-    void handleClarity(const QByteArray &frame);
-    void handleLegacy(const QByteArray &frame);
+protected:
+    virtual void handle(const QByteArray &chunk) = 0;
 
     MachineController *m_ctrl = nullptr;
     AppSettings *m_settings = nullptr;
+    QByteArray m_rx;
+
+private:
+    void closeTcpClient();
+
     HmiSerialPort m_serial;
     QUdpSocket m_udp;
-    QByteArray m_rx;
+    QTcpServer m_tcp;
+    QTcpSocket *m_tcpClient = nullptr;
     QHostAddress m_peer;
     quint16 m_peerPort = 0;
     bool m_running = false;

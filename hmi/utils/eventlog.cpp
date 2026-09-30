@@ -30,7 +30,7 @@ const char *runStatName(int stat)
     }
 }
 
-QString pcLegacyCmdName(quint8 cmd)
+QString pcCxthCmdName(quint8 cmd)
 {
     switch (cmd)
     {
@@ -104,7 +104,7 @@ QString pcClarityPfcName(quint8 pfc)
     }
 }
 
-QString mcuLegacyCmdName(quint8 cmd)
+QString mcuCxthCmdName(quint8 cmd)
 {
     switch (cmd)
     {

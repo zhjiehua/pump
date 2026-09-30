@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QVector>
 
-class QPushButton;
+class BtnCtrl;
 class QLabel;
 
 /** Bottom navigator — matches weiduodianzi BottomWidget. */
@@ -19,16 +19,20 @@ public:
     void focusNav(int index = -1);
     void setLinkOk(bool ok);
     void setPressWarn(int kind); // 0=none, 1=low, 2=high
+    void updateLanguage();
 
 signals:
     void runClicked();
     void paramClicked();
     void setupClicked();
 
+protected:
+    void changeEvent(QEvent *event) override;
+
 private:
     void applyNavStyles();
 
-    QVector<QPushButton *> m_btns;
+    QVector<BtnCtrl *> m_btns;
     QLabel *m_link = nullptr;
     QLabel *m_press = nullptr;
     QLabel *m_weep = nullptr;

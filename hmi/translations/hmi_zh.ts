@@ -51,6 +51,42 @@
         <source>Tips</source>
         <translation>温馨提示</translation>
     </message>
+    <message>
+        <source>Pump</source>
+        <translation>泵</translation>
+    </message>
+    <message>
+        <source>Time</source>
+        <translation>时间</translation>
+    </message>
+    <message>
+        <source>Internal</source>
+        <translation>内部</translation>
+    </message>
+    <message>
+        <source>Gradient</source>
+        <translation>梯度</translation>
+    </message>
+    <message>
+        <source>Network Configuration</source>
+        <translation>网络配置</translation>
+    </message>
+    <message>
+        <source>GLP Information</source>
+        <translation>GLP信息</translation>
+    </message>
+    <message>
+        <source>Flow Calibration</source>
+        <translation>流量校正</translation>
+    </message>
+    <message>
+        <source>Press Calibration</source>
+        <translation>压力校正</translation>
+    </message>
+    <message>
+        <source>MCU Debug</source>
+        <translation>MCU调试</translation>
+    </message>
 </context>
 <context>
     <name>BottomBar</name>
@@ -108,6 +144,595 @@
     <message>
         <source>PC</source>
         <translation>上位机</translation>
+    </message>
+</context>
+<context>
+    <name>RunParamPage</name>
+    <message>
+        <source>Max Press:</source>
+        <translation>最大压力:</translation>
+    </message>
+    <message>
+        <source>Min Press:</source>
+        <translation>最小压力:</translation>
+    </message>
+    <message>
+        <source>Grad Mode:</source>
+        <translation>梯度模式:</translation>
+    </message>
+    <message>
+        <source>Comp Coef:</source>
+        <translation>压缩系数:</translation>
+    </message>
+    <message>
+        <source>high</source>
+        <translation>高</translation>
+    </message>
+    <message>
+        <source>low</source>
+        <translation>低</translation>
+    </message>
+</context>
+<context>
+    <name>LanguagePage</name>
+    <message>
+        <source>Chinese</source>
+        <translation>中文</translation>
+    </message>
+    <message>
+        <source>English</source>
+        <translation>英文</translation>
+    </message>
+    <message>
+        <source>Tips</source>
+        <translation>温馨提示</translation>
+    </message>
+    <message>
+        <source>Change Language Success</source>
+        <translation>切换语言成功</translation>
+    </message>
+</context>
+<context>
+    <name>SetupPage</name>
+    <message>
+        <source>Lang</source>
+        <translation>语言</translation>
+    </message>
+    <message>
+        <source>Calib</source>
+        <translation>校正</translation>
+    </message>
+    <message>
+        <source>Permit</source>
+        <translation>许可</translation>
+    </message>
+    <message>
+        <source>GLP</source>
+        <translation>GLP</translation>
+    </message>
+    <message>
+        <source>Time</source>
+        <translation>时间</translation>
+    </message>
+    <message>
+        <source>Grad</source>
+        <translation>梯度</translation>
+    </message>
+    <message>
+        <source>About</source>
+        <translation>关于</translation>
+    </message>
+    <message>
+        <source>Net</source>
+        <translation>网络</translation>
+    </message>
+    <message>
+        <source>Admin</source>
+        <translation>管理员</translation>
+    </message>
+    <message>
+        <source>Internal</source>
+        <translation>内部</translation>
+    </message>
+</context>
+<context>
+    <name>PermitPage</name>
+    <message>
+        <source>Verif Code</source>
+        <translation>验证码</translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <translation>激活</translation>
+    </message>
+    <message>
+        <source>Tips:</source>
+        <translation>温馨提示：</translation>
+    </message>
+    <message>
+        <source>Probation period:</source>
+        <translation>设备试用期剩余:</translation>
+    </message>
+    <message>
+        <source>day</source>
+        <translation>天</translation>
+    </message>
+    <message>
+        <source>Tips</source>
+        <translation>温馨提示</translation>
+    </message>
+    <message>
+        <source>Register success!</source>
+        <translation>注册成功!</translation>
+    </message>
+    <message>
+        <source>Register failed!</source>
+        <translation>注册失败!</translation>
+    </message>
+    <message>
+        <source>Serial:</source>
+        <translation>序列号:</translation>
+    </message>
+    <message>
+        <source>Rand:</source>
+        <translation>随机码:</translation>
+    </message>
+    <message>
+        <source>tips</source>
+        <translation>提示</translation>
+    </message>
+    <message>
+        <source>infinite</source>
+        <translation>无限期</translation>
+    </message>
+</context>
+<context>
+    <name>GlpInfoPage</name>
+    <message>
+        <source>Manuf Date:</source>
+        <translation>生产日期:</translation>
+    </message>
+    <message>
+        <source>Install Date:</source>
+        <translation>安装日期:</translation>
+    </message>
+    <message>
+        <source>La Rep Date:</source>
+        <translation>上次维修日期:</translation>
+    </message>
+    <message>
+        <source>Used Time:</source>
+        <translation>使用时间:</translation>
+    </message>
+    <message>
+        <source>Pump Run Count:</source>
+        <translation>柱塞运行次数:</translation>
+    </message>
+    <message>
+        <source>Total Fluid:</source>
+        <translation>总吸液量:</translation>
+    </message>
+    <message>
+        <source>Pump Type:</source>
+        <translation>泵类型:</translation>
+    </message>
+    <message>
+        <source>Day</source>
+        <translation>天</translation>
+    </message>
+    <message>
+        <source>Hour</source>
+        <translation>时</translation>
+    </message>
+    <message>
+        <source>Min</source>
+        <translation>分</translation>
+    </message>
+    <message>
+        <source>Sec</source>
+        <translation>秒</translation>
+    </message>
+</context>
+<context>
+    <name>GradientTablePage</name>
+    <message>
+        <source>Time</source>
+        <translation>时间</translation>
+    </message>
+    <message>
+        <source>Flow</source>
+        <translation>流量</translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation>保存</translation>
+    </message>
+    <message>
+        <source>Back</source>
+        <translation>返回</translation>
+    </message>
+    <message>
+        <source>Tips</source>
+        <translation>温馨提示</translation>
+    </message>
+    <message>
+        <source>save success!</source>
+        <translation>保存成功!</translation>
+    </message>
+</context>
+<context>
+    <name>FixPage</name>
+    <message>
+        <source>Press Calibration</source>
+        <translation>压力校正</translation>
+    </message>
+    <message>
+        <source>Flow Calibration</source>
+        <translation>流速校正</translation>
+    </message>
+</context>
+<context>
+    <name>FlowFixPage</name>
+    <message>
+        <source>Flow</source>
+        <translation>设定流速</translation>
+    </message>
+    <message>
+        <source>Real Flow</source>
+        <translation>实际流速</translation>
+    </message>
+    <message>
+        <source>Flow:</source>
+        <translation>流速:</translation>
+    </message>
+    <message>
+        <source>mL</source>
+        <translation>mL</translation>
+    </message>
+    <message>
+        <source>Press:</source>
+        <translation>压力:</translation>
+    </message>
+    <message>
+        <source>MPa</source>
+        <translation>MPa</translation>
+    </message>
+    <message>
+        <source>Time:</source>
+        <translation>时间:</translation>
+    </message>
+    <message>
+        <source>min</source>
+        <translation>min</translation>
+    </message>
+    <message>
+        <source>Start</source>
+        <translation>开始</translation>
+    </message>
+    <message>
+        <source>Stop</source>
+        <translation>停止</translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation>保存</translation>
+    </message>
+    <message>
+        <source>Back</source>
+        <translation>返回</translation>
+    </message>
+    <message>
+        <source>Tips</source>
+        <translation>温馨提示</translation>
+    </message>
+    <message>
+        <source>save success!</source>
+        <translation>保存成功!</translation>
+    </message>
+</context>
+<context>
+    <name>PressFixPage</name>
+    <message>
+        <source>Press</source>
+        <translation>显示压力</translation>
+    </message>
+    <message>
+        <source>Real Press</source>
+        <translation>真实压力</translation>
+    </message>
+    <message>
+        <source>Flow:</source>
+        <translation>流速:</translation>
+    </message>
+    <message>
+        <source>mL</source>
+        <translation>mL</translation>
+    </message>
+    <message>
+        <source>Press:</source>
+        <translation>压力:</translation>
+    </message>
+    <message>
+        <source>MPa</source>
+        <translation>MPa</translation>
+    </message>
+    <message>
+        <source>Clear Press</source>
+        <translation>清压力</translation>
+    </message>
+    <message>
+        <source>Start</source>
+        <translation>开始</translation>
+    </message>
+    <message>
+        <source>Stop</source>
+        <translation>停止</translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation>保存</translation>
+    </message>
+    <message>
+        <source>Back</source>
+        <translation>返回</translation>
+    </message>
+    <message>
+        <source>Tips</source>
+        <translation>温馨提示</translation>
+    </message>
+    <message>
+        <source>save success!</source>
+        <translation>保存成功!</translation>
+    </message>
+</context>
+<context>
+    <name>PwdPage</name>
+    <message>
+        <source>User:</source>
+        <translation>用户名:</translation>
+    </message>
+    <message>
+        <source>Pwd:</source>
+        <translation>密码:</translation>
+    </message>
+    <message>
+        <source>Login</source>
+        <translation>登录</translation>
+    </message>
+</context>
+<context>
+    <name>AdminPage</name>
+    <message>
+        <source>Deactive</source>
+        <translation>取消激活</translation>
+    </message>
+    <message>
+        <source>UTC</source>
+        <translation>清使用时间</translation>
+    </message>
+    <message>
+        <source>PTC</source>
+        <translation>清泵时间</translation>
+    </message>
+    <message>
+        <source>Reset</source>
+        <translation>恢复</translation>
+    </message>
+    <message>
+        <source>saveData</source>
+        <translation>保存数据</translation>
+    </message>
+    <message>
+        <source>updateData</source>
+        <translation>更新数据</translation>
+    </message>
+    <message>
+        <source>Manuf Date:</source>
+        <translation>生产日期:</translation>
+    </message>
+    <message>
+        <source>Install Date:</source>
+        <translation>安装日期:</translation>
+    </message>
+    <message>
+        <source>La Rep Date:</source>
+        <translation>上次维修日期:</translation>
+    </message>
+    <message>
+        <source>Licen:</source>
+        <translation>许可证:</translation>
+    </message>
+    <message>
+        <source>Proto:</source>
+        <translation>协议:</translation>
+    </message>
+    <message>
+        <source>Serial:</source>
+        <translation>序列号:</translation>
+    </message>
+    <message>
+        <source>Conne:</source>
+        <translation>接口:</translation>
+    </message>
+    <message>
+        <source>Pmax:</source>
+        <translation>最大压力:</translation>
+    </message>
+    <message>
+        <source>RS232</source>
+        <translation>标准串口</translation>
+    </message>
+    <message>
+        <source>RJ45</source>
+        <translation>以太网口</translation>
+    </message>
+    <message>
+        <source>TCP Server</source>
+        <translation>TCP服务</translation>
+    </message>
+    <message>
+        <source>Tips</source>
+        <translation>温馨提示</translation>
+    </message>
+    <message>
+        <source>Comfirm to Cancel Active!!!</source>
+        <translation>是否取消激活!!!</translation>
+    </message>
+    <message>
+        <source>Comfirm to Clear!!!</source>
+        <translation>请确认清除!!!</translation>
+    </message>
+    <message>
+        <source>Comfirm to Restore!!!</source>
+        <translation>是否恢复出厂设置!!!</translation>
+    </message>
+    <message>
+        <source>Comfirm to update data?</source>
+        <translation>确定更新数据?</translation>
+    </message>
+    <message>
+        <source>success!</source>
+        <translation>成功!</translation>
+    </message>
+    <message>
+        <source>failed!</source>
+        <translation>失败！</translation>
+    </message>
+    <message>
+        <source>Restore not implemented.</source>
+        <translation>恢复出厂设置未实现。</translation>
+    </message>
+    <message>
+        <source>JSON files (*.json);;All files (*)</source>
+        <translation>JSON 文件 (*.json);;所有文件 (*)</translation>
+    </message>
+</context>
+<context>
+    <name>TimePage</name>
+    <message>
+        <source>Current Date:</source>
+        <translation>当前日期:</translation>
+    </message>
+    <message>
+        <source>Current Time:</source>
+        <translation>当前时间:</translation>
+    </message>
+</context>
+<context>
+    <name>MsgPage</name>
+    <message>
+        <source>Version:</source>
+        <translation>版本:</translation>
+    </message>
+    <message>
+        <source>License:</source>
+        <translation>许可证:</translation>
+    </message>
+    <message>
+        <source>Serial:</source>
+        <translation>序列号:</translation>
+    </message>
+    <message>
+        <source>UpdatePro</source>
+        <translation>更新程序</translation>
+    </message>
+    <message>
+        <source>Tips</source>
+        <translation>温馨提示</translation>
+    </message>
+    <message>
+        <source>Comfirm to update program?</source>
+        <translation>确定更新程序?</translation>
+    </message>
+    <message>
+        <source>file not found!</source>
+        <translation>文件不存在!</translation>
+    </message>
+    <message>
+        <source>success!</source>
+        <translation>成功!</translation>
+    </message>
+    <message>
+        <source>failed!</source>
+        <translation>失败！</translation>
+    </message>
+</context>
+<context>
+    <name>NetPage</name>
+    <message>
+        <source>Ethernet</source>
+        <translation>以太网</translation>
+    </message>
+    <message>
+        <source>COM</source>
+        <translation>通讯</translation>
+    </message>
+    <message>
+        <source>DHCP:</source>
+        <translation>DHCP:</translation>
+    </message>
+    <message>
+        <source>Lo IP:</source>
+        <translation>本地IP:</translation>
+    </message>
+    <message>
+        <source>Mask:</source>
+        <translation>掩码:</translation>
+    </message>
+    <message>
+        <source>Gateway:</source>
+        <translation>网关:</translation>
+    </message>
+    <message>
+        <source>Lo Port:</source>
+        <translation>本地端口:</translation>
+    </message>
+    <message>
+        <source>Re IP:</source>
+        <translation>远端IP:</translation>
+    </message>
+    <message>
+        <source>Re Port:</source>
+        <translation>远端端口:</translation>
+    </message>
+    <message>
+        <source>Off</source>
+        <translation>关</translation>
+    </message>
+    <message>
+        <source>On</source>
+        <translation>开</translation>
+    </message>
+</context>
+<context>
+    <name>HmiTableWidget</name>
+    <message>
+        <source>#</source>
+        <translation>#</translation>
+    </message>
+    <message>
+        <source>Add</source>
+        <translation>增加</translation>
+    </message>
+    <message>
+        <source>Delete</source>
+        <translation>删除</translation>
+    </message>
+    <message>
+        <source>Delete All</source>
+        <translation>删除全部</translation>
+    </message>
+    <message>
+        <source>Confirm to delete all?</source>
+        <translation>确认删除全部?</translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation>是</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation>否</translation>
     </message>
 </context>
 </TS>

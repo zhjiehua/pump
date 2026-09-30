@@ -1,10 +1,11 @@
 #include "ui/pages/fixpage.h"
+#include "core/picturemanager.h"
 #include "ui/mainwindow.h"
+#include "ui/widgets/btnctrl.h"
+#include "ui/widgets/imgbutton.h"
 #include "ui/widgets/pagescroll.h"
 
-#include <QGridLayout>
 #include <QHBoxLayout>
-#include <QPushButton>
 #include <QSignalMapper>
 #include <QVBoxLayout>
 
@@ -14,60 +15,64 @@ FixPage::FixPage(MainWindow *main, QWidget *parent)
     , m_mapper(new QSignalMapper(this))
 {
     auto *inner = new QWidget;
-    auto *root = new QVBoxLayout(inner);
-    root->setContentsMargins(8, 8, 8, 8);
+    auto *root = new QHBoxLayout(inner);
+    root->setContentsMargins(4, 4, 4, 4);
+    root->setSpacing(0);
 
-    auto *g = new QGridLayout;
-    g->setHorizontalSpacing(8);
-    g->setVerticalSpacing(8);
+    root->addStretch(1);
 
-    auto add = [&](QPushButton **slot, int r, int c, const QString &label, MainWindow::Page page) {
-        auto *b = new QPushButton(label);
+    auto *iconCol = new QVBoxLayout;
+    iconCol->addStretch(2);
+    m_icon = new ImgButton;
+    m_icon->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_icon->setFocusPolicy(Qt::NoFocus);
+    m_icon->setBkImage(PictureManager::Calibration);
+    iconCol->addWidget(m_icon, 7);
+    iconCol->addStretch(2);
+    root->addLayout(iconCol, 3);
+
+    root->addStretch(1);
+
+    auto *btnCol = new QVBoxLayout;
+    btnCol->setSpacing(6);
+    btnCol->addStretch(1);
+
+    auto addBtn = [&](BtnCtrl **slot, MainWindow::Page page) {
+        auto *b = new BtnCtrl;
         *slot = b;
         b->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-        b->setMinimumHeight(48);
-        g->addWidget(b, r, c);
+        btnCol->addWidget(b, 2);
         connect(b, SIGNAL(clicked()), m_mapper, SLOT(map()));
         m_mapper->setMapping(b, int(page));
+        btnCol->addStretch(1);
     };
+    addBtn(&m_pressCal, MainWindow::PressFix);
+    addBtn(&m_flowCal, MainWindow::FlowFix);
 
-    add(&m_pressCal, 0, 0, tr("Press Calib"), MainWindow::PressFix);
-    add(&m_flowCal, 0, 1, tr("Flow Calib"), MainWindow::FlowFix);
-    add(&m_pulseCal, 1, 0, tr("Pulse Calib"), MainWindow::PulseFix);
-    add(&m_pressCompen, 1, 1, tr("Press Compen"), MainWindow::PressCompen);
-
-    root->addLayout(g, 1);
-
-    auto *btns = new QHBoxLayout;
-    auto *back = new QPushButton(tr("Back"));
-    btns->addStretch(1);
-    btns->addWidget(back);
-    root->addLayout(btns);
+    root->addLayout(btnCol, 3);
+    root->addStretch(1);
 
     installPageScroll(this, inner);
+    retranslateUi();
 
     connect(m_mapper, SIGNAL(mapped(int)), this, SLOT(goPage(int)));
-    connect(back, SIGNAL(clicked()), this, SLOT(onBack()));
 }
 
 void FixPage::initFocusList()
 {
     xList.append(m_pressCal);
     xList.append(m_flowCal);
-    xList.append(m_pulseCal);
-    xList.append(m_pressCompen);
     yList.append(m_pressCal);
-    yList.append(m_pulseCal);
     yList.append(m_flowCal);
-    yList.append(m_pressCompen);
+}
+
+void FixPage::retranslateUi()
+{
+    m_pressCal->setText(tr("Press Calibration"));
+    m_flowCal->setText(tr("Flow Calibration"));
 }
 
 void FixPage::goPage(int page)
 {
     m_main->go(MainWindow::Page(page));
-}
-
-void FixPage::onBack()
-{
-    m_main->goBack();
 }

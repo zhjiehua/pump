@@ -40,5 +40,6 @@
         <file>res/ui/up.png</file>
         <file>res/ui/user.png</file>
         <file>res/ui/weeping.png</file>
+        <file>translations/hmi_zh.qm</file>
     </qresource>
 </RCC>

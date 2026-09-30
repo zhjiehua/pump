@@ -1,10 +1,9 @@
 #include "ui/pages/runpage.h"
 #include "core/machinecontroller.h"
 #include "ui/mainwindow.h"
+#include "ui/widgets/comboctrl.h"
 #include "ui/widgets/editctrl.h"
-#include "utils/hmikeys.h"
 
-#include <QComboBox>
 #include <QWidget>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -71,8 +70,9 @@ RunPage::RunPage(MachineController *c, MainWindow *main, QWidget *parent)
         auto *h = new QHBoxLayout(row);
         h->setContentsMargins(0, 0, 0, 0);
         h->addWidget(new QLabel(tr("State:")), 1);
-        m_stat = new QComboBox;
+        m_stat = new ComboCtrl;
         m_stat->addItems({tr("Stop"), tr("Pause"), tr("Runnning"), tr("Pump"), tr("Purge"), tr("PC")});
+        connect(m_stat, SIGNAL(popupChanged(bool)), m_main, SLOT(onEditCtrlEditingChanged(bool)));
         h->addWidget(m_stat, 2);
         h->addStretch(3);
         makeRow(row);
@@ -106,33 +106,6 @@ void RunPage::initFocusList()
     xList.append(m_stat);
     yList.append(m_flow);
     yList.append(m_stat);
-}
-
-bool RunPage::handleFocusNavKey(int key)
-{
-    if (focusWidget() != m_stat)
-        return false;
-
-    const bool left = key == KEY_LEFT || key == PANEL_KEY_LEFT;
-    const bool right = key == KEY_RIGHT || key == PANEL_KEY_RIGHT;
-    if (!left && !right)
-        return false;
-
-    const int count = m_stat->count();
-    if (count <= 0)
-        return false;
-
-    int idx = m_stat->currentIndex();
-    if (left)
-        idx = idx <= 0 ? count - 1 : idx - 1;
-    else
-        idx = (idx + 1) % count;
-
-    m_stat->blockSignals(true);
-    m_stat->setCurrentIndex(idx);
-    m_stat->blockSignals(false);
-    onStatActivated(idx);
-    return true;
 }
 
 void RunPage::onFlowCommitted(const QString &value)

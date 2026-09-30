@@ -1,18 +1,14 @@
-// MainWindow wiring (parent agent):
-//   void tryLogin(const QString &pwd);
-//   void requestAdminAccess();
-//   void goPendingAfterPwd();
-//   bool pendingAdmin() const;
-
 #include "ui/pages/pwdpage.h"
 #include "core/machinecontroller.h"
+#include "core/picturemanager.h"
 #include "ui/mainwindow.h"
+#include "ui/widgets/btnctrl.h"
+#include "ui/widgets/editctrl.h"
+#include "ui/widgets/pagescroll.h"
 
-#include <QFormLayout>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
-#include <QPushButton>
 #include <QVBoxLayout>
 
 PwdPage::PwdPage(MachineController *c, MainWindow *main, bool adminLogin, QWidget *parent)
@@ -21,43 +17,92 @@ PwdPage::PwdPage(MachineController *c, MainWindow *main, bool adminLogin, QWidge
     , m_main(main)
     , m_adminLogin(adminLogin)
 {
-    auto *root = new QVBoxLayout(this);
-    root->setContentsMargins(8, 8, 8, 8);
+    auto *inner = new QWidget;
+    auto *root = new QHBoxLayout(inner);
+    root->setContentsMargins(4, 4, 4, 4);
+    root->setSpacing(0);
 
-    auto *form = new QFormLayout;
-    m_usr = new QLabel(m_adminLogin ? tr("Admin") : tr("User"));
-    m_pwd = new QLineEdit;
-    m_pwd->setEchoMode(QLineEdit::Password);
-    form->addRow(tr("User"), m_usr);
-    form->addRow(tr("Password"), m_pwd);
-    root->addLayout(form);
-
-    auto *btns = new QHBoxLayout;
-    m_login = new QPushButton(tr("Login"));
-    auto *back = new QPushButton(tr("Back"));
-    btns->addWidget(m_login);
-    btns->addWidget(back);
-    root->addLayout(btns);
     root->addStretch(1);
 
+    auto *iconCol = new QVBoxLayout;
+    iconCol->addStretch(1);
+    auto *icon = new QLabel;
+    icon->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    icon->setFocusPolicy(Qt::NoFocus);
+    icon->setStyleSheet(PictureManager::instance().labelBorderImage(PictureManager::User));
+    iconCol->addWidget(icon, 2);
+    iconCol->addStretch(1);
+    root->addLayout(iconCol, 5);
+
+    root->addStretch(1);
+
+    auto *form = new QVBoxLayout;
+    form->setSpacing(6);
+    form->addStretch(1);
+
+    auto *usrRow = new QHBoxLayout;
+    m_usrCap = new QLabel;
+    m_usrCap->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_usr = new EditCtrl;
+    m_usr->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_usr->setReadOnly(true);
+    m_usr->setEnabled(false);
+    m_usr->setFocusPolicy(Qt::NoFocus);
+    usrRow->addWidget(m_usrCap, 3);
+    usrRow->addWidget(m_usr, 7);
+    form->addLayout(usrRow, 1);
+    form->addStretch(1);
+
+    auto *pwdRow = new QHBoxLayout;
+    m_pwdCap = new QLabel;
+    m_pwdCap->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_pwd = new EditCtrl;
+    m_pwd->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    m_pwd->setEchoMode(QLineEdit::Password);
+    m_pwd->setValRange(0, 999999, 0);
+    connect(m_pwd, SIGNAL(editingChanged(bool)), m_main, SLOT(onEditCtrlEditingChanged(bool)));
+    pwdRow->addWidget(m_pwdCap, 3);
+    pwdRow->addWidget(m_pwd, 7);
+    form->addLayout(pwdRow, 1);
+    form->addStretch(1);
+
+    auto *loginRow = new QHBoxLayout;
+    loginRow->addStretch(3);
+    m_login = new BtnCtrl;
+    m_login->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    loginRow->addWidget(m_login, 7);
+    form->addLayout(loginRow, 1);
+    form->addStretch(1);
+
+    root->addLayout(form, 8);
+    root->addStretch(1);
+
+    installPageScroll(this, inner);
+    retranslateUi();
+
     connect(m_login, SIGNAL(clicked()), this, SLOT(onLogin()));
-    connect(back, SIGNAL(clicked()), this, SLOT(onBack()));
 }
 
 void PwdPage::initFocusList()
 {
+    m_adminLogin = m_main->pendingAdmin();
+    m_usr->setText(m_adminLogin ? QStringLiteral("Admin") : QStringLiteral("User"));
+    m_pwd->clear();
     xList.append(m_pwd);
     xList.append(m_login);
     yList.append(m_pwd);
     yList.append(m_login);
 }
 
+void PwdPage::retranslateUi()
+{
+    m_usrCap->setText(tr("User:"));
+    m_pwdCap->setText(tr("Pwd:"));
+    m_login->setText(tr("Login"));
+    m_usr->setText(m_main->pendingAdmin() ? QStringLiteral("Admin") : QStringLiteral("User"));
+}
+
 void PwdPage::onLogin()
 {
     m_main->tryLogin(m_pwd->text());
-}
-
-void PwdPage::onBack()
-{
-    m_main->goBack();
 }

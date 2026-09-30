@@ -1,9 +1,10 @@
 #include "ui/bottombar.h"
 #include "core/picturemanager.h"
+#include "ui/widgets/btnctrl.h"
 
+#include <QEvent>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QPushButton>
 
 BottomBar::BottomBar(QWidget *parent)
     : QWidget(parent)
@@ -20,7 +21,7 @@ BottomBar::BottomBar(QWidget *parent)
     auto *nav = new QHBoxLayout;
     nav->setSpacing(2);
     auto makeNav = [&](const QString &text) {
-        auto *b = new QPushButton(text);
+        auto *b = new BtnCtrl(text);
         b->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         b->setMinimumSize(0, 0);
         b->setFocusPolicy(Qt::StrongFocus);
@@ -55,6 +56,22 @@ BottomBar::BottomBar(QWidget *parent)
     setLinkOk(false);
     setPressWarn(0);
     setActiveNav(0);
+}
+
+void BottomBar::updateLanguage()
+{
+    if (m_btns.size() < 3)
+        return;
+    m_btns.at(0)->setText(tr("Run"));
+    m_btns.at(1)->setText(tr("Param"));
+    m_btns.at(2)->setText(tr("Setup"));
+}
+
+void BottomBar::changeEvent(QEvent *event)
+{
+    QWidget::changeEvent(event);
+    if (event->type() == QEvent::LanguageChange)
+        updateLanguage();
 }
 
 void BottomBar::applyNavStyles()
