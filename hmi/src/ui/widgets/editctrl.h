@@ -1,6 +1,8 @@
 #ifndef EDITCTRL_H
 #define EDITCTRL_H
 
+#include "utils/hmiconfig.h"
+
 #include <QLineEdit>
 
 /** Panel numeric editor: Enter to edit, digit keys to type (weiduodianzi style). */
@@ -32,6 +34,9 @@ private:
     void loadDigitsFromText();
     void syncDisplayFromDigits();
     void clearDigitsForNewEntry();
+#if HMI_USE_ONSCREEN_KEYBOARD
+    void editWithOnScreenKeyboard();
+#endif
 
     double m_min = 0;
     double m_max = 100;

@@ -1,6 +1,8 @@
 #ifndef HMITABLEWIDGET_H
 #define HMITABLEWIDGET_H
 
+#include "utils/hmiconfig.h"
+
 #include <QModelIndex>
 #include <QStringList>
 #include <QTableWidget>
@@ -101,6 +103,9 @@ private:
     bool isIndexMenuObject(QObject *obj) const;
     bool moveIndexMenuFocus(bool down);
     bool gateEditAuth();
+#if HMI_USE_ONSCREEN_KEYBOARD
+    void editCellWithOnScreenKeyboard(const QModelIndex &index);
+#endif
 
     QModelIndex m_currentIndex;
     MainWindow *m_authMain = nullptr;

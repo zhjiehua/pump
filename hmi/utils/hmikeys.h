@@ -1,9 +1,11 @@
 #ifndef HMIKEYS_H
 #define HMIKEYS_H
 
+#include "utils/hmiconfig.h"
+
 #include <Qt>
 
-#ifdef EMBEDDED_LINUX
+#if HMI_EMBEDDED
 // Physical panel scan codes (weiduodianzi Common.h).
 #define KEY_UP Qt::Key_F2
 #define KEY_DOWN Qt::Key_F5

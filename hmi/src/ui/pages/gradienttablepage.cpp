@@ -49,7 +49,6 @@ GradientTablePage::GradientTablePage(MachineController *c, MainWindow *main, QWi
     connect(m_table, SIGNAL(panelShortcutsEnabled(bool)), m_main,
             SLOT(setPanelShortcutsEnabled(bool)));
 
-    m_table->setEditAuthPage(m_main, int(MainWindow::GradientTable));
     reload();
     m_table->initIndex();
 }
@@ -62,7 +61,6 @@ void GradientTablePage::initFocusList()
     yList.append(m_table);
     yList.append(m_save);
     yList.append(m_back);
-    m_table->refreshEditAuth();
 }
 
 void GradientTablePage::retranslateUi()

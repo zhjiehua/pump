@@ -1,6 +1,10 @@
 #include "ui/widgets/editctrl.h"
 #include "utils/hmikeys.h"
 
+#if HMI_USE_ONSCREEN_KEYBOARD
+#include "ui/widgets/keyboarddialog.h"
+#endif
+
 #include <QEvent>
 #include <QKeyEvent>
 #include <QMouseEvent>
@@ -65,6 +69,10 @@ void EditCtrl::loadDigitsFromText()
 
 void EditCtrl::startEditing()
 {
+#if HMI_USE_ONSCREEN_KEYBOARD
+    editWithOnScreenKeyboard();
+    return;
+#endif
     if (m_editing || !isReadOnly())
         return;
     m_saved = text();
@@ -196,8 +204,46 @@ void EditCtrl::keyPressEvent(QKeyEvent *event)
 
 void EditCtrl::mousePressEvent(QMouseEvent *event)
 {
+#if HMI_USE_ONSCREEN_KEYBOARD
+    if (isEnabled() && isReadOnly() && rect().contains(event->pos()))
+    {
+        setFocus(Qt::MouseFocusReason);
+        startEditing();
+        event->accept();
+        return;
+    }
+#endif
     QLineEdit::mousePressEvent(event);
 }
+
+#if HMI_USE_ONSCREEN_KEYBOARD
+void EditCtrl::editWithOnScreenKeyboard()
+{
+    if (!isEnabled())
+        return;
+
+    QString entered;
+    emit editingChanged(true);
+    const bool ok = KeyboardDialog::prompt(window(), text(), &entered);
+    emit editingChanged(false);
+    if (!ok)
+        return;
+
+    if (m_textMode)
+    {
+        setText(entered);
+        emit valueCommitted(text());
+        return;
+    }
+
+    QString formatted;
+    if (validateAndFormat(entered, &formatted))
+    {
+        setText(formatted);
+        emit valueCommitted(text());
+    }
+}
+#endif
 
 void EditCtrl::commitEdit()
 {

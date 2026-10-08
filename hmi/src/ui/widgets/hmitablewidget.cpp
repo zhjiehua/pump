@@ -3,6 +3,10 @@
 #include "ui/widgets/btnctrl.h"
 #include "utils/hmikeys.h"
 
+#if HMI_USE_ONSCREEN_KEYBOARD
+#include "ui/widgets/keyboarddialog.h"
+#endif
+
 #include <QAbstractItemDelegate>
 #include <QAbstractItemView>
 #include <QAbstractScrollArea>
@@ -532,11 +536,35 @@ void HmiTableWidget::activateCurrentCell()
         showIndexMenu();
     else if (currentIndex().isValid())
     {
+#if HMI_USE_ONSCREEN_KEYBOARD
+        editCellWithOnScreenKeyboard(currentIndex());
+#else
         m_allowEdit = true;
         edit(currentIndex(), QAbstractItemView::AllEditTriggers, nullptr);
         m_allowEdit = false;
+#endif
     }
 }
+
+#if HMI_USE_ONSCREEN_KEYBOARD
+void HmiTableWidget::editCellWithOnScreenKeyboard(const QModelIndex &index)
+{
+    if (!index.isValid() || index.column() == 0)
+        return;
+
+    const QString initial = index.data(Qt::EditRole).toString();
+    QString entered;
+    emit panelShortcutsEnabled(false);
+    const bool ok = KeyboardDialog::prompt(window(), initial, &entered);
+    emit panelShortcutsEnabled(true);
+    if (!ok)
+        return;
+
+    model()->setData(index, entered, Qt::EditRole);
+    if (index.row() >= 0 && index.row() < rowCount())
+        setCurrentCell(index.row(), index.column());
+}
+#endif
 
 void HmiTableWidget::exitInner()
 {
@@ -1163,12 +1191,24 @@ void HmiTableWidget::focusOutEvent(QFocusEvent *event)
 void HmiTableWidget::mousePressEvent(QMouseEvent *event)
 {
     m_onHashHeader = false;
+#if HMI_USE_ONSCREEN_KEYBOARD
+    const QModelIndex hit = indexAt(event->pos());
+    const bool reTapDataCell = m_inside && hit.isValid() && hit.column() > 0
+        && hit == currentIndex();
+#endif
     QTableWidget::mousePressEvent(event);
     m_currentIndex = currentIndex();
     if (!m_inside)
         enterInner();
     else
-        updateHashHeaderHighlight();
+    {
+#if HMI_USE_ONSCREEN_KEYBOARD
+        if (reTapDataCell)
+            activateCurrentCell();
+        else
+#endif
+            updateHashHeaderHighlight();
+    }
 }
 
 void HmiTableWidget::resizeEvent(QResizeEvent *event)

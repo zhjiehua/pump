@@ -1,10 +1,11 @@
 #include "platform/platform.h"
 #include "platform/iomodule.h"
+#include "utils/hmiconfig.h"
 
 #include <QApplication>
 #include <QWidget>
 
-#if defined(EMBEDDED_LINUX)
+#if HMI_EMBEDDED
 
 class EmbeddedPlatform : public Platform
 {

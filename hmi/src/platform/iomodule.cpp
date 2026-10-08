@@ -1,8 +1,9 @@
 #include "platform/iomodule.h"
+#include "utils/hmiconfig.h"
 
 #include <QTimer>
 
-#if defined(__linux__) && defined(EMBEDDED_LINUX)
+#if defined(__linux__) && HMI_EMBEDDED
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
@@ -28,14 +29,14 @@ IoModule::IoModule(QObject *parent)
 
 void IoModule::initHardware()
 {
-#if defined(__linux__) && defined(EMBEDDED_LINUX)
+#if defined(__linux__) && HMI_EMBEDDED
     m_fd = ::open("/dev/pwm", O_RDWR);
 #endif
 }
 
 void IoModule::logicSetIo(quint32 mask, bool value)
 {
-#if defined(__linux__) && defined(EMBEDDED_LINUX)
+#if defined(__linux__) && HMI_EMBEDDED
     if (m_fd < 0)
         return;
     unsigned long arg = mask;
@@ -49,7 +50,7 @@ void IoModule::logicSetIo(quint32 mask, bool value)
 
 bool IoModule::logicGetIo(quint32 mask) const
 {
-#if defined(__linux__) && defined(EMBEDDED_LINUX)
+#if defined(__linux__) && HMI_EMBEDDED
     if (m_fd < 0)
         return false;
     unsigned long arg = mask;

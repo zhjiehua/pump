@@ -1,5 +1,6 @@
 #include "log/log.h"
 #include "utils/configpaths.h"
+#include "utils/hmiconfig.h"
 #include "utils/version.h"
 
 #include <QCoreApplication>
@@ -115,7 +116,7 @@ void Log::init()
 
 void Log::writeBootBanner()
 {
-#if defined(EMBEDDED_LINUX)
+#if HMI_EMBEDDED
     const char *platform = "Embedded Linux";
 #else
     const char *platform = "Desktop";

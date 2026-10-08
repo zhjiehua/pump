@@ -48,6 +48,6 @@ make -j$(nproc)
 
 Or in Cursor: **F6 → Build: HMI (Qt4)**, **F5 → Run HMI (Qt4)**.
 
-Defines `EMBEDDED_LINUX`: fullscreen, blank cursor, `/dev/pwm` via `IoModule`.  
+See `utils/hmiconfig.h` (`CONFIG+=embedded` / `CONFIG+=touch`).  
 Serial I/O uses `third_party/qextserialport` (not `QSerialPort`). JSON config uses
 the cJSON-backed `qjsonshim` on Qt4.

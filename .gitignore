@@ -57,3 +57,4 @@ compile_commands.json
 .clangd-target
 .cache
 /hmi/build_asan
+/hmi/build_touch

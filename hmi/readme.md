@@ -27,7 +27,8 @@ cd build_qt4 && qmake ../hmi.pro CONFIG+=embedded && make -j$(nproc)
 ```
 
 Uses `qextserialport` (Polling + timer) instead of `QSerialPort`.  
-`CONFIG+=embedded` defines `EMBEDDED_LINUX` (fullscreen, `/dev/pwm`, blank cursor).
+Build feature flags are documented in `utils/hmiconfig.h` (`CONFIG+=embedded`,
+`CONFIG+=touch`).
 
 Typical serial ports on board: `/dev/ttySAC1` (MCU), `/dev/ttySAC2` (CDS).
 
@@ -83,7 +84,8 @@ purge (stop only), Backspace back, **Esc** leaves edit / exits to bottom-nav mod
 Run/Param/Setup or **goBack** on sub-pages, **Ctrl+Up** admin. **Enter** starts
 `EditCtrl` edit or selects text in other fields / clicks buttons. **↑↓←→** move
 focus by on-screen position (not list order). Digits type into an active `EditCtrl`;
-on-screen keyboard dialog is unused.
+touch builds (`CONFIG+=touch`) use the on-screen numeric keyboard for `EditCtrl`
+and table cells; default builds keep panel/desktop digit keys.
 
 ## UI parity note
 
