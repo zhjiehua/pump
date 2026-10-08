@@ -56,3 +56,4 @@ pump/weiduodianzi/GeneratedFiles
 compile_commands.json
 .clangd-target
 .cache
+/hmi/build_asan

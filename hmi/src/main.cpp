@@ -6,6 +6,7 @@
 #include <QApplication>
 #include <QDebug>
 #include <QFont>
+#include <QTimer>
 
 int main(int argc, char *argv[])
 {
@@ -27,8 +28,13 @@ int main(int argc, char *argv[])
         platform->applyWindowMode(&w);
         delete platform;
     }
+#if QT_VERSION >= 0x050500
+    if (const int quitMs = qEnvironmentVariableIntValue("HMI_QUIT_MS"))
+        QTimer::singleShot(quitMs, &app, SLOT(quit()));
+#endif
     const int rc = app.exec();
     qInfo() << "application exiting, code=" << rc;
+    PictureManager::instance().shutdown();
     Log::shutdown();
     return rc;
 }

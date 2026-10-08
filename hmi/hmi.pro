@@ -25,6 +25,14 @@ lessThan(QT_MAJOR_VERSION, 5) {
 }
 unix: LIBS += -lpthread
 
+asan {
+    message("AddressSanitizer enabled")
+    CONFIG += sanitizer sanitize_address
+    QMAKE_CXXFLAGS += -fno-omit-frame-pointer
+    QMAKE_CFLAGS += -fno-omit-frame-pointer
+    DESTDIR = $$OUT_PWD
+}
+
 lessThan(QT_MAJOR_VERSION, 5) {
     HEADERS += \
         third_party/qextserialport/qextserialbase.h \

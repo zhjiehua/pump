@@ -18,12 +18,13 @@ ComboCtrl::ComboCtrl(QWidget *parent)
                       "QComboBox::drop-down:focus{width:15px;height:15px;border-image:url(%1);}"
                       "QComboBox:focus{border:2px solid blue;outline:0;}")
                       .arg(arrow));
-    installPopupFilter();
 }
 
 bool ComboCtrl::isPopupOpen() const
 {
-    return m_popupOpen || (view() && view()->isVisible());
+    // Do not call view() here: QComboBox::view() lazily creates the popup
+    // widget and re-enters event() via setParent, which overflows the stack.
+    return m_popupOpen;
 }
 
 void ComboCtrl::setChangeLocked(bool locked)
@@ -76,6 +77,42 @@ void ComboCtrl::hidePopup()
     }
 }
 
+void ComboCtrl::confirmPopup()
+{
+    int row = currentIndex();
+    if (QAbstractItemView *v = view())
+    {
+        if (v->selectionModel())
+        {
+            const int highlighted = v->selectionModel()->currentIndex().row();
+            if (highlighted >= 0 && highlighted < count())
+                row = highlighted;
+        }
+    }
+    if (row >= 0 && row < count())
+        setCurrentIndex(row);
+    hidePopup();
+    if (row >= 0 && row < count())
+        emit activated(row);
+}
+
+bool ComboCtrl::event(QEvent *event)
+{
+    // Popup is a separate window; ShortcutOverride often hits the combo itself.
+    if (isPopupOpen() && event->type() == QEvent::ShortcutOverride)
+    {
+        const int key = static_cast<QKeyEvent *>(event)->key();
+        if (key == KEY_UP || key == KEY_DOWN
+            || key == KEY_RETURN || key == Qt::Key_Enter
+            || key == KEY_BACKSPACE || key == Qt::Key_Escape)
+        {
+            event->accept();
+            return true;
+        }
+    }
+    return QComboBox::event(event);
+}
+
 bool ComboCtrl::isPopupObject(QObject *obj) const
 {
     QAbstractItemView *v = view();
@@ -123,8 +160,8 @@ bool ComboCtrl::eventFilter(QObject *obj, QEvent *event)
         return QComboBox::eventFilter(obj, event);
 
     const int key = static_cast<QKeyEvent *>(event)->key();
-    const bool up = key == KEY_UP || key == PANEL_KEY_UP;
-    const bool down = key == KEY_DOWN || key == PANEL_KEY_DOWN;
+    const bool up = key == KEY_UP;
+    const bool down = key == KEY_DOWN;
     const bool enter = key == KEY_RETURN || key == Qt::Key_Enter;
     const bool cancel = key == KEY_BACKSPACE || key == Qt::Key_Escape;
 
@@ -147,7 +184,7 @@ bool ComboCtrl::eventFilter(QObject *obj, QEvent *event)
         hidePopup();
         return true;
     }
-    hidePopup();
+    confirmPopup();
     return true;
 }
 
@@ -160,9 +197,17 @@ void ComboCtrl::keyPressEvent(QKeyEvent *event)
             || key == Qt::Key_Home || key == Qt::Key_End;
     if (opensOrChanges && rejectIfLocked())
         return;
+    if (isPopupOpen() && (key == KEY_BACKSPACE || key == Qt::Key_Escape))
+    {
+        hidePopup();
+        return;
+    }
     if (key == KEY_RETURN || key == Qt::Key_Enter)
     {
-        showPopup();
+        if (isPopupOpen())
+            confirmPopup();
+        else
+            showPopup();
         return;
     }
     QComboBox::keyPressEvent(event);

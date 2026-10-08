@@ -115,7 +115,7 @@ bool EditCtrl::event(QEvent *event)
             || (m_textMode && key >= Qt::Key_A && key <= Qt::Key_Z)
             || (m_textMode && (key == Qt::Key_Period || key == Qt::Key_Colon
                                || key == Qt::Key_X))
-            || key == KEY_LEFT || key == PANEL_KEY_LEFT
+            || key == KEY_LEFT
             || key == KEY_RETURN || key == Qt::Key_Enter
             || key == KEY_BACKSPACE || key == Qt::Key_Escape)
         {
@@ -148,7 +148,7 @@ void EditCtrl::keyPressEvent(QKeyEvent *event)
     if (!m_editing || isReadOnly())
         return;
 
-    if (key == KEY_LEFT || key == PANEL_KEY_LEFT)
+    if (key == KEY_LEFT)
     {
         if (hasSelectedText())
         {

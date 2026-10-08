@@ -90,10 +90,10 @@ protected:
 
 bool isNavKey(int key)
 {
-    return key == KEY_UP || key == PANEL_KEY_UP || key == Qt::Key_Up
-        || key == KEY_DOWN || key == PANEL_KEY_DOWN || key == Qt::Key_Down
-        || key == KEY_LEFT || key == PANEL_KEY_LEFT || key == Qt::Key_Left
-        || key == KEY_RIGHT || key == PANEL_KEY_RIGHT || key == Qt::Key_Right;
+    return key == KEY_UP || key == Qt::Key_Up
+        || key == KEY_DOWN || key == Qt::Key_Down
+        || key == KEY_LEFT || key == Qt::Key_Left
+        || key == KEY_RIGHT || key == Qt::Key_Right;
 }
 
 bool isEnterKey(int key)
@@ -587,8 +587,8 @@ bool HmiTableWidget::handleInnerNavKey(int key)
 {
     if (isIndexMenuOpen())
     {
-        const bool up = key == KEY_UP || key == PANEL_KEY_UP || key == Qt::Key_Up;
-        const bool down = key == KEY_DOWN || key == PANEL_KEY_DOWN || key == Qt::Key_Down;
+        const bool up = key == KEY_UP || key == Qt::Key_Up;
+        const bool down = key == KEY_DOWN || key == Qt::Key_Down;
         if (up || down)
             return moveIndexMenuFocus(down);
         return false;
@@ -910,8 +910,8 @@ bool HmiTableWidget::eventFilter(QObject *obj, QEvent *event)
         return QTableWidget::eventFilter(obj, event);
 
     const int key = static_cast<QKeyEvent *>(event)->key();
-    const bool up = key == KEY_UP || key == PANEL_KEY_UP || key == Qt::Key_Up;
-    const bool down = key == KEY_DOWN || key == PANEL_KEY_DOWN || key == Qt::Key_Down;
+    const bool up = key == KEY_UP || key == Qt::Key_Up;
+    const bool down = key == KEY_DOWN || key == Qt::Key_Down;
     if (!up && !down && !isBackKey(key) && !isEnterKey(key))
         return QTableWidget::eventFilter(obj, event);
 
@@ -994,10 +994,10 @@ void HmiTableWidget::updateHashHeaderHighlight()
 
 bool HmiTableWidget::consumeInnerKey(int key)
 {
-    const bool up = key == KEY_UP || key == PANEL_KEY_UP || key == Qt::Key_Up;
-    const bool down = key == KEY_DOWN || key == PANEL_KEY_DOWN || key == Qt::Key_Down;
-    const bool left = key == KEY_LEFT || key == PANEL_KEY_LEFT || key == Qt::Key_Left;
-    const bool right = key == KEY_RIGHT || key == PANEL_KEY_RIGHT || key == Qt::Key_Right;
+    const bool up = key == KEY_UP || key == Qt::Key_Up;
+    const bool down = key == KEY_DOWN || key == Qt::Key_Down;
+    const bool left = key == KEY_LEFT || key == Qt::Key_Left;
+    const bool right = key == KEY_RIGHT || key == Qt::Key_Right;
 
     if (m_onHashHeader)
     {
@@ -1092,9 +1092,9 @@ void HmiTableWidget::keyPressEvent(QKeyEvent *event)
     {
         if (isBackKey(key))
             hideIndexMenu();
-        else if (key == KEY_UP || key == PANEL_KEY_UP || key == Qt::Key_Up
-                 || key == KEY_DOWN || key == PANEL_KEY_DOWN || key == Qt::Key_Down)
-            moveIndexMenuFocus(key == KEY_DOWN || key == PANEL_KEY_DOWN || key == Qt::Key_Down);
+        else if (key == KEY_UP || key == Qt::Key_Up
+                 || key == KEY_DOWN || key == Qt::Key_Down)
+            moveIndexMenuFocus(key == KEY_DOWN || key == Qt::Key_Down);
         return;
     }
 

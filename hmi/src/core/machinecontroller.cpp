@@ -55,8 +55,8 @@ MachineController::MachineController(QObject *parent)
     connect(m_cxthMcu, SIGNAL(errorText(QString)), this, SIGNAL(logLine(QString)));
     connect(this, SIGNAL(logLine(QString)), this, SLOT(onLogLineEcho(QString)));
     connect(&m_commWorker, SIGNAL(pollTick()), this, SLOT(onPollTick()));
-    connect(&m_runState, SIGNAL(statChanged()), this, SIGNAL(statusChanged()));
-    connect(&m_runState, SIGNAL(runTimeChanged()), this, SIGNAL(statusChanged()));
+    connect(&m_runState, SIGNAL(statChanged(Stat)), this, SIGNAL(statusChanged()));
+    connect(&m_runState, SIGNAL(runTimeChanged(quint32)), this, SIGNAL(statusChanged()));
     connect(&m_alarms, SIGNAL(alarmChanged()), this, SIGNAL(alarmChanged()));
 
     m_commWorker.startPolling(500);

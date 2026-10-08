@@ -102,6 +102,24 @@ MainWindow::MainWindow(QWidget *parent)
     syncChrome(Logo);
 }
 
+MainWindow::~MainWindow()
+{
+    // Pages call back into m_ctrl from their destructors. QObject deletes
+    // children in insertion order, so m_ctrl (created first) would otherwise
+    // die before the stacked pages.
+#if QT_VERSION >= 0x050000
+    delete takeCentralWidget();
+#else
+    setCentralWidget(0);
+#endif
+    m_panel = nullptr;
+    m_stack = nullptr;
+    m_top = nullptr;
+    m_bottom = nullptr;
+    m_gradTable = nullptr;
+    m_pwdPage = nullptr;
+}
+
 void MainWindow::initShortcuts()
 {
     // Same pattern as weiduodianzi BaseMainPage::initShotCut: QShortcut + setKey().
@@ -129,10 +147,6 @@ void MainWindow::initShortcuts()
     add(KEY_RETURN, SLOT(shortCutActivateFocus()));
     add(Qt::Key_Enter, SLOT(shortCutActivateFocus()));
     add(Qt::Key_Escape, SLOT(onEscapeKey()));
-    add(PANEL_KEY_UP, SLOT(focusNextUpChild()));
-    add(PANEL_KEY_DOWN, SLOT(focusNextDownChild()));
-    add(PANEL_KEY_LEFT, SLOT(focusNextLeftChild()));
-    add(PANEL_KEY_RIGHT, SLOT(focusNextRightChild()));
     add(KEY_SUPER, SLOT(shortCutSuper()));
 }
 
@@ -237,7 +251,7 @@ void MainWindow::shortCutActivateFocus()
     if (auto *cb = qobject_cast<ComboCtrl *>(w))
     {
         if (cb->isPopupOpen())
-            cb->hidePopup();
+            cb->confirmPopup();
         else
             cb->showPopup();
         return;
@@ -289,6 +303,9 @@ void MainWindow::onEscapeKey()
 void MainWindow::enterNavigatorMode()
 {
     m_navigatorMode = true;
+    // Backspace is left enabled during combo/edit, so goBack() can land here
+    // with Left/Right still disabled. Restore panel keys for tab switching.
+    setPanelShortcutsEnabled(true);
     applyNavigatorFocus();
     // QStackedWidget restores the previous page child after setCurrentIndex
     // returns; re-apply navi focus on the next event-loop tick.
@@ -309,7 +326,7 @@ void MainWindow::applyNavigatorFocus()
 
 void MainWindow::focusNextLeftChild()
 {
-    if (!panelKeysEnabled() || m_stack->currentIndex() == int(Logo))
+    if (m_stack->currentIndex() == int(Logo))
         return;
 
     if (isNavigatorMode())
@@ -321,6 +338,9 @@ void MainWindow::focusNextLeftChild()
         return;
     }
 
+    if (!panelKeysEnabled())
+        return;
+
     if (FocusPage *page = currentFocusPage())
     {
         if (page->handleFocusNavKey(KEY_LEFT))
@@ -331,7 +351,7 @@ void MainWindow::focusNextLeftChild()
 
 void MainWindow::focusNextRightChild()
 {
-    if (!panelKeysEnabled() || m_stack->currentIndex() == int(Logo))
+    if (m_stack->currentIndex() == int(Logo))
         return;
 
     if (isNavigatorMode())
@@ -342,6 +362,9 @@ void MainWindow::focusNextRightChild()
         navigatorPageAt(tIndex);
         return;
     }
+
+    if (!panelKeysEnabled())
+        return;
 
     if (FocusPage *page = currentFocusPage())
     {
@@ -538,18 +561,35 @@ void MainWindow::navigate(Page p)
 
 void MainWindow::goBack()
 {
-    if (auto *tbl = HmiTableWidget::owningTable(QWidget::focusWidget()))
+    if (QWidget *w = QWidget::focusWidget())
     {
-        if (tbl->handleBack())
-            return;
+        if (auto *cb = qobject_cast<ComboCtrl *>(w))
+        {
+            if (cb->isPopupOpen())
+            {
+                cb->hidePopup();
+                return;
+            }
+        }
+        if (auto *ec = qobject_cast<EditCtrl *>(w))
+        {
+            if (ec->cancelEditing())
+                return;
+        }
+        if (auto *tbl = HmiTableWidget::owningTable(w))
+        {
+            if (tbl->handleBack())
+                return;
+        }
     }
 
     const Page p = Page(m_stack->currentIndex());
     // Top-level nav pages: Backspace returns focus to the bottom bar
-    // without switching pages. Left/right on the bar still change pages.
+    // only when the pump is Stop (weiduodianzi checkPermission).
     if (p == Run || p == Param || p == Setup)
     {
-        enterNavigatorMode();
+        if (checkNavPermission())
+            enterNavigatorMode();
         return;
     }
 

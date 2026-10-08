@@ -82,6 +82,13 @@ bool PictureManager::loadAll()
     return ok;
 }
 
+void PictureManager::shutdown()
+{
+    for (int i = 0; i < PictureCount; ++i)
+        m_pixmaps[i] = QPixmap();
+    m_loaded = false;
+}
+
 const QPixmap &PictureManager::pixmap(Picture id) const
 {
     return m_pixmaps[id];

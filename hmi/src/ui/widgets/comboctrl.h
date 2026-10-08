@@ -18,12 +18,15 @@ public:
 
     void showPopup() override;
     void hidePopup() override;
+    /** Apply the highlighted popup row, then close. Escape/Backspace should call hidePopup() instead. */
+    void confirmPopup();
 
 signals:
     void popupChanged(bool open);
     void changeBlocked();
 
 protected:
+    bool event(QEvent *event) override;
     bool eventFilter(QObject *obj, QEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
     void wheelEvent(QWheelEvent *event) override;

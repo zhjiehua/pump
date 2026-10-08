@@ -1,4 +1,5 @@
 #include "ui/focuspage.h"
+#include "ui/widgets/comboctrl.h"
 #include "ui/widgets/hmitablewidget.h"
 #include "ui/widgets/pagescroll.h"
 #include "utils/hmikeys.h"
@@ -111,11 +112,20 @@ bool FocusPage::handleFocusNavKey(int key)
     }
 
     QComboBox *cb = comboForWidget(focusWidget());
-    if (!cb || !cb->view() || !cb->view()->isVisible())
+    if (!cb)
         return false;
+    if (auto *cc = qobject_cast<ComboCtrl *>(cb))
+    {
+        if (!cc->isPopupOpen())
+            return false;
+    }
+    else if (!cb->view() || !cb->view()->isVisible())
+    {
+        return false;
+    }
 
-    const bool up = key == KEY_UP || key == PANEL_KEY_UP;
-    const bool down = key == KEY_DOWN || key == PANEL_KEY_DOWN;
+    const bool up = key == KEY_UP;
+    const bool down = key == KEY_DOWN;
     if (!up && !down)
         return false;
 
@@ -250,10 +260,10 @@ QWidget *FocusPage::defaultFocusWidget() const
 
 bool FocusPage::moveSpatialFocus(int key)
 {
-    const bool left = key == KEY_LEFT || key == PANEL_KEY_LEFT;
-    const bool right = key == KEY_RIGHT || key == PANEL_KEY_RIGHT;
-    const bool up = key == KEY_UP || key == PANEL_KEY_UP;
-    const bool down = key == KEY_DOWN || key == PANEL_KEY_DOWN;
+    const bool left = key == KEY_LEFT;
+    const bool right = key == KEY_RIGHT;
+    const bool up = key == KEY_UP;
+    const bool down = key == KEY_DOWN;
 
     QObjectList *list = nullptr;
     bool next = false;

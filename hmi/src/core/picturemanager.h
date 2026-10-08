@@ -54,6 +54,8 @@ public:
     static PictureManager &instance();
 
     bool loadAll();
+    /** Drop cached QPixmaps while QApplication is still alive. */
+    void shutdown();
     const QPixmap &pixmap(Picture id) const;
     QString url(Picture id) const;
 
