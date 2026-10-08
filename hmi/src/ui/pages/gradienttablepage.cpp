@@ -4,12 +4,12 @@
 #include "ui/mainwindow.h"
 #include "ui/widgets/btnctrl.h"
 #include "ui/widgets/hmitablewidget.h"
+#include "ui/widgets/msgbox.h"
 #include "ui/widgets/pagescroll.h"
 #include "ui/widgets/tableitemdelegate.h"
 
 #include <QHBoxLayout>
 #include <QHeaderView>
-#include <QMessageBox>
 #include <QStringList>
 #include <QVBoxLayout>
 
@@ -112,5 +112,5 @@ void GradientTablePage::saveTable()
     m_c->settings()->gradientTable() = pts;
     m_c->settings()->save();
     m_c->gradient()->reload();
-    QMessageBox::information(this, tr("Tips"), tr("save success!"));
+    MsgBox::information(this, tr("Tips"), tr("save success!"));
 }

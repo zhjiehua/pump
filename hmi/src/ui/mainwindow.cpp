@@ -3,7 +3,9 @@
 #include "ui/widgets/comboctrl.h"
 #include "ui/widgets/editctrl.h"
 #include "ui/widgets/hmitablewidget.h"
+#include "ui/widgets/msgbox.h"
 #include "utils/hmikeys.h"
+#include "utils/hmiconfig.h"
 #include "utils/qtwidgetsutil.h"
 #include "core/machinecontroller.h"
 #include "core/alarmservice.h"
@@ -16,9 +18,17 @@
 #include "ui/pages/fixpage.h"
 #include "ui/pages/flowfixpage.h"
 #include "ui/pages/pressfixpage.h"
-#include "ui/pages/adminpage.h"
+#include "ui/pages/maintenancepage.h"
 #include "ui/pages/netpage.h"
-#include "ui/pages/internalconfigpage.h"
+#include "ui/pages/adminmaintenancepage.h"
+#include "ui/pages/admindevicepage.h"
+#include "ui/pages/admindatapage.h"
+#include "ui/pages/recordpage.h"
+#include "ui/pages/recordlistpage.h"
+#include "ui/pages/configmcupage.h"
+#include "ui/pages/configcdspage.h"
+#include "ui/pages/configmachinepage.h"
+#include "ui/pages/configsystempage.h"
 #include "ui/pages/languagepage.h"
 #include "ui/pages/timepage.h"
 #include "ui/pages/msgpage.h"
@@ -29,12 +39,12 @@
 #include "ui/pages/debugmcuprotopage.h"
 
 #include <QAbstractButton>
+#include <QApplication>
 #include <QCloseEvent>
 #include <QEvent>
 #include <QKeyEvent>
 #include <QComboBox>
 #include <QLineEdit>
-#include <QMessageBox>
 #include <QShortcut>
 #include <QTextEdit>
 #include <QStatusBar>
@@ -71,9 +81,19 @@ MainWindow::MainWindow(QWidget *parent)
     m_stack->addWidget(new FixPage(this));                         // Fix
     m_stack->addWidget(new FlowFixPage(m_ctrl, this));             // FlowFix
     m_stack->addWidget(new PressFixPage(m_ctrl, this));            // PressFix
-    m_stack->addWidget(new AdminPage(m_ctrl, this));               // Admin
+    m_stack->addWidget(new MaintenancePage(this));                 // Maintenance
+    m_stack->addWidget(new AdminMaintenancePage(m_ctrl, this));    // AdminMaintenance
+    m_stack->addWidget(new AdminDevicePage(m_ctrl, this));         // AdminDevice
+    m_stack->addWidget(new AdminDataPage(m_ctrl, this));           // AdminData
+    m_stack->addWidget(new RecordPage(this));                      // Records
+    m_stack->addWidget(new RecordListPage(RecordStore::Event, m_ctrl, this));        // EventRecords
+    m_stack->addWidget(new RecordListPage(RecordStore::Alarm, m_ctrl, this));        // AlarmRecords
+    m_stack->addWidget(new RecordListPage(RecordStore::Maintenance, m_ctrl, this));  // MaintRecords
+    m_stack->addWidget(new ConfigMcuPage(m_ctrl, this));           // ConfigMcu
+    m_stack->addWidget(new ConfigCdsPage(m_ctrl, this));           // ConfigCds
+    m_stack->addWidget(new ConfigMachinePage(m_ctrl, this));       // ConfigMachine
+    m_stack->addWidget(new ConfigSystemPage(m_ctrl, this));        // ConfigSystem
     m_stack->addWidget(new NetPage(m_ctrl, this));                 // Net
-    m_stack->addWidget(new InternalConfigPage(m_ctrl, this));      // Internal
     m_stack->addWidget(new LanguagePage(m_ctrl, this));            // Language
     m_stack->addWidget(new TimePage(m_ctrl, this));                // Time
     m_stack->addWidget(new MsgPage(m_ctrl, this));                 // Msg
@@ -324,8 +344,19 @@ void MainWindow::applyNavigatorFocus()
     m_bottom->focusNav(m_currentNavigator);
 }
 
+bool MainWindow::moveModalMsgBoxFocus()
+{
+    auto *box = qobject_cast<MsgBox *>(QApplication::activeModalWidget());
+    if (!box)
+        return false;
+    box->cycleFocus();
+    return true;
+}
+
 void MainWindow::focusNextLeftChild()
 {
+    if (moveModalMsgBoxFocus())
+        return;
     if (m_stack->currentIndex() == int(Logo))
         return;
 
@@ -351,6 +382,8 @@ void MainWindow::focusNextLeftChild()
 
 void MainWindow::focusNextRightChild()
 {
+    if (moveModalMsgBoxFocus())
+        return;
     if (m_stack->currentIndex() == int(Logo))
         return;
 
@@ -376,6 +409,8 @@ void MainWindow::focusNextRightChild()
 
 void MainWindow::focusNextUpChild()
 {
+    if (moveModalMsgBoxFocus())
+        return;
     if (!panelKeysEnabled() || m_stack->currentIndex() == int(Logo))
         return;
 
@@ -393,6 +428,8 @@ void MainWindow::focusNextUpChild()
 
 void MainWindow::focusNextDownChild()
 {
+    if (moveModalMsgBoxFocus())
+        return;
     if (!panelKeysEnabled() || m_stack->currentIndex() == int(Logo))
         return;
 
@@ -443,7 +480,7 @@ void MainWindow::shortCutPurge()
 
 void MainWindow::shortCutSuper()
 {
-    requestAdminAccess();
+    requestMaintenanceAccess();
 }
 
 QString MainWindow::titleFor(Page p) const
@@ -457,9 +494,19 @@ QString MainWindow::titleFor(Page p) const
     case Fix: return tr("Calibration");
     case FlowFix: return tr("Flow Calibration");
     case PressFix: return tr("Press Calibration");
-    case Admin: return tr("Admin");
+    case Maintenance: return tr("Maintenance");
+    case AdminMaintenance: return tr("Service");
+    case AdminDevice: return tr("Device");
+    case AdminData: return tr("Data");
+    case Records: return tr("Records");
+    case EventRecords: return tr("Event Records");
+    case AlarmRecords: return tr("Alarm Records");
+    case MaintRecords: return tr("Maintenance Records");
+    case ConfigMcu: return tr("MCU");
+    case ConfigCds: return tr("CDS");
+    case ConfigMachine: return tr("Machine");
+    case ConfigSystem: return tr("System");
     case Net: return tr("Network Configuration");
-    case Internal: return tr("Internal");
     case Language: return tr("Language");
     case Time: return tr("Time");
     case Msg: return tr("About");
@@ -475,10 +522,9 @@ QString MainWindow::titleFor(Page p) const
 void MainWindow::syncChrome(Page p)
 {
     m_top->setTitle(titleFor(p));
-    if (p == Logo)
-        m_bottom->hide();
-    else
-        m_bottom->show();
+    const bool splash = (p == Logo);
+    m_top->setVisible(!splash);
+    m_bottom->setVisible(!splash);
     if (p == Run)
     {
         m_bottom->setActiveNav(0);
@@ -618,9 +664,13 @@ void MainWindow::goBack()
     syncChrome(prev);
 }
 
-void MainWindow::requestAdminAccess()
+void MainWindow::requestMaintenanceAccess()
 {
-    requestPasswordThen(Admin, true);
+#if !HMI_EMBEDDED
+    go(Maintenance);
+    return;
+#endif
+    requestPasswordThen(Maintenance, true);
 }
 
 void MainWindow::requestPasswordThen(Page returnPage, bool admin)
@@ -656,7 +706,7 @@ void MainWindow::tryLogin(const QString &pwd)
             go(m_pwdTarget);
         return;
     }
-    QMessageBox::warning(this, tr("Warning"), tr("Pwd error!!!"));
+    MsgBox::warning(this, tr("Warning"), tr("Pwd error!!!"));
 }
 
 void MainWindow::goGradientTable()

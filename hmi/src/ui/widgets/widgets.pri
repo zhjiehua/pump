@@ -1,5 +1,6 @@
 HEADERS += \
     $$PWD/keyboarddialog.h \
+    $$PWD/msgbox.h \
     $$PWD/editctrl.h \
     $$PWD/comboctrl.h \
     $$PWD/btnctrl.h \
@@ -10,6 +11,7 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/keyboarddialog.cpp \
+    $$PWD/msgbox.cpp \
     $$PWD/editctrl.cpp \
     $$PWD/comboctrl.cpp \
     $$PWD/btnctrl.cpp \

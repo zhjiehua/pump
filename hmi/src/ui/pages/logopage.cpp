@@ -2,7 +2,6 @@
 #include "core/picturemanager.h"
 #include "ui/mainwindow.h"
 
-#include <QHBoxLayout>
 #include <QLabel>
 #include <QTimer>
 #include <QVBoxLayout>
@@ -13,14 +12,14 @@ LogoPage::LogoPage(MainWindow *main, QWidget *parent)
 {
     Q_UNUSED(parent);
     auto *root = new QVBoxLayout(this);
-    root->addStretch(1);
+    root->setContentsMargins(0, 0, 0, 0);
+    root->setSpacing(0);
     auto *logo = new QLabel;
     logo->setAlignment(Qt::AlignCenter);
     logo->setPixmap(PictureManager::instance().pixmap(PictureManager::Logo));
     logo->setScaledContents(true);
-    logo->setMaximumSize(200, 120);
-    root->addWidget(logo, 0, Qt::AlignCenter);
-    root->addStretch(1);
+    logo->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    root->addWidget(logo);
 
     QTimer::singleShot(1500, this, SLOT(onTimeout()));
 }

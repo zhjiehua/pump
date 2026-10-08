@@ -5,11 +5,11 @@
 #include "ui/mainwindow.h"
 #include "ui/widgets/btnctrl.h"
 #include "ui/widgets/imgbutton.h"
+#include "ui/widgets/msgbox.h"
 #include "ui/widgets/pagescroll.h"
 
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QMessageBox>
 #include <QVBoxLayout>
 
 LanguagePage::LanguagePage(MachineController *c, MainWindow *main, QWidget *parent)
@@ -105,7 +105,7 @@ void LanguagePage::setLanguage(AppSettings::Language lang)
         return;
     if (m_main)
         m_main->retranslateUi();
-    QMessageBox::information(this, tr("Tips"), tr("Change Language Success"));
+    MsgBox::information(this, tr("Tips"), tr("Change Language Success"));
 }
 
 void LanguagePage::refreshLabels()

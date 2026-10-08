@@ -6,6 +6,10 @@
 
 namespace EventLog {
 
+/** Optional sink for operator-facing records (RecordStore). */
+typedef void (*KeySink)(const QString &category, const QString &msg);
+void setKeySink(KeySink sink);
+
 /** Write a key operational event to the rotating log (via qInfo → spdlog). */
 void key(const QString &category, const QString &msg);
 

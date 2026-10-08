@@ -34,6 +34,8 @@ MachineController::MachineController(QObject *parent)
     m_auth.ensureSerial();
     m_gradient.reload();
     m_i18n.applyFromSettings();
+    m_records.bindToEventLog();
+    EventLog::key(QStringLiteral("BOOT"), QStringLiteral("HMI ready"));
 
     m_qinFine = new QinFineClient(this);
     m_cxthMcu = new CxthMcuClient(this);
@@ -154,13 +156,19 @@ bool MachineController::importJsonConfig(const QString &path)
         emit logLine(tr("JSON import failed: %1").arg(path));
         return false;
     }
+    reloadFromSettings();
+    emit logLine(tr("JSON imported from %1").arg(path));
+    return true;
+}
+
+void MachineController::reloadFromSettings()
+{
     m_flow = m_settings.flowSet;
     m_percent = m_settings.percent;
     m_gradient.reload();
     m_i18n.applyFromSettings();
     emit statusChanged();
-    emit logLine(tr("JSON imported from %1").arg(path));
-    return true;
+    emit tablesChanged();
 }
 
 bool MachineController::qinFineReady() const

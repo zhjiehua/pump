@@ -25,6 +25,8 @@ RCC_DIR     = $$OUT_PWD/.rcc
 # Feature flags: see utils/hmiconfig.h
 embedded {
     DEFINES += EMBEDDED_LINUX
+    QMAKE_CXXFLAGS += -fno-omit-frame-pointer -funwind-tables
+    QMAKE_CFLAGS += -fno-omit-frame-pointer -funwind-tables
 }
 
 touch {
@@ -32,10 +34,16 @@ touch {
 }
 
 INCLUDEPATH += $$PWD/src $$PWD/components $$PWD/utils $$PWD/third_party/spdlog/include
+include($$PWD/third_party/miniaes/miniaes.pri)
+include($$PWD/third_party/minilzo/minilzo.pri)
+include($$PWD/third_party/md5/md5.pri)
 lessThan(QT_MAJOR_VERSION, 5) {
     INCLUDEPATH += $$PWD/third_party/qextserialport $$PWD/third_party/cjson
 }
-unix: LIBS += -lpthread
+unix {
+    LIBS += -lpthread -ldl
+    QMAKE_LFLAGS += -rdynamic
+}
 
 asan {
     message("AddressSanitizer enabled")

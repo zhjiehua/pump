@@ -45,13 +45,21 @@ Both targets write to `hmi/bin/pump` — rebuild with the Qt version you intend 
 
 ## Config (JSON dual backup)
 
-No SQLite. Settings live next to the binary (or AppConfigLocation):
+No SQLite. Settings live under `{appDir}/data` (or AppConfigLocation/data):
 
 | File | Contents |
 |------|----------|
-| `deviceinfo.json` | Serial, license, manufacture/install dates, usage counters |
-| `system.json` | MCU/CDS config, gradients, pressure/flow/pulse calib, passwords |
-| `data.json` | Flow setpoint, pressure limits, gradient selection |
+| `data/deviceinfo.json` | Serial, license, manufacture/install dates, usage counters |
+| `data/system.json` | MCU/CDS config, gradients, pressure/flow/pulse calib, passwords |
+| `data/data.json` | Flow setpoint, pressure limits, gradient selection |
+
+Operator records live under `{appDir}/records`:
+
+| File | Contents |
+|------|----------|
+| `records/event.json` | Event log |
+| `records/alarm.json` | Alarm log |
+| `records/maint.json` | Maintenance log |
 
 Each file has a `.bak` twin; loaded if primary is missing/corrupt.  
 Each file ends with `#checksum:<md5>` over the JSON body (see `components/dualbackup/`).  

@@ -15,6 +15,7 @@ class QTimer;
 #include "core/usagetracker.h"
 #include "core/commworker.h"
 #include "core/i18nmanager.h"
+#include "core/recordstore.h"
 
 class QinFineClient;
 class CxthMcuClient;
@@ -35,6 +36,7 @@ public:
     GradientEngine *gradient() { return &m_gradient; }
     UsageTracker *usage() { return &m_usage; }
     I18nManager *i18n() { return &m_i18n; }
+    RecordStore *records() { return &m_records; }
     QinFineClient *qinFine() { return m_qinFine; }
     CxthMcuClient *cxthMcu() { return m_cxthMcu; }
     bool usingQinFine() const { return m_settings.mcuProtocol == AppSettings::QinFine; }
@@ -97,6 +99,7 @@ public:
     void dumpPulseToPc();
     void postLog(const QString &line) { emit logLine(line); }
     bool importJsonConfig(const QString &path);
+    void reloadFromSettings();
 
 signals:
     void statusChanged();
@@ -135,6 +138,7 @@ private:
     UsageTracker m_usage;
     CommWorker m_commWorker;
     I18nManager m_i18n;
+    RecordStore m_records;
     QinFineClient *m_qinFine = nullptr;
     CxthMcuClient *m_cxthMcu = nullptr;
     PcServer *m_cxthPc = nullptr;

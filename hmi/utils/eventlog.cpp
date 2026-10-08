@@ -4,9 +4,18 @@
 
 namespace EventLog {
 
+static KeySink g_keySink = nullptr;
+
+void setKeySink(KeySink sink)
+{
+    g_keySink = sink;
+}
+
 void key(const QString &category, const QString &msg)
 {
     qInfo() << "[EVENT]" << category << msg;
+    if (g_keySink)
+        g_keySink(category, msg);
 }
 
 const char *runStatName(int stat)

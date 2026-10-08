@@ -44,7 +44,6 @@ SetupPage::SetupPage(MainWindow *main, QWidget *parent)
 {
     // Row0: Lang, Calib, Permit, GLP  (weiduodianzi SetupPage.ui)
     // Row1: Time, Grad, About, Net
-    // Row2: Admin, Internal (added last)
     auto *inner = new QWidget;
     auto *g = new QGridLayout(inner);
     g->setContentsMargins(8, 6, 8, 6);
@@ -59,8 +58,6 @@ SetupPage::SetupPage(MainWindow *main, QWidget *parent)
     m_net = iconBtn(PictureManager::NetConfig, PictureManager::NetConfigFocus);
     m_grid = iconBtn(PictureManager::Grid, PictureManager::GridFocus);
     m_glp = iconBtn(PictureManager::GlpInfo, PictureManager::GlpInfoFocus);
-    m_admin = iconBtn(PictureManager::Key, PictureManager::KeyFocus);
-    m_internal = iconBtn(PictureManager::Setup, PictureManager::Setup);
 
     g->addWidget(iconCell(m_lang, &m_langLabel), 0, 0);
     g->addWidget(iconCell(m_cal, &m_calLabel), 0, 1);
@@ -70,8 +67,6 @@ SetupPage::SetupPage(MainWindow *main, QWidget *parent)
     g->addWidget(iconCell(m_grid, &m_gridLabel), 1, 1);
     g->addWidget(iconCell(m_msg, &m_msgLabel), 1, 2);
     g->addWidget(iconCell(m_net, &m_netLabel), 1, 3);
-    g->addWidget(iconCell(m_admin, &m_adminLabel), 2, 0);
-    g->addWidget(iconCell(m_internal, &m_internalLabel), 2, 1);
 
     installPageScroll(this, inner);
     retranslateUi();
@@ -84,8 +79,6 @@ SetupPage::SetupPage(MainWindow *main, QWidget *parent)
     connect(m_net, SIGNAL(clicked()), this, SLOT(goNet()));
     connect(m_grid, SIGNAL(clicked()), this, SLOT(goGradient()));
     connect(m_glp, SIGNAL(clicked()), this, SLOT(goGlp()));
-    connect(m_admin, SIGNAL(clicked()), this, SLOT(onAdmin()));
-    connect(m_internal, SIGNAL(clicked()), this, SLOT(goInternal()));
 }
 
 void SetupPage::retranslateUi()
@@ -98,8 +91,6 @@ void SetupPage::retranslateUi()
     m_gridLabel->setText(tr("Grad"));
     m_msgLabel->setText(tr("About"));
     m_netLabel->setText(tr("Net"));
-    m_adminLabel->setText(tr("Admin"));
-    m_internalLabel->setText(tr("Internal"));
 }
 
 void SetupPage::initFocusList()
@@ -112,8 +103,6 @@ void SetupPage::initFocusList()
     xList.append(m_grid);
     xList.append(m_msg);
     xList.append(m_net);
-    xList.append(m_admin);
-    xList.append(m_internal);
     yList.append(m_lang);
     yList.append(m_clock);
     yList.append(m_cal);
@@ -122,8 +111,6 @@ void SetupPage::initFocusList()
     yList.append(m_msg);
     yList.append(m_glp);
     yList.append(m_net);
-    yList.append(m_admin);
-    yList.append(m_internal);
 }
 
 void SetupPage::goLanguage() { m_main->go(MainWindow::Language); }
@@ -134,5 +121,3 @@ void SetupPage::goMsg() { m_main->go(MainWindow::Msg); }
 void SetupPage::goNet() { m_main->go(MainWindow::Net); }
 void SetupPage::goGradient() { m_main->goGradientTable(); }
 void SetupPage::goGlp() { m_main->go(MainWindow::Glp); }
-void SetupPage::onAdmin() { m_main->requestAdminAccess(); }
-void SetupPage::goInternal() { m_main->go(MainWindow::Internal); }

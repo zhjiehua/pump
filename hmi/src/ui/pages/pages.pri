@@ -6,9 +6,18 @@ HEADERS += \
     $$PWD/fixpage.h \
     $$PWD/flowfixpage.h \
     $$PWD/pressfixpage.h \
-    $$PWD/adminpage.h \
+    $$PWD/maintenancepage.h \
+    $$PWD/adminmaintenancepage.h \
+    $$PWD/admindevicepage.h \
+    $$PWD/admindatapage.h \
+    $$PWD/recordpage.h \
+    $$PWD/recordlistpage.h \
+    $$PWD/configpageutil.h \
+    $$PWD/configmcupage.h \
+    $$PWD/configcdspage.h \
+    $$PWD/configmachinepage.h \
+    $$PWD/configsystempage.h \
     $$PWD/netpage.h \
-    $$PWD/internalconfigpage.h \
     $$PWD/languagepage.h \
     $$PWD/timepage.h \
     $$PWD/msgpage.h \
@@ -26,9 +35,18 @@ SOURCES += \
     $$PWD/fixpage.cpp \
     $$PWD/flowfixpage.cpp \
     $$PWD/pressfixpage.cpp \
-    $$PWD/adminpage.cpp \
+    $$PWD/maintenancepage.cpp \
+    $$PWD/adminmaintenancepage.cpp \
+    $$PWD/admindevicepage.cpp \
+    $$PWD/admindatapage.cpp \
+    $$PWD/recordpage.cpp \
+    $$PWD/recordlistpage.cpp \
+    $$PWD/configpageutil.cpp \
+    $$PWD/configmcupage.cpp \
+    $$PWD/configcdspage.cpp \
+    $$PWD/configmachinepage.cpp \
+    $$PWD/configsystempage.cpp \
     $$PWD/netpage.cpp \
-    $$PWD/internalconfigpage.cpp \
     $$PWD/languagepage.cpp \
     $$PWD/timepage.cpp \
     $$PWD/msgpage.cpp \

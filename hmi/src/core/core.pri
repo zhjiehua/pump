@@ -10,6 +10,9 @@ HEADERS += \
     $$PWD/picturemanager.h \
     $$PWD/buglecompensation.h \
     $$PWD/calibinterp.h \
+    $$PWD/calibdefaults.h \
+    $$PWD/recordstore.h \
+    $$PWD/dataexchange.h \
     $$PWD/machinecontroller.h
 
 SOURCES += \
@@ -24,4 +27,7 @@ SOURCES += \
     $$PWD/picturemanager.cpp \
     $$PWD/buglecompensation.cpp \
     $$PWD/calibinterp.cpp \
+    $$PWD/calibdefaults.cpp \
+    $$PWD/recordstore.cpp \
+    $$PWD/dataexchange.cpp \
     $$PWD/machinecontroller.cpp

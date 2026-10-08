@@ -7,6 +7,11 @@
 #include <QDateTime>
 #include <QDir>
 #include <QSysInfo>
+#include <QtGlobal>
+
+#if defined(Q_OS_LINUX)
+#include "log/crashhandler.h"
+#endif
 
 #include <memory>
 #include <string>
@@ -112,6 +117,14 @@ void Log::init()
 #else
     g_prevQtHandler = qInstallMsgHandler(qtMessageHandler);
 #endif
+
+#if defined(Q_OS_LINUX) && !defined(__SANITIZE_ADDRESS__)
+    const QByteArray appPath = QCoreApplication::applicationFilePath().toUtf8();
+    const QByteArray btPath = QDir(logDirPath)
+                                  .filePath(QStringLiteral("backtrace"))
+                                  .toUtf8();
+    CrashHandler::install(appPath.constData(), btPath.constData());
+#endif
 }
 
 void Log::writeBootBanner()
@@ -157,8 +170,26 @@ void Log::writeBootBanner()
     SPDLOG_INFO("  Boot     : {}", bootTime);
     SPDLOG_INFO("  Binary   : {}", binary);
     SPDLOG_INFO("  Log file : {}", g_logFile);
+#if defined(Q_OS_LINUX) && !defined(__SANITIZE_ADDRESS__)
+    const QByteArray btFile = QDir(directory())
+                                  .filePath(QStringLiteral("backtrace"))
+                                  .toUtf8();
+    SPDLOG_INFO("  Backtrace: {}  (kill -USR1 <pid>)", btFile.constData());
+#endif
     SPDLOG_INFO("============================================================");
     SPDLOG_INFO("BOOT OK — Pump HMI ready");
+}
+
+QString Log::directory()
+{
+    return QDir(resolveBaseDir()).filePath(QStringLiteral("logs"));
+}
+
+void Log::flush()
+{
+    std::shared_ptr<spdlog::logger> logger = spdlog::default_logger();
+    if (logger)
+        logger->flush();
 }
 
 void Log::shutdown()

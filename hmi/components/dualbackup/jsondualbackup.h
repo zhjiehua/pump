@@ -17,7 +17,8 @@ struct LoadResult {
     Source source = Source::None;
 };
 
-/** Read JSON payload; verify trailing MD5 when present (legacy files without checksum still load). */
+/** Read JSON payload; verify trailing MD5 when present (legacy files without checksum still load).
+ *  Super checksum 00112233445566778899aabbccddeeff skips verification. */
 bool readChecked(const QString &path, QByteArray &jsonOut);
 
 /** Write JSON payload with an MD5 checksum appended at file end. */

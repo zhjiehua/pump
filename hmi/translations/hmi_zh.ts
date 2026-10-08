@@ -20,8 +20,8 @@
         <translation>校正</translation>
     </message>
     <message>
-        <source>Admin</source>
-        <translation>管理员</translation>
+        <source>Maintenance</source>
+        <translation>维护</translation>
     </message>
     <message>
         <source>Language</source>
@@ -86,6 +86,50 @@
     <message>
         <source>MCU Debug</source>
         <translation>MCU调试</translation>
+    </message>
+    <message>
+        <source>Service</source>
+        <translation>维护</translation>
+    </message>
+    <message>
+        <source>Device</source>
+        <translation>设备</translation>
+    </message>
+    <message>
+        <source>Data</source>
+        <translation>数据</translation>
+    </message>
+    <message>
+        <source>MCU</source>
+        <translation>MCU</translation>
+    </message>
+    <message>
+        <source>CDS</source>
+        <translation>CDS</translation>
+    </message>
+    <message>
+        <source>Machine</source>
+        <translation>机型</translation>
+    </message>
+    <message>
+        <source>System</source>
+        <translation>系统</translation>
+    </message>
+    <message>
+        <source>Records</source>
+        <translation>记录</translation>
+    </message>
+    <message>
+        <source>Event Records</source>
+        <translation>事件记录</translation>
+    </message>
+    <message>
+        <source>Alarm Records</source>
+        <translation>报警记录</translation>
+    </message>
+    <message>
+        <source>Maintenance Records</source>
+        <translation>维护记录</translation>
     </message>
 </context>
 <context>
@@ -501,94 +545,107 @@
     </message>
 </context>
 <context>
-    <name>AdminPage</name>
+    <name>MaintenancePage</name>
     <message>
-        <source>Deactive</source>
-        <translation>取消激活</translation>
+        <source>Service</source>
+        <translation>维护</translation>
     </message>
     <message>
-        <source>UTC</source>
-        <translation>清使用时间</translation>
+        <source>Device</source>
+        <translation>设备</translation>
     </message>
     <message>
-        <source>PTC</source>
-        <translation>清泵时间</translation>
+        <source>Data</source>
+        <translation>数据</translation>
     </message>
     <message>
-        <source>Reset</source>
-        <translation>恢复</translation>
+        <source>MCU</source>
+        <translation>MCU</translation>
     </message>
     <message>
-        <source>saveData</source>
-        <translation>保存数据</translation>
+        <source>CDS</source>
+        <translation>CDS</translation>
     </message>
     <message>
-        <source>updateData</source>
-        <translation>更新数据</translation>
+        <source>Machine</source>
+        <translation>机型</translation>
     </message>
     <message>
-        <source>Manuf Date:</source>
-        <translation>生产日期:</translation>
+        <source>System</source>
+        <translation>系统</translation>
     </message>
     <message>
-        <source>Install Date:</source>
-        <translation>安装日期:</translation>
+        <source>Records</source>
+        <translation>记录</translation>
+    </message>
+</context>
+<context>
+    <name>RecordPage</name>
+    <message>
+        <source>Event</source>
+        <translation>事件</translation>
     </message>
     <message>
-        <source>La Rep Date:</source>
-        <translation>上次维修日期:</translation>
+        <source>Alarm</source>
+        <translation>报警</translation>
     </message>
     <message>
-        <source>Licen:</source>
-        <translation>许可证:</translation>
+        <source>Maint</source>
+        <translation>维护</translation>
+    </message>
+</context>
+<context>
+    <name>RecordListPage</name>
+    <message>
+        <source>Time</source>
+        <translation>时间</translation>
     </message>
     <message>
-        <source>Proto:</source>
-        <translation>协议:</translation>
+        <source>Content</source>
+        <translation>内容</translation>
     </message>
     <message>
-        <source>Serial:</source>
-        <translation>序列号:</translation>
-    </message>
-    <message>
-        <source>Conne:</source>
-        <translation>接口:</translation>
-    </message>
-    <message>
-        <source>Pmax:</source>
-        <translation>最大压力:</translation>
-    </message>
-    <message>
-        <source>RS232</source>
-        <translation>标准串口</translation>
-    </message>
-    <message>
-        <source>RJ45</source>
-        <translation>以太网口</translation>
-    </message>
-    <message>
-        <source>TCP Server</source>
-        <translation>TCP服务</translation>
+        <source>Clear</source>
+        <translation>清除</translation>
     </message>
     <message>
         <source>Tips</source>
         <translation>温馨提示</translation>
     </message>
     <message>
-        <source>Comfirm to Cancel Active!!!</source>
-        <translation>是否取消激活!!!</translation>
+        <source>Clear all records?</source>
+        <translation>确认清除全部记录?</translation>
+    </message>
+</context>
+<context>
+    <name>AdminMaintenancePage</name>
+    <message>
+        <source>Last Repair Date:</source>
+        <translation>上次维修日期:</translation>
     </message>
     <message>
-        <source>Comfirm to Clear!!!</source>
-        <translation>请确认清除!!!</translation>
+        <source>Save</source>
+        <translation>保存</translation>
     </message>
     <message>
-        <source>Comfirm to Restore!!!</source>
-        <translation>是否恢复出厂设置!!!</translation>
+        <source>Deactive</source>
+        <translation>取消激活</translation>
     </message>
     <message>
-        <source>Comfirm to update data?</source>
-        <translation>确定更新数据?</translation>
+        <source>Clear system
+used time</source>
+        <translation>清除系统
+使用时间</translation>
+    </message>
+    <message>
+        <source>Clear pump
+used time</source>
+        <translation>清除泵
+使用时间</translation>
+    </message>
+    <message>
+        <source>Tips</source>
+        <translation>温馨提示</translation>
     </message>
     <message>
         <source>success!</source>
@@ -599,12 +656,138 @@
         <translation>失败！</translation>
     </message>
     <message>
-        <source>Restore not implemented.</source>
-        <translation>恢复出厂设置未实现。</translation>
+        <source>Comfirm to Cancel Active!!!</source>
+        <translation>是否取消激活!!!</translation>
     </message>
     <message>
-        <source>JSON files (*.json);;All files (*)</source>
-        <translation>JSON 文件 (*.json);;所有文件 (*)</translation>
+        <source>Comfirm to Clear!!!</source>
+        <translation>请确认清除!!!</translation>
+    </message>
+</context>
+<context>
+    <name>AdminDevicePage</name>
+    <message>
+        <source>Manuf Date:</source>
+        <translation>生产日期:</translation>
+    </message>
+    <message>
+        <source>Install Date:</source>
+        <translation>安装日期:</translation>
+    </message>
+    <message>
+        <source>Licen:</source>
+        <translation>许可证:</translation>
+    </message>
+    <message>
+        <source>Serial:</source>
+        <translation>序列号:</translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation>保存</translation>
+    </message>
+    <message>
+        <source>Tips</source>
+        <translation>温馨提示</translation>
+    </message>
+    <message>
+        <source>success!</source>
+        <translation>成功!</translation>
+    </message>
+    <message>
+        <source>failed!</source>
+        <translation>失败！</translation>
+    </message>
+</context>
+<context>
+    <name>AdminDataPage</name>
+    <message>
+        <source>Save as
+factory data</source>
+        <translation>保存为
+出厂数据</translation>
+    </message>
+    <message>
+        <source>Restore
+factory settings</source>
+        <translation>恢复
+出厂设置</translation>
+    </message>
+    <message>
+        <source>Restore
+default data</source>
+        <translation>恢复
+默认数据</translation>
+    </message>
+    <message>
+        <source>Tips</source>
+        <translation>温馨提示</translation>
+    </message>
+    <message>
+        <source>Save current settings as factory data?</source>
+        <translation>将当前配置保存为出厂数据？</translation>
+    </message>
+    <message>
+        <source>Restore settings from factory data?</source>
+        <translation>从出厂数据恢复配置？</translation>
+    </message>
+    <message>
+        <source>Restore built-in default data?</source>
+        <translation>恢复源码内置的默认数据？</translation>
+    </message>
+    <message>
+        <source>Factory data not found.</source>
+        <translation>未找到出厂数据，请先保存为出厂数据。</translation>
+    </message>
+    <message>
+        <source>success!</source>
+        <translation>成功!</translation>
+    </message>
+    <message>
+        <source>failed!</source>
+        <translation>失败！</translation>
+    </message>
+    <message>
+        <source>Export
+data</source>
+        <translation>导出
+数据</translation>
+    </message>
+    <message>
+        <source>Import
+data</source>
+        <translation>导入
+数据</translation>
+    </message>
+    <message>
+        <source>Export
+records</source>
+        <translation>导出
+记录</translation>
+    </message>
+    <message>
+        <source>Export compressed encrypted data?</source>
+        <translation>导出压缩加密数据？</translation>
+    </message>
+    <message>
+        <source>Import data? Current settings will be overwritten.</source>
+        <translation>导入数据？当前配置将被覆盖。</translation>
+    </message>
+    <message>
+        <source>Export records and logs (compressed, encrypted)?</source>
+        <translation>导出记录和日志（压缩加密）？</translation>
+    </message>
+    <message>
+        <source>USB/SD not found.</source>
+        <translation>未找到U盘/SD卡。</translation>
+    </message>
+    <message>
+        <source>Pack file not found.</source>
+        <translation>未找到数据包文件。</translation>
+    </message>
+    <message>
+        <source>Exported to %1</source>
+        <translation>已导出到 %1</translation>
     </message>
 </context>
 <context>
@@ -733,6 +916,134 @@
     <message>
         <source>No</source>
         <translation>否</translation>
+    </message>
+</context>
+<context>
+    <name>ConfigMcuPage</name>
+    <message>
+        <source>Protocol</source>
+        <translation>协议</translation>
+    </message>
+    <message>
+        <source>Port</source>
+        <translation>端口</translation>
+    </message>
+    <message>
+        <source>Baud</source>
+        <translation>波特率</translation>
+    </message>
+    <message>
+        <source>Addr</source>
+        <translation>地址</translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation>保存</translation>
+    </message>
+    <message>
+        <source>Config saved (JSON + .bak)</source>
+        <translation>配置已保存 (JSON + .bak)</translation>
+    </message>
+    <message>
+        <source>Config save failed</source>
+        <translation>配置保存失败</translation>
+    </message>
+</context>
+<context>
+    <name>ConfigCdsPage</name>
+    <message>
+        <source>Protocol</source>
+        <translation>协议</translation>
+    </message>
+    <message>
+        <source>Link</source>
+        <translation>连接</translation>
+    </message>
+    <message>
+        <source>Serial</source>
+        <translation>串口</translation>
+    </message>
+    <message>
+        <source>Baud</source>
+        <translation>波特率</translation>
+    </message>
+    <message>
+        <source>Device code</source>
+        <translation>设备码</translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation>保存</translation>
+    </message>
+    <message>
+        <source>Config saved (JSON + .bak)</source>
+        <translation>配置已保存 (JSON + .bak)</translation>
+    </message>
+    <message>
+        <source>Config save failed</source>
+        <translation>配置保存失败</translation>
+    </message>
+</context>
+<context>
+    <name>ConfigMachinePage</name>
+    <message>
+        <source>Pump type</source>
+        <translation>泵类型</translation>
+    </message>
+    <message>
+        <source>Word factor</source>
+        <translation>字系数</translation>
+    </message>
+    <message>
+        <source>Press raw scale</source>
+        <translation>压力原始比例</translation>
+    </message>
+    <message>
+        <source>Pmax:</source>
+        <translation>最大压力:</translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation>保存</translation>
+    </message>
+    <message>
+        <source>Config saved (JSON + .bak)</source>
+        <translation>配置已保存 (JSON + .bak)</translation>
+    </message>
+    <message>
+        <source>Config save failed</source>
+        <translation>配置保存失败</translation>
+    </message>
+</context>
+<context>
+    <name>ConfigSystemPage</name>
+    <message>
+        <source>UI scale</source>
+        <translation>界面缩放</translation>
+    </message>
+    <message>
+        <source>JSON config</source>
+        <translation>JSON配置</translation>
+    </message>
+    <message>
+        <source>Save</source>
+        <translation>保存</translation>
+    </message>
+    <message>
+        <source>Reconnect</source>
+        <translation>重新连接</translation>
+    </message>
+    <message>
+        <source>MCU Debug</source>
+        <translation>MCU调试</translation>
+    </message>
+    <message>
+        <source>Config saved (JSON + .bak)</source>
+        <translation>配置已保存 (JSON + .bak)</translation>
+    </message>
+    <message>
+        <source>Config save failed</source>
+        <translation>配置保存失败</translation>
     </message>
 </context>
 </TS>

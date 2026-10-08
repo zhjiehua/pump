@@ -28,9 +28,19 @@ public:
         Fix,
         FlowFix,
         PressFix,
-        Admin,
+        Maintenance,
+        AdminMaintenance,
+        AdminDevice,
+        AdminData,
+        Records,
+        EventRecords,
+        AlarmRecords,
+        MaintRecords,
+        ConfigMcu,
+        ConfigCds,
+        ConfigMachine,
+        ConfigSystem,
         Net,
-        Internal,
         Language,
         Time,
         Msg,
@@ -49,7 +59,7 @@ public:
     MachineController *controller() const { return m_ctrl; }
 
     void tryLogin(const QString &pwd);
-    void requestAdminAccess();
+    void requestMaintenanceAccess();
     void requestPasswordThen(Page returnPage, bool admin = true);
     bool pendingAdmin() const { return m_pendingAdmin; }
     bool consumeLoginOkFor(Page p);
@@ -98,6 +108,7 @@ private:
     void enterNavigatorMode();
     void navigatorPageAt(int index, bool force = false);
     class FocusPage *currentFocusPage() const;
+    bool moveModalMsgBoxFocus();
 
     MachineController *m_ctrl = nullptr;
     QWidget *m_panel = nullptr;
@@ -110,7 +121,7 @@ private:
     QVector<QShortcut *> m_shortcuts;
     bool m_pendingAdmin = true;
     bool m_loginOk = false;
-    Page m_pwdTarget = Admin;
+    Page m_pwdTarget = Maintenance;
     bool m_navigatorMode = true;
     int m_navigatorCnt = 3;
     int m_currentNavigator = 0;

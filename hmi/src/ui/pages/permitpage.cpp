@@ -6,12 +6,12 @@
 #include "ui/widgets/btnctrl.h"
 #include "ui/widgets/editctrl.h"
 #include "ui/widgets/imgbutton.h"
+#include "ui/widgets/msgbox.h"
 #include "ui/widgets/pagescroll.h"
 
 #include <QDateTime>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QMessageBox>
 #include <QTime>
 #include <QVBoxLayout>
 
@@ -122,17 +122,17 @@ void PermitPage::onRegister()
     const QString lic = m_license->text().trimmed();
     if (lic.isEmpty())
     {
-        QMessageBox::warning(this, tr("Tips"), tr("Register failed!"));
+        MsgBox::warning(this, tr("Tips"), tr("Register failed!"));
         return;
     }
     const quint64 code = lic.toULongLong();
     if (!m_c->auth()->activate(code))
     {
-        QMessageBox::warning(this, tr("Tips"), tr("Register failed!"));
+        MsgBox::warning(this, tr("Tips"), tr("Register failed!"));
         return;
     }
     refreshDays();
-    QMessageBox::information(this, tr("Tips"), tr("Register success!"));
+    MsgBox::information(this, tr("Tips"), tr("Register success!"));
 }
 
 void PermitPage::onSerial()
@@ -148,7 +148,7 @@ void PermitPage::onSerial()
     str += QChar('\n');
     str += tr("Rand:");
     str += QString::number(serialId);
-    QMessageBox::information(this, tr("tips"), str);
+    MsgBox::information(this, tr("tips"), str);
 }
 
 void PermitPage::refreshDays()

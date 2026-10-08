@@ -1,8 +1,8 @@
 #include "core/appsettings.h"
 
+#include "core/calibdefaults.h"
 #include "dualbackup/jsondualbackup.h"
 
-#include <QCoreApplication>
 #include <QDebug>
 #include <QDir>
 #include "utils/configpaths.h"
@@ -111,10 +111,7 @@ AppSettings::AppSettings(QObject *parent)
 
 QString AppSettings::resolveConfigDir() const
 {
-    const QString appDir = QCoreApplication::applicationDirPath();
-    if (!appDir.isEmpty() && QDir(appDir).exists())
-        return appDir;
-    return ConfigPaths::writableAppConfigDir();
+    return ConfigPaths::dataDir();
 }
 
 QString AppSettings::configPath() const
@@ -145,6 +142,158 @@ QString AppSettings::dataPath() const
 QString AppSettings::dataBackupPath() const
 {
     return QDir(resolveConfigDir()).filePath(QStringLiteral("data.json.bak"));
+}
+
+QString AppSettings::deviceInfoFactoryPath() const
+{
+    return QDir(resolveConfigDir()).filePath(QStringLiteral("deviceinfo.factory.json"));
+}
+
+QString AppSettings::deviceInfoFactoryBackupPath() const
+{
+    return QDir(resolveConfigDir()).filePath(QStringLiteral("deviceinfo.factory.json.bak"));
+}
+
+QString AppSettings::configFactoryPath() const
+{
+    return QDir(resolveConfigDir()).filePath(QStringLiteral("system.factory.json"));
+}
+
+QString AppSettings::configFactoryBackupPath() const
+{
+    return QDir(resolveConfigDir()).filePath(QStringLiteral("system.factory.json.bak"));
+}
+
+QString AppSettings::dataFactoryPath() const
+{
+    return QDir(resolveConfigDir()).filePath(QStringLiteral("data.factory.json"));
+}
+
+QString AppSettings::dataFactoryBackupPath() const
+{
+    return QDir(resolveConfigDir()).filePath(QStringLiteral("data.factory.json.bak"));
+}
+
+bool AppSettings::saveFactorySnapshot() const
+{
+    const bool deviceOk = JsonDualBackup::save(
+        deviceInfoFactoryPath(), deviceInfoFactoryBackupPath(), serializeDeviceInfoJson());
+    const bool systemOk = JsonDualBackup::save(
+        configFactoryPath(), configFactoryBackupPath(), serializeSystemJson());
+    const bool dataOk = JsonDualBackup::save(
+        dataFactoryPath(), dataFactoryBackupPath(), serializeDataJson());
+    return deviceOk && systemOk && dataOk;
+}
+
+bool AppSettings::hasFactorySnapshot() const
+{
+    const auto deviceResult = JsonDualBackup::load(deviceInfoFactoryPath(), deviceInfoFactoryBackupPath());
+    const auto systemResult = JsonDualBackup::load(configFactoryPath(), configFactoryBackupPath());
+    const auto dataResult = JsonDualBackup::load(dataFactoryPath(), dataFactoryBackupPath());
+    return deviceResult.source != JsonDualBackup::Source::None
+        && systemResult.source != JsonDualBackup::Source::None
+        && dataResult.source != JsonDualBackup::Source::None;
+}
+
+bool AppSettings::restoreFactorySnapshot()
+{
+    const auto deviceResult = JsonDualBackup::load(deviceInfoFactoryPath(), deviceInfoFactoryBackupPath());
+    const auto systemResult = JsonDualBackup::load(configFactoryPath(), configFactoryBackupPath());
+    const auto dataResult = JsonDualBackup::load(dataFactoryPath(), dataFactoryBackupPath());
+    if (deviceResult.source == JsonDualBackup::Source::None
+        || systemResult.source == JsonDualBackup::Source::None
+        || dataResult.source == JsonDualBackup::Source::None)
+        return false;
+
+    if (!parseDeviceInfoJson(deviceResult.data))
+        return false;
+    if (!parseSystemJson(systemResult.data))
+        return false;
+    if (!parseDataJson(dataResult.data))
+        return false;
+
+    ensureGradients();
+    emit changed();
+    return save();
+}
+
+void AppSettings::resetToBuiltInDefaults()
+{
+    pumpType = 0;
+    pmaxLimit = 0.0;
+    mcuWordFactor = defaultWordFactorForPump(0);
+    pressRawV0 = 0;
+    pressRawScale = 0.0128;
+
+    mcuProtocol = Cxth;
+    mcuPort.clear();
+    mcuBaud = 9600;
+    mcuAddress = 0x01;
+
+    pcProtocol = Clarity;
+    pcPort = Udp;
+    pcSerialPort.clear();
+    pcSerialBaud = 9600;
+    localPort = 8080;
+    remoteIp = QStringLiteral("127.0.0.1");
+    remotePort = 8081;
+
+    dhcp = false;
+    localIp = QStringLiteral("192.168.1.100");
+    subnet = QStringLiteral("255.255.255.0");
+    gateway = QStringLiteral("192.168.1.1");
+
+    scale = 1;
+    autoConnect = true;
+    language = English;
+    machineCode = 0x12;
+
+    flowSet = 1.0;
+    percent = 100.0;
+    coefficient = 100.0;
+    pressMin = 0.0;
+    pressMax = 42.0;
+    purgeFlow = 5.0;
+    gradientIndex = 0;
+    currentGradient = 0;
+    gradientMode = 0;
+
+    license = QStringLiteral("1111111111");
+    serial = QStringLiteral("0000000000");
+    adminPwd = QStringLiteral("173895");
+    userPwd = QStringLiteral("111111");
+    bActive = false;
+    tryDay = 14;
+    serialId = 0;
+    bugleCnt = 0;
+    sysUsedSec = 0;
+    pumpUsedSec = 0;
+
+    manufYear = QStringLiteral("2015");
+    manufMonth = QStringLiteral("10");
+    manufDay = QStringLiteral("1");
+    instYear = QStringLiteral("2015");
+    instMonth = QStringLiteral("10");
+    instDay = QStringLiteral("1");
+    repairYear = QStringLiteral("0000");
+    repairMonth = QStringLiteral("00");
+    repairDay = QStringLiteral("0");
+
+    gradients.clear();
+    pulseTable.clear();
+    pressCompen = 0;
+    loadRate = 0;
+    loadReal = 0;
+    loadPress = 0;
+
+    ensureGradients();
+    restoreDefaultCalibrationTables();
+    emit changed();
+}
+
+void AppSettings::restoreDefaultCalibrationTables()
+{
+    CalibDefaults::applyDefaultTables(this);
 }
 
 void AppSettings::applyPumpTypeFactor()
@@ -351,12 +500,15 @@ bool AppSettings::load()
     {
         applyPumpTypeFactor();
         ensureGradients();
+        restoreDefaultCalibrationTables();
         return false;
     }
 
     if (!deviceOk)
         applyPumpTypeFactor();
     ensureGradients();
+    if (flowTable.isEmpty() || pressTable.isEmpty())
+        restoreDefaultCalibrationTables();
     return deviceOk || systemOk || dataOk;
 }
 
@@ -381,6 +533,53 @@ bool AppSettings::importFromJson(const QString &path)
     else
         return false;
 
+    if (!ok)
+        return false;
+    emit changed();
+    return save();
+}
+
+QByteArray AppSettings::exportBundleJson() const
+{
+    QJsonObject root;
+    root.insert(QStringLiteral("kind"), QStringLiteral("config"));
+    root.insert(QStringLiteral("device"),
+                QJsonDocument::fromJson(serializeDeviceInfoJson()).object());
+    root.insert(QStringLiteral("system"),
+                QJsonDocument::fromJson(serializeSystemJson()).object());
+    root.insert(QStringLiteral("data"),
+                QJsonDocument::fromJson(serializeDataJson()).object());
+    return QJsonDocument(root).toJson(QJsonDocument::Compact);
+}
+
+bool AppSettings::importBundleJson(const QByteArray &raw)
+{
+    const QJsonDocument doc = QJsonDocument::fromJson(raw);
+    if (!doc.isObject())
+        return false;
+    const QJsonObject root = doc.object();
+    if (root.value(QStringLiteral("kind")).toString() != QLatin1String("config"))
+        return false;
+
+    bool ok = true;
+    if (root.contains(QStringLiteral("device")))
+    {
+        ok = parseDeviceInfoJson(
+                 QJsonDocument(root.value(QStringLiteral("device")).toObject()).toJson())
+             && ok;
+    }
+    if (root.contains(QStringLiteral("system")))
+    {
+        ok = parseSystemJson(
+                 QJsonDocument(root.value(QStringLiteral("system")).toObject()).toJson())
+             && ok;
+    }
+    if (root.contains(QStringLiteral("data")))
+    {
+        ok = parseDataJson(
+                 QJsonDocument(root.value(QStringLiteral("data")).toObject()).toJson())
+             && ok;
+    }
     if (!ok)
         return false;
     emit changed();

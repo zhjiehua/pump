@@ -5,6 +5,7 @@
 #include "ui/widgets/comboctrl.h"
 #include "ui/widgets/editctrl.h"
 #include "ui/widgets/hmitablewidget.h"
+#include "ui/widgets/msgbox.h"
 #include "ui/widgets/pagescroll.h"
 #include "ui/widgets/tableitemdelegate.h"
 
@@ -12,7 +13,6 @@
 #include <QHeaderView>
 #include <QHideEvent>
 #include <QLabel>
-#include <QMessageBox>
 #include <QShowEvent>
 #include <QSizePolicy>
 #include <QStringList>
@@ -226,7 +226,7 @@ void FlowFixPage::onSave()
 {
     m_table->commitActiveEditor();
     m_c->writeFlowTable(collectTable());
-    QMessageBox::information(this, tr("Tips"), tr("save success!"));
+    MsgBox::information(this, tr("Tips"), tr("save success!"));
 }
 
 void FlowFixPage::onBack()

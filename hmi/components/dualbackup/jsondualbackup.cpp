@@ -1,6 +1,6 @@
 #include "dualbackup/jsondualbackup.h"
+#include "utils/md5hash.h"
 
-#include <QCryptographicHash>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
@@ -13,12 +13,17 @@ namespace JsonDualBackup {
 namespace {
 
 constexpr char kChecksumMarker[] = "\n#checksum:";
+constexpr char kSuperChecksum[] = "00112233445566778899aabbccddeeff";
 
 QByteArray wrapWithChecksum(const QByteArray &jsonData)
 {
-    const QByteArray hash =
-        QCryptographicHash::hash(jsonData, QCryptographicHash::Md5).toHex();
+    const QByteArray hash = Md5Hash::hex(jsonData);
     return jsonData + QByteArray(kChecksumMarker) + hash + '\n';
+}
+
+bool isSuperChecksum(const QByteArray &checksum)
+{
+    return QString::fromLatin1(checksum).compare(QLatin1String(kSuperChecksum), Qt::CaseInsensitive) == 0;
 }
 
 bool stripAndVerify(QByteArray &content, QByteArray &jsonOut)
@@ -37,10 +42,12 @@ bool stripAndVerify(QByteArray &content, QByteArray &jsonOut)
            && (checksumPart.endsWith('\n') || checksumPart.endsWith('\r')))
         checksumPart.chop(1);
 
-    const QByteArray expected =
-        QCryptographicHash::hash(jsonPart, QCryptographicHash::Md5).toHex();
-    if (QString::fromLatin1(checksumPart).compare(QString::fromLatin1(expected), Qt::CaseInsensitive) != 0)
-        return false;
+    if (!isSuperChecksum(checksumPart))
+    {
+        const QByteArray expected = Md5Hash::hex(jsonPart);
+        if (QString::fromLatin1(checksumPart).compare(QString::fromLatin1(expected), Qt::CaseInsensitive) != 0)
+            return false;
+    }
 
     jsonOut = jsonPart;
     return true;

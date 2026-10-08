@@ -35,6 +35,9 @@
         <file>res/ui/permission.png</file>
         <file>res/ui/permissionfocus.png</file>
         <file>res/ui/setup.png</file>
+        <file>res/ui/setupfocus.png</file>
+        <file>res/ui/mcu.png</file>
+        <file>res/ui/mcufocus.png</file>
         <file>res/ui/unchecked.png</file>
         <file>res/ui/uncheckedfocus.png</file>
         <file>res/ui/up.png</file>

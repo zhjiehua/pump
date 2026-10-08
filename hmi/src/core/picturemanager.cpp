@@ -43,6 +43,9 @@ const char *pictureFile(PictureManager::Picture id)
     case PictureManager::Permission: return "permission.png";
     case PictureManager::PermissionFocus: return "permissionfocus.png";
     case PictureManager::Setup: return "setup.png";
+    case PictureManager::SetupFocus: return "setupfocus.png";
+    case PictureManager::Mcu: return "mcu.png";
+    case PictureManager::McuFocus: return "mcufocus.png";
     case PictureManager::Unchecked: return "unchecked.png";
     case PictureManager::UncheckedFocus: return "uncheckedfocus.png";
     case PictureManager::Up: return "up.png";

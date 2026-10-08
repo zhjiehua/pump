@@ -51,6 +51,8 @@ public:
     bool save() const;
     /** Load settings from an external JSON file and persist to config paths. */
     bool importFromJson(const QString &path);
+    QByteArray exportBundleJson() const;
+    bool importBundleJson(const QByteArray &raw);
 
     QString configPath() const;
     QString backupPath() const;
@@ -58,6 +60,22 @@ public:
     QString deviceInfoBackupPath() const;
     QString dataPath() const;
     QString dataBackupPath() const;
+    QString deviceInfoFactoryPath() const;
+    QString deviceInfoFactoryBackupPath() const;
+    QString configFactoryPath() const;
+    QString configFactoryBackupPath() const;
+    QString dataFactoryPath() const;
+    QString dataFactoryBackupPath() const;
+
+    /** Snapshot current JSON set to *.factory.json (debugged “golden” copy). */
+    bool saveFactorySnapshot() const;
+    /** Restore runtime JSON from factory snapshot; returns false if snapshot missing. */
+    bool restoreFactorySnapshot();
+    bool hasFactorySnapshot() const;
+    /** Reset all fields to compile-time defaults (first power-on). */
+    void resetToBuiltInDefaults();
+    /** Flow/press tables from weiduodianzi SQLite defaults (factor 1 → identity). */
+    void restoreDefaultCalibrationTables();
 
     int pumpType = 0;
     double pmaxLimit = 0.0; // Admin override; 0 = use pump-type default

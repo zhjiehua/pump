@@ -27,8 +27,6 @@ private slots:
     void goNet();
     void goGradient();
     void goGlp();
-    void onAdmin();
-    void goInternal();
 
 private:
     MainWindow *m_main = nullptr;
@@ -40,8 +38,6 @@ private:
     BtnCtrl *m_net = nullptr;
     BtnCtrl *m_grid = nullptr;
     BtnCtrl *m_glp = nullptr;
-    BtnCtrl *m_admin = nullptr;
-    BtnCtrl *m_internal = nullptr;
     QLabel *m_langLabel = nullptr;
     QLabel *m_calLabel = nullptr;
     QLabel *m_permLabel = nullptr;
@@ -50,8 +46,6 @@ private:
     QLabel *m_netLabel = nullptr;
     QLabel *m_gridLabel = nullptr;
     QLabel *m_glpLabel = nullptr;
-    QLabel *m_adminLabel = nullptr;
-    QLabel *m_internalLabel = nullptr;
 };
 
 #endif

@@ -20,7 +20,7 @@ Build and run both apps (F6/F5 in multi-root workspace):
 | Pressure alarm icons | ✓ | ✓ AlarmService |
 | Gradient run-time flow | ✓ | ✓ GradientEngine |
 | License activation | ✓ | ✓ AuthService |
-| Config storage | wda.db (SQLite) | `deviceinfo.json`, `system.json`, `data.json` (+ `.bak`) |
+| Config storage | wda.db (SQLite) | `data/deviceinfo.json`, `data/system.json`, `data/data.json` (+ `.bak`) |
 
 ## Import / backup JSON
 
@@ -28,9 +28,9 @@ Admin → **Import JSON** loads a JSON file (legacy monolithic or split) and sav
 
 | File | Contents |
 |------|----------|
-| `deviceinfo.json` | Serial, license, dates, usage counters |
-| `system.json` | MCU/CDS config, gradients, calib tables, passwords |
-| `data.json` | Flow, pressure limits, gradient selection |
+| `data/deviceinfo.json` | Serial, license, dates, usage counters |
+| `data/system.json` | MCU/CDS config, gradients, calib tables, passwords |
+| `data/data.json` | Flow, pressure limits, gradient selection |
 
 Each file has a `.bak` twin; dual backup is handled by `AppSettings::save()`.  
 Legacy monolithic `system.json` (with `glp` / `run` sections) is auto-migrated on first load.

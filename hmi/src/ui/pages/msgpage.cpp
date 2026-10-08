@@ -4,13 +4,13 @@
 #include "ui/mainwindow.h"
 #include "ui/widgets/btnctrl.h"
 #include "ui/widgets/imgbutton.h"
+#include "ui/widgets/msgbox.h"
 #include "ui/widgets/pagescroll.h"
 #include "utils/version.h"
 
 #include <QFile>
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QMessageBox>
 #include <QVBoxLayout>
 
 namespace {
@@ -107,25 +107,25 @@ void MsgPage::refreshLabels()
 
 void MsgPage::updateProgram()
 {
-    if (QMessageBox::question(this, tr("Tips"), tr("Comfirm to update program?"))
-        != QMessageBox::Yes)
+    if (MsgBox::question(this, tr("Tips"), tr("Comfirm to update program?"))
+        != MsgBox::Yes)
         return;
 
 #if defined(Q_OS_LINUX)
     QFile src(QString::fromLatin1(kSrcProgram));
     if (!src.exists())
     {
-        QMessageBox::warning(this, tr("Tips"), tr("file not found!"));
+        MsgBox::warning(this, tr("Tips"), tr("file not found!"));
         return;
     }
     QFile target(QString::fromLatin1(kTargetProgram));
     if (target.exists())
         target.remove();
     if (QFile::copy(src.fileName(), target.fileName()))
-        QMessageBox::information(this, tr("Tips"), tr("success!"));
+        MsgBox::information(this, tr("Tips"), tr("success!"));
     else
-        QMessageBox::warning(this, tr("Tips"), tr("failed!"));
+        MsgBox::warning(this, tr("Tips"), tr("failed!"));
 #else
-    QMessageBox::information(this, tr("Tips"), tr("success!"));
+    MsgBox::information(this, tr("Tips"), tr("success!"));
 #endif
 }
