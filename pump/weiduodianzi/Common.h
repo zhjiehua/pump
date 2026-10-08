@@ -45,32 +45,22 @@
 #define ENGLISH					0
 #define CHINESE					1
 
-#if 1
-// #define KEY_UP					Qt::Key_Up
-// #define KEY_DOWN				Qt::Key_Down
-// #define KEY_LEFT				Qt::Key_Left		
-// #define KEY_RIGHT				Qt::Key_Right
+#ifdef DESKTOP_HMI
 #define KEY_UP					Qt::Key_W
 #define KEY_DOWN				Qt::Key_S
-#define KEY_LEFT				Qt::Key_A	
+#define KEY_LEFT				Qt::Key_A
 #define KEY_RIGHT				Qt::Key_D
-#define KEY_BACKSPACE			Qt::Key_Backspace
-#define KEY_RETURN				Qt::Key_Return
-#define KEY_PUMPSTOP			Qt::Key_F6
-#define KEY_STARTHOLD			Qt::Key_F7
-#define KEY_PURGE				Qt::Key_F8
-#define KEY_SUPER				Qt::CTRL+KEY_UP
 #else
 #define KEY_UP					Qt::Key_F2
 #define KEY_DOWN				Qt::Key_F5
-#define KEY_LEFT				Qt::Key_F1		
+#define KEY_LEFT				Qt::Key_F1
 #define KEY_RIGHT				Qt::Key_F3
+#endif
 #define KEY_BACKSPACE			Qt::Key_Backspace
 #define KEY_RETURN				Qt::Key_Return
 #define KEY_PUMPSTOP			Qt::Key_F6
 #define KEY_STARTHOLD			Qt::Key_F7
 #define KEY_PURGE				Qt::Key_F8
 #define KEY_SUPER				Qt::CTRL+KEY_UP
-#endif
 
 #endif
