@@ -42,6 +42,9 @@ hmi/build
 hmi/Makefile
 hmi/*.o
 hmi/moc_*
+hmi/.obj
+hmi/.moc
+hmi/.rcc
 hmi/.qmake.stash
 pump/weiduodianzi/bin
 pump/weiduodianzi/build_desktop

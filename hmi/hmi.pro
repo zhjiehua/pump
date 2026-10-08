@@ -15,6 +15,11 @@ TARGET = pump
 
 DESTDIR = $$PWD/bin
 
+# Intermediate files under the build directory (OUT_PWD), not next to sources.
+OBJECTS_DIR = $$OUT_PWD/.obj
+MOC_DIR     = $$OUT_PWD/.moc
+RCC_DIR     = $$OUT_PWD/.rcc
+
 # CONFIG += touch
 
 # Feature flags: see utils/hmiconfig.h
