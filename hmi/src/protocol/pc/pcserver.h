@@ -7,21 +7,25 @@
 #include <QTcpSocket>
 #include <QUdpSocket>
 #include <QHostAddress>
-#include "core/appsettings.h"
+#include <QVariantMap>
 
-class MachineController;
+class PumpCommand;
+class PumpSession;
 
 class PcServer : public QObject
 {
     Q_OBJECT
 public:
     explicit PcServer(QObject *parent = nullptr);
-    void setController(MachineController *c) { m_ctrl = c; }
+    void setFacade(PumpCommand *cmd, PumpSession *session);
 
-    bool start(AppSettings *s);
+    bool start(const QVariantMap &cfg);
     void stop();
     void sendBytes(const QByteArray &ba);
     virtual void sendPressure(double mpa) = 0;
+
+    quint8 machineCode() const { return m_machineCode; }
+    quint8 mcuAddress() const { return m_mcuAddress; }
 
 protected slots:
     void onSerial();
@@ -33,9 +37,11 @@ protected slots:
 protected:
     virtual void handle(const QByteArray &chunk) = 0;
 
-    MachineController *m_ctrl = nullptr;
-    AppSettings *m_settings = nullptr;
+    PumpCommand *m_cmd = nullptr;
+    PumpSession *m_session = nullptr;
     QByteArray m_rx;
+    quint8 m_machineCode = 0x12;
+    quint8 m_mcuAddress = 0x01;
 
 private:
     void closeTcpClient();

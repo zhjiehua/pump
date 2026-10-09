@@ -1,6 +1,7 @@
 #include "ui/pages/configmachinepage.h"
 #include "core/appsettings.h"
 #include "core/machinecontroller.h"
+#include "domain/uicapabilities.h"
 #include "ui/mainwindow.h"
 #include "ui/widgets/comboctrl.h"
 #include "ui/widgets/editctrl.h"
@@ -125,10 +126,10 @@ void ConfigMachinePage::loadFromSettings()
 
 void ConfigMachinePage::updateMcuDrivenFields()
 {
-    const bool qf = m_c->settings()->mcuProtocol == AppSettings::QinFine;
-    m_pumpType->setEnabled(!qf);
-    m_wordFactor->setEnabled(!qf);
-    m_pressScale->setEnabled(!qf);
+    const bool word = m_c->capabilities().has(UiPageKey::kCxthWordFactor);
+    m_pumpType->setEnabled(word);
+    m_wordFactor->setEnabled(word);
+    m_pressScale->setEnabled(word);
 }
 
 void ConfigMachinePage::applyToSettings()

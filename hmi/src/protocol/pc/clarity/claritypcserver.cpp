@@ -1,5 +1,8 @@
 #include "protocol/pc/clarity/claritypcserver.h"
-#include "core/machinecontroller.h"
+#include "app/cmdinvoke.h"
+#include "app/cmdsource.h"
+#include "app/pumpcommand.h"
+#include "domain/pumpsession.h"
 #include "protocol/pc/clarity/claritycodec.h"
 #include "protocol/pc/clarity/clarityids.h"
 #include "utils/eventlog.h"
@@ -11,17 +14,13 @@ ClarityPcServer::ClarityPcServer(QObject *parent)
 
 void ClarityPcServer::sendPressure(double mpa)
 {
-    if (!m_settings || !m_ctrl)
-        return;
     const quint32 v = quint32(qAbs(mpa) * 100.0 + 0.5);
-    sendBytes(ClarityCodec::encode(m_settings->machineCode, 0, ClarityPc::PFC_SEND_PRESS, v));
+    sendBytes(ClarityCodec::encode(m_machineCode, 0, ClarityPc::PFC_SEND_PRESS, v));
 }
 
 void ClarityPcServer::handle(const QByteArray &chunk)
 {
     m_rx.append(chunk);
-    if (!m_settings)
-        return;
     while (true)
     {
         const int s = m_rx.indexOf(char(ClarityPc::STX));
@@ -44,15 +43,16 @@ void ClarityPcServer::handleFrame(const QByteArray &frame)
 {
     quint8 id = 0, ai = 0, pfc = 0;
     quint32 val = 0;
-    if (!ClarityCodec::decode(frame, &id, &ai, &pfc, &val) || !m_ctrl)
+    if (!ClarityCodec::decode(frame, &id, &ai, &pfc, &val) || !m_cmd)
     {
         sendBytes(ClarityCodec::encodeAck(false));
         return;
     }
-    if (pfc != ClarityPc::PFC_READ_ID && id != m_settings->machineCode)
+    if (pfc != ClarityPc::PFC_READ_ID && id != m_machineCode)
         return;
 
-    auto ack = [this]() { sendBytes(ClarityCodec::encodeAck(true)); };
+    const PumpSession::Snap snap = m_session ? m_session->copy() : PumpSession::Snap();
+    const int remote = CmdSource::Remote;
 
     EventLog::key(QStringLiteral("PC-RX"),
                   QStringLiteral("Clarity %1 id=%2 ai=%3 val=%4")
@@ -64,69 +64,70 @@ void ClarityPcServer::handleFrame(const QByteArray &frame)
     switch (pfc)
     {
     case ClarityPc::PFC_READ_ID:
-        sendBytes(ClarityCodec::encode(m_settings->machineCode, 0, ClarityPc::PFC_READ_ID, m_settings->machineCode));
+        sendBytes(ClarityCodec::encode(m_machineCode, 0, ClarityPc::PFC_READ_ID, m_machineCode));
         break;
     case ClarityPc::PFC_STATUS:
     {
-        quint32 st = quint32(m_ctrl->flow() * 1000.0 + 0.5) & 0xFFFFF;
-        if (m_ctrl->stat() != MachineController::Stat::Stop)
+        quint32 st = quint32(snap.flow * 1000.0 + 0.5) & 0xFFFFF;
+        if (snap.stat != 0)
             st |= (1u << 20);
-        sendBytes(ClarityCodec::encode(m_settings->machineCode, 0, ClarityPc::PFC_STATUS, st));
+        sendBytes(ClarityCodec::encode(m_machineCode, 0, ClarityPc::PFC_STATUS, st));
         break;
     }
     case ClarityPc::PFC_SET_FLOW:
-        m_ctrl->enterPcControl();
-        m_ctrl->setFlow(val / 1000.0);
-        ack();
+        CmdInvoke::callBool(m_cmd, "enterPcControlCmd", remote);
+        CmdInvoke::callBool(m_cmd, "setFlowCmd", val / 1000.0, remote);
+        sendBytes(ClarityCodec::encodeAck(true));
         break;
     case ClarityPc::PFC_SET_PERCENT:
-        m_ctrl->setPercent(val / 10.0);
-        ack();
+        CmdInvoke::callBool(m_cmd, "setPercentCmd", val / 10.0, remote);
+        sendBytes(ClarityCodec::encodeAck(true));
         break;
     case ClarityPc::PFC_MAX_PRESS:
-        m_ctrl->setPressLimits(m_ctrl->settings()->pressMin, val / 100.0);
-        ack();
+        CmdInvoke::callBool(m_cmd, "setPressLimitsCmd", snap.pressMin, val / 100.0, remote);
+        sendBytes(ClarityCodec::encodeAck(true));
         break;
     case ClarityPc::PFC_MIN_PRESS:
-        m_ctrl->setPressLimits(val / 100.0, m_ctrl->settings()->pressMax);
-        ack();
+        CmdInvoke::callBool(m_cmd, "setPressLimitsCmd", val / 100.0, snap.pressMax, remote);
+        sendBytes(ClarityCodec::encodeAck(true));
         break;
     case ClarityPc::PFC_START:
-        m_ctrl->start();
-        ack();
+        CmdInvoke::callBool(m_cmd, "startCmd", remote);
+        sendBytes(ClarityCodec::encodeAck(true));
         break;
     case ClarityPc::PFC_STOP:
-        m_ctrl->stop();
-        ack();
+        CmdInvoke::callBool(m_cmd, "stopCmd", remote);
+        sendBytes(ClarityCodec::encodeAck(true));
         break;
     case ClarityPc::PFC_PRESSCLEAR:
-        m_ctrl->pressZero();
-        ack();
+        CmdInvoke::callBool(m_cmd, "pressZeroCmd", remote);
+        sendBytes(ClarityCodec::encodeAck(true));
         break;
     case ClarityPc::PFC_READ_PRESS:
-        m_ctrl->replyPressureToPc();
-        ack();
+        CmdInvoke::callVoid(m_cmd, "replyPressureToPc");
+        sendBytes(ClarityCodec::encodeAck(true));
         break;
     case ClarityPc::PFC_SYNCTIME:
-        if (m_ctrl->stat() == MachineController::Stat::Stop)
-            m_ctrl->start();
-        ack();
+        if (snap.stat == 0)
+            CmdInvoke::callBool(m_cmd, "startCmd", remote);
+        sendBytes(ClarityCodec::encodeAck(true));
         break;
     case ClarityPc::PFC_PURGE:
-        m_ctrl->purge();
-        ack();
+        CmdInvoke::callBool(m_cmd, "purgeCmd", remote);
+        sendBytes(ClarityCodec::encodeAck(true));
         break;
     case ClarityPc::PFC_HOLD:
-        m_ctrl->pause();
-        ack();
+        CmdInvoke::callBool(m_cmd, "pauseCmd", remote);
+        sendBytes(ClarityCodec::encodeAck(true));
         break;
     case ClarityPc::PFC_PRESS_COMPEN:
         if (val <= 1)
-            m_ctrl->setPressCompen(quint8(val));
-        sendBytes(ClarityCodec::encode(m_settings->machineCode, 0, ClarityPc::PFC_PRESS_COMPEN, m_ctrl->pressCompen()));
+            CmdInvoke::callBoolU8(m_cmd, "setPressCompenCmd", int(val), remote);
+        sendBytes(ClarityCodec::encode(m_machineCode, 0, ClarityPc::PFC_PRESS_COMPEN,
+                                       m_session ? m_session->copy().pressCompen : 0));
         break;
     default:
-        ack();
+        sendBytes(ClarityCodec::encodeAck(true));
         break;
     }
 }

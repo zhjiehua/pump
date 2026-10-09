@@ -27,6 +27,7 @@ private slots:
     void goNet();
     void goGradient();
     void goGlp();
+    void applyCapabilities();
 
 private:
     MainWindow *m_main = nullptr;

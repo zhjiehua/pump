@@ -1,5 +1,6 @@
 #include "ui/pages/runpage.h"
 #include "core/machinecontroller.h"
+#include "domain/pumpsession.h"
 #include "ui/mainwindow.h"
 #include "ui/widgets/comboctrl.h"
 #include "ui/widgets/editctrl.h"
@@ -94,8 +95,8 @@ RunPage::RunPage(MachineController *c, MainWindow *main, QWidget *parent)
     outer->addStretch(1);
 
     connect(m_stat, SIGNAL(activated(int)), this, SLOT(onStatActivated(int)));
-    connect(m_c, SIGNAL(statusChanged()), this, SLOT(refresh()));
-    connect(m_c, SIGNAL(pressureChanged()), this, SLOT(refresh()));
+    connect(m_c->session(), SIGNAL(snapshotChanged()), this, SLOT(refresh()));
+    connect(m_c->session(), SIGNAL(pressureChanged()), this, SLOT(refresh()));
 
     refresh();
 }
@@ -115,6 +116,11 @@ void RunPage::onFlowCommitted(const QString &value)
 
 void RunPage::onStatActivated(int i)
 {
+    if (m_c->authority()->isRemote())
+    {
+        refresh();
+        return;
+    }
     if (i == 5)
         m_c->enterPcControl();
     else
@@ -134,12 +140,12 @@ void RunPage::updateTimeLabel(quint32 sec)
 
 void RunPage::refresh()
 {
+    const PumpSession::Snap snap = m_c->session()->copy();
     if (!m_flow->hasFocus())
-        m_flow->setText(QString::number(m_c->flow(), 'f', 3));
-    m_percent->setText(QString::number(m_c->percent(), 'f', 0) + QStringLiteral("%"));
-    m_press->setText(QString::number(m_c->pressure(), 'f', 2));
-    updateTimeLabel(m_c->runSeconds());
-    const int idx = int(m_c->stat());
-    if (idx >= 0 && idx <= 5)
-        m_stat->setCurrentIndex(idx);
+        m_flow->setText(QString::number(snap.flow, 'f', 3));
+    m_percent->setText(QString::number(snap.percent, 'f', 0) + QStringLiteral("%"));
+    m_press->setText(QString::number(snap.pressure, 'f', 2));
+    updateTimeLabel(snap.runSeconds);
+    if (snap.stat >= 0 && snap.stat <= 5)
+        m_stat->setCurrentIndex(snap.stat);
 }

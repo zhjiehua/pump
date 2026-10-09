@@ -83,6 +83,7 @@ private slots:
     void onStatusChanged();
     void onAlarmChanged();
     void onProbationExpired();
+    void onCommandRejected(const QString &reason);
     void onStackPageChanged(int index);
     void applyNavigatorFocus();
 

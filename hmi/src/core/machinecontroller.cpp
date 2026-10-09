@@ -1,23 +1,26 @@
 #include "core/machinecontroller.h"
 #include "core/calibinterp.h"
-#include "protocol/mcu/qinfine/qinfineclient.h"
+#include "adapter/iocall.h"
+#include "adapter/mcuportagent.h"
+#include "adapter/pcportagent.h"
+#include "adapter/qinfinebackend.h"
+#include "adapter/cxthbackend.h"
 #include "protocol/mcu/qinfine/qinfinecodec.h"
-#include "protocol/mcu/cxth/cxthmcuclient.h"
-#include "protocol/pc/pcserver.h"
-#include "protocol/pc/cxth/cxthpcserver.h"
-#include "protocol/pc/clarity/claritypcserver.h"
-#include "protocol/pc/qinfine/qinfinepcserver.h"
 #include "utils/eventlog.h"
 
 #include <QDebug>
+#include <QThread>
 #include <QTimer>
+#include <QVariantMap>
 
 MachineController::MachineController(QObject *parent)
-    : QObject(parent)
+    : PumpCommand(parent)
     , m_auth(&m_settings, this)
     , m_gradient(&m_settings, this)
     , m_usage(&m_settings, this)
     , m_i18n(&m_settings, this)
+    , m_session(this)
+    , m_authority(this)
 {
     m_settings.load();
     qInfo() << "settings loaded from"
@@ -37,31 +40,44 @@ MachineController::MachineController(QObject *parent)
     m_records.bindToEventLog();
     EventLog::key(QStringLiteral("BOOT"), QStringLiteral("HMI ready"));
 
-    m_qinFine = new QinFineClient(this);
-    m_cxthMcu = new CxthMcuClient(this);
-    m_cxthPc = new CxthPcServer(this);
-    m_clarityPc = new ClarityPcServer(this);
-    m_qinFinePc = new QinFinePcServer(this);
-    m_cxthPc->setController(this);
-    m_clarityPc->setController(this);
-    m_qinFinePc->setController(this);
+    m_ioThread = new QThread(this);
+    m_ioThread->setObjectName(QStringLiteral("hmi_io"));
+    m_mcuAgent = new McuPortAgent;
+    m_pcAgent = new PcPortAgent;
+    m_mcuAgent->moveToThread(m_ioThread);
+    m_pcAgent->moveToThread(m_ioThread);
+    m_ioThread->start();
+    IoCall::blockingVoid(m_mcuAgent, "init");
+    IoCall::blockingVoid(m_pcAgent, "init");
+    QMetaObject::invokeMethod(m_pcAgent, "setFacade", IoCall::blocking(m_pcAgent),
+                              Q_ARG(QObject*, this), Q_ARG(QObject*, static_cast<QObject*>(&m_session)));
 
-    connect(m_qinFine, SIGNAL(connectedChanged(bool)), this, SLOT(onMcuConnectedChanged(bool)));
-    connect(m_cxthMcu, SIGNAL(connectedChanged(bool)), this, SLOT(onMcuConnectedChanged(bool)));
-    connect(m_qinFine, SIGNAL(pressureUpdated(float)), this, SLOT(onQinFinePressure(float)));
-    connect(m_cxthMcu, SIGNAL(pressureRaw(quint32)), this, SLOT(onCxthPressureRaw(quint32)));
-    connect(m_qinFine, SIGNAL(extPoint(quint8,float,float)), this, SLOT(onExtPoint(quint8,float,float)));
-    connect(m_qinFine, SIGNAL(extFloat(quint8,float)), this, SLOT(onExtFloat(quint8,float)));
-    connect(m_qinFine, SIGNAL(extU8(quint8,quint8)), this, SLOT(onExtU8(quint8,quint8)));
-    connect(m_qinFine, SIGNAL(errorText(QString)), this, SIGNAL(logLine(QString)));
-    connect(m_cxthMcu, SIGNAL(errorText(QString)), this, SIGNAL(logLine(QString)));
+    connect(m_mcuAgent, SIGNAL(connectedChanged(bool)), this, SLOT(onMcuConnectedChanged(bool)),
+            Qt::QueuedConnection);
+    connect(m_mcuAgent, SIGNAL(qfPressure(float)), this, SLOT(onQinFinePressure(float)),
+            Qt::QueuedConnection);
+    connect(m_mcuAgent, SIGNAL(cxthPressureRaw(uint)), this, SLOT(onCxthPressureRaw(uint)),
+            Qt::QueuedConnection);
+    connect(m_mcuAgent, SIGNAL(extPoint(int,float,float)), this, SLOT(onExtPoint(int,float,float)),
+            Qt::QueuedConnection);
+    connect(m_mcuAgent, SIGNAL(extFloat(int,float)), this, SLOT(onExtFloat(int,float)),
+            Qt::QueuedConnection);
+    connect(m_mcuAgent, SIGNAL(extU8(int,int)), this, SLOT(onExtU8(int,int)),
+            Qt::QueuedConnection);
+    connect(m_mcuAgent, SIGNAL(errorText(QString)), this, SIGNAL(logLine(QString)),
+            Qt::QueuedConnection);
+    connect(m_mcuAgent, SIGNAL(pollTick()), this, SLOT(onPollTick()), Qt::QueuedConnection);
     connect(this, SIGNAL(logLine(QString)), this, SLOT(onLogLineEcho(QString)));
-    connect(&m_commWorker, SIGNAL(pollTick()), this, SLOT(onPollTick()));
     connect(&m_runState, SIGNAL(statChanged(Stat)), this, SIGNAL(statusChanged()));
     connect(&m_runState, SIGNAL(runTimeChanged(quint32)), this, SIGNAL(statusChanged()));
     connect(&m_alarms, SIGNAL(alarmChanged()), this, SIGNAL(alarmChanged()));
+    connect(&m_authority, SIGNAL(changed()), this, SIGNAL(statusChanged()));
+    connect(this, SIGNAL(statusChanged()), this, SLOT(syncSession()));
+    connect(this, SIGNAL(pressureChanged()), this, SLOT(syncSession()));
+    connect(this, SIGNAL(tablesChanged()), this, SLOT(syncSession()));
+    connect(this, SIGNAL(alarmChanged()), this, SLOT(syncSession()));
 
-    m_commWorker.startPolling(500);
+    recreateBackend();
 
     m_secondTimer = new QTimer(this);
     connect(m_secondTimer, SIGNAL(timeout()), this, SLOT(onSecondTick()));
@@ -71,8 +87,63 @@ MachineController::MachineController(QObject *parent)
     m_dumpTimer->setSingleShot(true);
     connect(m_dumpTimer, SIGNAL(timeout()), this, SLOT(onDumpTimeout()));
 
+    syncSession();
     if (m_settings.autoConnect)
         QTimer::singleShot(0, this, SLOT(autoConnectStartup()));
+}
+
+MachineController::~MachineController()
+{
+    if (m_mcuAgent)
+        disconnect(m_mcuAgent, nullptr, this, nullptr);
+    if (m_pcAgent)
+        disconnect(m_pcAgent, nullptr, this, nullptr);
+    if (m_mcuAgent)
+        IoCall::blockingVoid(m_mcuAgent, "shutdown");
+    if (m_pcAgent)
+        IoCall::blockingVoid(m_pcAgent, "shutdown");
+    if (m_ioThread)
+    {
+        m_ioThread->quit();
+        m_ioThread->wait(2000);
+    }
+    delete m_mcuAgent;
+    m_mcuAgent = nullptr;
+    delete m_pcAgent;
+    m_pcAgent = nullptr;
+}
+
+void MachineController::recreateBackend()
+{
+    delete m_backend;
+    m_backend = nullptr;
+    if (m_settings.mcuProtocol == AppSettings::QinFine)
+        m_backend = new QinFinePumpBackend(m_mcuAgent, this);
+    else
+        m_backend = new CxthPumpBackend(m_mcuAgent, &m_settings, this);
+    emit capabilitiesChanged();
+}
+
+bool MachineController::backendQinFine() const
+{
+    return m_backend && m_backend->kind() == IPumpBackend::QinFine;
+}
+
+UiCapabilities MachineController::capabilities() const
+{
+    return UiCapabilities::fromMcuProtocol(int(m_settings.mcuProtocol));
+}
+
+bool MachineController::gate(int source)
+{
+    if (!m_authority.allows(source))
+    {
+        emit commandRejected(tr("Remote control active"));
+        return false;
+    }
+    if (source == CmdSource::Remote)
+        m_authority.noteRemoteCommand();
+    return true;
 }
 
 void MachineController::onMcuConnectedChanged(bool on)
@@ -117,17 +188,8 @@ void MachineController::autoConnectStartup()
 
 void MachineController::onPollTick()
 {
-    if (!m_mcuOpen)
+    if (!m_mcuOpen || !m_backend || !m_backend->ownsLocalGradient())
         return;
-    if (usingQinFine())
-    {
-        m_qinFine->tick();
-        m_qinFine->getPressure();
-    }
-    else
-    {
-        m_cxthMcu->pollPressure();
-    }
     if (stat() == Stat::Running && m_settings.gradientIndex < 10)
     {
         double stepFlow = 0;
@@ -142,6 +204,33 @@ void MachineController::onSecondTick()
     m_usage.tick(m_runState.isPumpRunning());
     if (m_auth.checkProbationExpired())
         emit probationExpired();
+}
+
+void MachineController::syncSession()
+{
+    PumpSession::Snap s;
+    s.flow = m_flow;
+    s.percent = m_percent;
+    s.pressure = m_pressure;
+    s.stat = int(stat());
+    s.linkOk = linkOk();
+    s.mcuOpen = m_mcuOpen;
+    s.pcOpen = m_pcStarted;
+    s.remote = m_authority.isRemote();
+    s.runSeconds = m_runState.runSeconds();
+    s.flowTable = m_flowTable;
+    s.pressTable = m_pressTable;
+    s.pulseTable = m_pulseTable;
+    s.loadRate = m_loadRate;
+    s.loadReal = m_loadReal;
+    s.loadPress = m_loadPress;
+    s.pressMin = m_settings.pressMin;
+    s.pressMax = m_settings.pressMax;
+    s.pressCompen = m_pressCompen;
+    s.machineCode = m_settings.machineCode;
+    s.mcuAddress = m_settings.mcuAddress;
+    s.pressWarnLevel = m_alarms.pressWarnLevel();
+    m_session.update(s);
 }
 
 bool MachineController::importJsonConfig(const QString &path)
@@ -167,56 +256,23 @@ void MachineController::reloadFromSettings()
     m_percent = m_settings.percent;
     m_gradient.reload();
     m_i18n.applyFromSettings();
+    recreateBackend();
     emit statusChanged();
     emit tablesChanged();
 }
 
-bool MachineController::qinFineReady() const
-{
-    return usingQinFine() && m_mcuOpen && m_qinFine && m_qinFine->isOpen();
-}
-
-PcServer *MachineController::activePc() const
-{
-    if (m_settings.pcProtocol == AppSettings::Clarity)
-        return m_clarityPc;
-    if (m_settings.pcProtocol == AppSettings::QinFinePc)
-        return m_qinFinePc;
-    return m_cxthPc;
-}
-
 void MachineController::sendFlowToMcu(double mlMin)
 {
-    if (!m_mcuOpen)
+    if (!m_mcuOpen || !m_backend)
         return;
-    double out = mlMin;
-    if (!usingQinFine() && !m_flowCalibActive)
-        out = CalibInterp::commandFlowFromTable(m_flowTable, mlMin);
-    EventLog::key(QStringLiteral("MCU-TX"),
-                  QStringLiteral("set flow %1 mL/min (cmd %2)")
-                      .arg(mlMin, 0, 'f', 3)
-                      .arg(out, 0, 'f', 3));
-    if (usingQinFine())
-        m_qinFine->setFlow(float(mlMin));
-    else
-    {
-        const quint32 word = quint32(qMax(0.0, out * m_settings.mcuWordFactor + 0.5));
-        m_cxthMcu->setFlowWord(word);
-    }
+    m_backend->applyFlow(mlMin, m_flowCalibActive);
 }
 
 void MachineController::sendStopToMcu()
 {
-    if (!m_mcuOpen)
+    if (!m_mcuOpen || !m_backend)
         return;
-    EventLog::key(QStringLiteral("MCU-TX"), QStringLiteral("stop motor"));
-    if (usingQinFine())
-    {
-        m_qinFine->setStartStop(false);
-        m_qinFine->setPurge(false);
-    }
-    else
-        m_cxthMcu->stopMotor();
+    m_backend->applyStop();
 }
 
 void MachineController::armDump(int kind)
@@ -229,23 +285,14 @@ void MachineController::armDump(int kind)
 bool MachineController::connectMcu()
 {
     disconnectMcu();
-    bool ok = false;
-    if (usingQinFine())
-    {
-        const int baud = m_settings.mcuBaud > 0 ? m_settings.mcuBaud : 115200;
-        ok = m_qinFine->open(m_settings.mcuPort, baud, m_settings.mcuAddress);
-    }
-    else
-    {
-        const int baud = m_settings.mcuBaud > 0 ? m_settings.mcuBaud : 9600;
-        ok = m_cxthMcu->open(m_settings.mcuPort, baud);
-    }
+    recreateBackend();
+    const bool ok = m_backend && m_backend->open(&m_settings);
     m_mcuOpen = ok;
     m_alarms.setAlarm(AlarmService::CommunicationErr, !ok && m_settings.autoConnect);
     emit statusChanged();
     emit alarmChanged();
     if (ok)
-        emit logLine(usingQinFine() ? tr("MCU QinFine connected") : tr("MCU CXTH connected"));
+        emit logLine(backendQinFine() ? tr("MCU QinFine connected") : tr("MCU CXTH connected"));
     else
         EventLog::key(QStringLiteral("MCU"), QStringLiteral("connect failed %1").arg(m_settings.mcuPort));
     return ok;
@@ -254,16 +301,31 @@ bool MachineController::connectMcu()
 void MachineController::disconnectMcu()
 {
     EventLog::key(QStringLiteral("MCU"), QStringLiteral("disconnect requested"));
-    m_qinFine->close();
-    m_cxthMcu->close();
+    if (m_backend)
+        m_backend->close();
     m_mcuOpen = false;
     emit statusChanged();
+}
+
+QVariantMap MachineController::pcLinkConfig() const
+{
+    QVariantMap cfg;
+    cfg.insert(QStringLiteral("pcProtocol"), int(m_settings.pcProtocol));
+    cfg.insert(QStringLiteral("pcPort"), int(m_settings.pcPort));
+    cfg.insert(QStringLiteral("pcSerialPort"), m_settings.pcSerialPort);
+    cfg.insert(QStringLiteral("pcSerialBaud"), m_settings.pcSerialBaud);
+    cfg.insert(QStringLiteral("localPort"), int(m_settings.localPort));
+    cfg.insert(QStringLiteral("remoteIp"), m_settings.remoteIp);
+    cfg.insert(QStringLiteral("remotePort"), int(m_settings.remotePort));
+    cfg.insert(QStringLiteral("machineCode"), int(m_settings.machineCode));
+    cfg.insert(QStringLiteral("mcuAddress"), int(m_settings.mcuAddress));
+    return cfg;
 }
 
 bool MachineController::connectPc()
 {
     disconnectPc();
-    m_pcStarted = activePc()->start(&m_settings);
+    m_pcStarted = IoCall::blockingBool(m_pcAgent, "startLink", pcLinkConfig());
     if (!m_pcStarted)
         EventLog::key(QStringLiteral("PC"), QStringLiteral("connect failed"));
     emit statusChanged();
@@ -273,10 +335,11 @@ bool MachineController::connectPc()
 void MachineController::disconnectPc()
 {
     EventLog::key(QStringLiteral("PC"), QStringLiteral("disconnect requested"));
-    m_cxthPc->stop();
-    m_clarityPc->stop();
-    m_qinFinePc->stop();
+    IoCall::blockingVoid(m_pcAgent, "stopLink");
     m_pcStarted = false;
+    m_authority.leaveRemote();
+    if (stat() == Stat::PcCtrl)
+        m_runState.setStat(Stat::Stop);
     emit statusChanged();
 }
 
@@ -297,8 +360,8 @@ void MachineController::setPercent(double percent, bool sendMcu)
     m_settings.percent = percent;
     EventLog::key(QStringLiteral("FLOW"),
                   QStringLiteral("percent %.1f%% sendMcu=%1").arg(percent, 0, 'f', 1).arg(sendMcu));
-    if (sendMcu && qinFineReady())
-        m_qinFine->setPercent(quint8(qBound(0.0, percent, 100.0)));
+    if (sendMcu && m_mcuOpen && m_backend)
+        m_backend->applyPercent(percent);
     emit statusChanged();
 }
 
@@ -311,64 +374,28 @@ void MachineController::setPressLimits(double pmin, double pmax, bool sendMcu)
                       .arg(pmin, 0, 'f', 2)
                       .arg(pmax, 0, 'f', 2)
                       .arg(sendMcu));
-    if (sendMcu && qinFineReady())
-    {
-        m_qinFine->setPressMin(float(pmin));
-        m_qinFine->setPressMax(float(pmax));
-    }
+    if (sendMcu && m_mcuOpen && m_backend)
+        m_backend->applyPressLimits(pmin, pmax);
     emit statusChanged();
 }
 
 void MachineController::applyStatToMcu(Stat s)
 {
-    if (!m_mcuOpen)
+    if (!m_mcuOpen || !m_backend)
         return;
     if (s == Stat::Stop)
-    {
         sendStopToMcu();
-    }
     else if (s == Stat::Pause)
-    {
-        if (usingQinFine())
-            m_qinFine->setPause(true);
-    }
+        m_backend->applyPause(true);
     else if (s == Stat::Purge)
-    {
-        if (usingQinFine())
-        {
-            m_qinFine->setFlow(float(m_settings.purgeFlow));
-            m_qinFine->setPurge(true);
-            m_qinFine->setStartStop(true);
-        }
-        else
-            sendFlowToMcu(m_settings.purgeFlow);
-    }
+        m_backend->applyPurge(m_settings.purgeFlow);
     else if (s == Stat::Pump)
     {
         const double flow = m_gradient.flowAtElapsed(0);
-        if (usingQinFine())
-        {
-            m_qinFine->setPause(false);
-            m_qinFine->setPurge(false);
-            m_qinFine->setFlow(float(flow > 0 ? flow : m_flow));
-            m_qinFine->setStartStop(true);
-        }
-        else
-            sendFlowToMcu(flow > 0 ? flow : m_flow);
+        m_backend->applyRun(flow > 0 ? flow : m_flow, m_percent);
     }
     else
-    {
-        if (usingQinFine())
-        {
-            m_qinFine->setPause(false);
-            m_qinFine->setPurge(false);
-            m_qinFine->setFlow(float(m_flow));
-            m_qinFine->setPercent(quint8(qBound(0.0, m_percent, 100.0)));
-            m_qinFine->setStartStop(true);
-        }
-        else
-            sendFlowToMcu(m_flow);
-    }
+        m_backend->applyRun(m_flow, m_percent);
     if (s == Stat::Running)
     {
         m_gradient.reload();
@@ -387,44 +414,102 @@ void MachineController::setStat(Stat s)
     emit statusChanged();
 }
 
-void MachineController::enterPcControl()
+bool MachineController::startCmd(int source)
 {
+    if (!gate(source))
+        return false;
+    setStat(Stat::Running);
+    return true;
+}
+
+bool MachineController::stopCmd(int source)
+{
+    if (!gate(source))
+        return false;
+    setStat(Stat::Stop);
+    return true;
+}
+
+bool MachineController::pauseCmd(int source)
+{
+    if (!gate(source))
+        return false;
+    setStat(stat() == Stat::Pause ? Stat::Running : Stat::Pause);
+    return true;
+}
+
+bool MachineController::purgeCmd(int source)
+{
+    if (!gate(source))
+        return false;
+    setStat(Stat::Purge);
+    return true;
+}
+
+bool MachineController::pumpCmd(int source)
+{
+    if (!gate(source))
+        return false;
+    setStat(Stat::Pump);
+    return true;
+}
+
+bool MachineController::setFlowCmd(double mlMin, int source)
+{
+    if (!gate(source))
+        return false;
+    setFlow(mlMin, true);
+    return true;
+}
+
+bool MachineController::setPercentCmd(double percent, int source)
+{
+    if (!gate(source))
+        return false;
+    setPercent(percent, true);
+    return true;
+}
+
+bool MachineController::setPressLimitsCmd(double pmin, double pmax, int source)
+{
+    if (!gate(source))
+        return false;
+    setPressLimits(pmin, pmax, true);
+    return true;
+}
+
+bool MachineController::pressZeroCmd(int source)
+{
+    if (!gate(source))
+        return false;
+    pressZero();
+    return true;
+}
+
+bool MachineController::enterPcControlCmd(int source)
+{
+    if (!gate(source))
+        return false;
     EventLog::key(QStringLiteral("STATE"), QStringLiteral("enter PC control"));
     m_settings.currentGradient = 10;
     setStat(Stat::PcCtrl);
+    return true;
 }
 
-void MachineController::start()
+bool MachineController::setPressCompenCmd(int on, int source)
 {
-    setStat(Stat::Running);
-}
-
-void MachineController::stop()
-{
-    setStat(Stat::Stop);
-}
-
-void MachineController::pause()
-{
-    setStat(stat() == Stat::Pause ? Stat::Running : Stat::Pause);
-}
-
-void MachineController::purge()
-{
-    setStat(Stat::Purge);
-}
-
-void MachineController::pump()
-{
-    setStat(Stat::Pump);
+    if (!gate(source))
+        return false;
+    setPressCompen(quint8(on));
+    return true;
 }
 
 void MachineController::pressZero()
 {
-    if (usingQinFine())
+    if (backendQinFine())
     {
-        if (m_mcuOpen)
-            m_qinFine->pressZero();
+        if (m_mcuOpen && m_backend)
+            m_backend->applyPressZero();
     }
     else
     {
@@ -440,8 +525,8 @@ void MachineController::setPressCompen(quint8 on)
 {
     m_pressCompen = on;
     m_settings.pressCompen = on;
-    if (qinFineReady())
-        m_qinFine->setPressCompen(on);
+    if (m_mcuOpen && m_backend)
+        m_backend->applyPressCompen(on);
     m_settings.save();
     emit tablesChanged();
 }
@@ -454,20 +539,16 @@ void MachineController::setLoadParams(double rate, double real, double press)
     m_settings.loadRate = rate;
     m_settings.loadReal = real;
     m_settings.loadPress = press;
-    if (qinFineReady())
-    {
-        m_qinFine->setLoadFloat(QinFine::PES_LOAD_FLOW, float(rate));
-        m_qinFine->setLoadFloat(QinFine::PES_LOAD_REAL, float(real));
-        m_qinFine->setLoadFloat(QinFine::PES_LOAD_PRESS, float(press));
-    }
+    if (m_mcuOpen && m_backend)
+        m_backend->applyLoadParams(rate, real, press);
     m_settings.save();
     emit tablesChanged();
 }
 
 void MachineController::setWorkMode(quint8 mode, quint8 flag)
 {
-    if (qinFineReady())
-        m_qinFine->setWorkMode(mode, flag);
+    if (m_mcuOpen && m_backend)
+        m_backend->applyWorkMode(mode, flag);
 }
 
 void MachineController::setFlowCalibActive(bool on)
@@ -475,9 +556,9 @@ void MachineController::setFlowCalibActive(bool on)
     if (m_flowCalibActive == on)
         return;
     m_flowCalibActive = on;
-    if (qinFineReady())
-        m_qinFine->setWorkMode(QinFine::WORK_FLOWCALIB, on ? 1 : 0);
-    if (!usingQinFine() && m_mcuOpen && stat() != Stat::Stop && stat() != Stat::Pause)
+    if (m_mcuOpen && m_backend)
+        m_backend->applyFlowCalib(on);
+    if (!backendQinFine() && m_mcuOpen && stat() != Stat::Stop && stat() != Stat::Pause)
         sendFlowToMcu(m_flow);
 }
 
@@ -486,8 +567,8 @@ void MachineController::setPressCalibActive(bool on)
     if (m_pressCalibActive == on)
         return;
     m_pressCalibActive = on;
-    if (qinFineReady())
-        m_qinFine->setWorkMode(QinFine::WORK_PRESSCALIB, on ? 1 : 0);
+    if (m_mcuOpen && m_backend)
+        m_backend->applyPressCalib(on);
 }
 
 void MachineController::writeFlowTable(const QVector<RatePoint> &t)
@@ -497,16 +578,11 @@ void MachineController::writeFlowTable(const QVector<RatePoint> &t)
     m_flowDumpStarted = false;
     m_flowTable = table;
     m_settings.flowTable = table;
-    if (qinFineReady())
-    {
-        m_qinFine->setTableCmd(QinFine::PES_FLOW_CMD, QinFine::TBL_BEGIN);
-        for (int i = 0; i < table.size(); ++i)
-            m_qinFine->setTablePoint(QinFine::PES_FLOW_DATA, float(table[i].rpm), float(table[i].rate));
-        m_qinFine->setTableCmd(QinFine::PES_FLOW_CMD, QinFine::TBL_END);
-    }
+    if (m_mcuOpen && m_backend)
+        m_backend->writeFlowTable(table);
     m_settings.save();
     emit tablesChanged();
-    if (!usingQinFine() && m_mcuOpen && !m_flowCalibActive
+    if (!backendQinFine() && m_mcuOpen && !m_flowCalibActive
         && stat() != Stat::Stop && stat() != Stat::Pause)
         sendFlowToMcu(m_flow);
 }
@@ -518,14 +594,8 @@ void MachineController::writePressTable(const QVector<PressPoint> &t)
     m_pressDumpStarted = false;
     m_pressTable = table;
     m_settings.pressTable = table;
-    if (qinFineReady())
-    {
-        m_qinFine->setTableCmd(QinFine::PES_PRESS_CMD, QinFine::TBL_BEGIN);
-        for (int i = 0; i < table.size(); ++i)
-            m_qinFine->setTablePoint(QinFine::PES_PRESS_DATA, float(table[i].adc),
-                                     float(table[i].pressure));
-        m_qinFine->setTableCmd(QinFine::PES_PRESS_CMD, QinFine::TBL_END);
-    }
+    if (m_mcuOpen && m_backend)
+        m_backend->writePressTable(table);
     m_settings.save();
     emit tablesChanged();
 }
@@ -536,18 +606,8 @@ void MachineController::writePulseTable(const QVector<PulsePoint> &t, bool save)
     m_pulseDumpStarted = false;
     m_pulseTable = t;
     m_settings.pulseTable = t;
-    if (!qinFineReady())
-    {
-        m_settings.save();
-        emit tablesChanged();
-        return;
-    }
-    m_qinFine->setTableCmd(QinFine::PES_PULSE_CMD, QinFine::TBL_BEGIN);
-    for (const auto &p : t)
-        m_qinFine->setTablePoint(QinFine::PES_PULSE_DATA, float(p.position), float(p.factor));
-    m_qinFine->setTableCmd(QinFine::PES_PULSE_CMD, QinFine::TBL_END);
-    if (save)
-        m_qinFine->setTableCmd(QinFine::PES_PULSE_CMD, QinFine::TBL_SAVE);
+    if (m_mcuOpen && m_backend)
+        m_backend->writePulseTable(t, save);
     m_settings.save();
     emit tablesChanged();
 }
@@ -558,8 +618,8 @@ void MachineController::clearPulseTable()
     m_pulseDumpStarted = false;
     m_pulseTable.clear();
     m_settings.pulseTable.clear();
-    if (qinFineReady())
-        m_qinFine->setTableCmd(QinFine::PES_PULSE_CMD, QinFine::TBL_CLEAR);
+    if (m_mcuOpen && m_backend)
+        m_backend->clearPulseTable();
     m_settings.save();
     emit tablesChanged();
 }
@@ -568,33 +628,33 @@ void MachineController::requestFlowTable()
 {
     m_flowDumpOpen = 0;
     m_flowDumpStarted = false;
-    if (!qinFineReady())
+    if (!backendQinFine() || !m_mcuOpen)
     {
         m_flowTable = m_settings.flowTable;
         emit tablesChanged();
         return;
     }
     m_flowDumpOpen = ++m_flowDumpId;
-    m_qinFine->getTable(QinFine::PES_FLOW_DATA);
+    m_backend->requestFlowTable();
 }
 
 void MachineController::requestPressTable()
 {
     m_pressDumpOpen = 0;
     m_pressDumpStarted = false;
-    if (!qinFineReady())
+    if (!backendQinFine() || !m_mcuOpen)
     {
         m_pressTable = m_settings.pressTable;
         emit tablesChanged();
         return;
     }
     m_pressDumpOpen = ++m_pressDumpId;
-    m_qinFine->getTable(QinFine::PES_PRESS_DATA);
+    m_backend->requestPressTable();
 }
 
 void MachineController::requestPulseTable()
 {
-    if (!qinFineReady())
+    if (!backendQinFine() || !m_mcuOpen)
     {
         m_pulseTable = m_settings.pulseTable;
         emit tablesChanged();
@@ -602,11 +662,12 @@ void MachineController::requestPulseTable()
     }
     m_pulseDumpOpen = ++m_pulseDumpId;
     m_pulseDumpStarted = false;
-    m_qinFine->getTable(QinFine::PES_PULSE_DATA);
+    m_backend->requestPulseTable();
 }
 
-void MachineController::applyQinFineExtSet(quint8 sub, const QByteArray &payload)
+void MachineController::applyQinFineExtSet(int subIn, const QByteArray &payload)
 {
+    const quint8 sub = quint8(subIn);
     EventLog::key(QStringLiteral("CALIB"),
                   QStringLiteral("QinFine sub=0x%1 len=%2").arg(sub, 2, 16, QLatin1Char('0')).arg(payload.size()));
     switch (sub)
@@ -630,8 +691,8 @@ void MachineController::applyQinFineExtSet(quint8 sub, const QByteArray &payload
                 requestQinFineDump(3);
             break;
         }
-        if (qinFineReady())
-            m_qinFine->setTableCmd(sub, cmd);
+        if (m_mcuOpen && m_backend)
+            m_backend->setTableCmd(sub, cmd);
         if (cmd == QinFine::TBL_BEGIN)
         {
             if (sub == QinFine::PES_FLOW_CMD)
@@ -661,8 +722,8 @@ void MachineController::applyQinFineExtSet(quint8 sub, const QByteArray &payload
         {
             const RatePoint p(double(QinFine::beFloat(payload, 0)), double(QinFine::beFloat(payload, 4)));
             m_flowTable.append(p);
-            if (qinFineReady())
-                m_qinFine->setTablePoint(sub, float(p.rpm), float(p.rate));
+            if (m_mcuOpen && m_backend)
+                m_backend->setTablePoint(sub, float(p.rpm), float(p.rate));
             emit tablesChanged();
         }
         break;
@@ -671,8 +732,8 @@ void MachineController::applyQinFineExtSet(quint8 sub, const QByteArray &payload
         {
             const PressPoint p(double(QinFine::beFloat(payload, 0)), double(QinFine::beFloat(payload, 4)));
             m_pressTable.append(p);
-            if (qinFineReady())
-                m_qinFine->setTablePoint(sub, float(p.adc), float(p.pressure));
+            if (m_mcuOpen && m_backend)
+                m_backend->setTablePoint(sub, float(p.adc), float(p.pressure));
             emit tablesChanged();
         }
         break;
@@ -681,32 +742,32 @@ void MachineController::applyQinFineExtSet(quint8 sub, const QByteArray &payload
         {
             const PulsePoint p(double(QinFine::beFloat(payload, 0)), double(QinFine::beFloat(payload, 4)));
             m_pulseTable.append(p);
-            if (qinFineReady())
-                m_qinFine->setTablePoint(sub, float(p.position), float(p.factor));
+            if (m_mcuOpen && m_backend)
+                m_backend->setTablePoint(sub, float(p.position), float(p.factor));
             emit tablesChanged();
         }
         break;
     case QinFine::PES_LOAD_FLOW:
         m_loadRate = double(QinFine::beFloat(payload));
         m_settings.loadRate = m_loadRate;
-        if (qinFineReady())
-            m_qinFine->setLoadFloat(sub, float(m_loadRate));
+        if (m_mcuOpen && m_backend)
+            m_backend->setLoadFloat(sub, float(m_loadRate));
         m_settings.save();
         emit tablesChanged();
         break;
     case QinFine::PES_LOAD_REAL:
         m_loadReal = double(QinFine::beFloat(payload));
         m_settings.loadReal = m_loadReal;
-        if (qinFineReady())
-            m_qinFine->setLoadFloat(sub, float(m_loadReal));
+        if (m_mcuOpen && m_backend)
+            m_backend->setLoadFloat(sub, float(m_loadReal));
         m_settings.save();
         emit tablesChanged();
         break;
     case QinFine::PES_LOAD_PRESS:
         m_loadPress = double(QinFine::beFloat(payload));
         m_settings.loadPress = m_loadPress;
-        if (qinFineReady())
-            m_qinFine->setLoadFloat(sub, float(m_loadPress));
+        if (m_mcuOpen && m_backend)
+            m_backend->setLoadFloat(sub, float(m_loadPress));
         m_settings.save();
         emit tablesChanged();
         break;
@@ -719,12 +780,10 @@ void MachineController::requestQinFineDump(int kind)
 {
     if (kind == 1)
     {
-        if (qinFineReady())
+        if (backendQinFine() && m_mcuOpen && m_backend)
         {
             requestFlowTable();
-            m_qinFine->getLoadFloat(QinFine::PES_LOAD_FLOW);
-            m_qinFine->getLoadFloat(QinFine::PES_LOAD_REAL);
-            m_qinFine->getLoadFloat(QinFine::PES_LOAD_PRESS);
+            m_backend->requestLoadFloats();
             armDump(1);
         }
         else
@@ -732,7 +791,7 @@ void MachineController::requestQinFineDump(int kind)
     }
     else if (kind == 2)
     {
-        if (qinFineReady())
+        if (backendQinFine() && m_mcuOpen)
         {
             requestPressTable();
             armDump(2);
@@ -742,7 +801,7 @@ void MachineController::requestQinFineDump(int kind)
     }
     else if (kind == 3)
     {
-        if (qinFineReady())
+        if (backendQinFine() && m_mcuOpen)
         {
             requestPulseTable();
             armDump(3);
@@ -754,25 +813,22 @@ void MachineController::requestQinFineDump(int kind)
 
 void MachineController::replyPressureToPc()
 {
-    activePc()->sendPressure(m_pressure);
+    IoCall::queued(m_pcAgent, "sendPressure", m_pressure);
 }
 
 void MachineController::dumpFlowToPc()
 {
-    if (m_qinFinePc)
-        m_qinFinePc->dumpFlowTable();
+    IoCall::queued(m_pcAgent, "dumpFlowTable");
 }
 
 void MachineController::dumpPressToPc()
 {
-    if (m_qinFinePc)
-        m_qinFinePc->dumpPressTable();
+    IoCall::queued(m_pcAgent, "dumpPressTable");
 }
 
 void MachineController::dumpPulseToPc()
 {
-    if (m_qinFinePc)
-        m_qinFinePc->dumpPulseTable();
+    IoCall::queued(m_pcAgent, "dumpPulseTable");
 }
 
 void MachineController::updatePressureAlarms()
@@ -785,7 +841,7 @@ void MachineController::updatePressureAlarms()
         if (!hadOverpress)
             EventLog::key(QStringLiteral("PRESS"),
                           QStringLiteral("over-limit %.3f MPa, auto stop").arg(m_pressure, 0, 'f', 3));
-        stop();
+        stopCmd(m_authority.isRemote() ? CmdSource::Remote : CmdSource::Local);
     }
     emit alarmChanged();
 }
@@ -797,9 +853,9 @@ void MachineController::onQinFinePressure(float mpa)
     updatePressureAlarms();
 }
 
-void MachineController::onCxthPressureRaw(quint32 raw)
+void MachineController::onCxthPressureRaw(uint raw)
 {
-    m_lastPressRaw = raw;
+    m_lastPressRaw = quint32(raw);
     double val = (double(raw) - double(m_settings.pressRawV0)) * m_settings.pressRawScale;
     if (val < 0)
         val = 0;
@@ -810,7 +866,7 @@ void MachineController::onCxthPressureRaw(quint32 raw)
     updatePressureAlarms();
 }
 
-void MachineController::onExtPoint(quint8 sub, float a, float b)
+void MachineController::onExtPoint(int sub, float a, float b)
 {
     if (sub == QinFine::PES_FLOW_DATA)
     {
@@ -852,7 +908,7 @@ void MachineController::onExtPoint(quint8 sub, float a, float b)
     emit tablesChanged();
 }
 
-void MachineController::onExtFloat(quint8 sub, float v)
+void MachineController::onExtFloat(int sub, float v)
 {
     if (sub == QinFine::PES_LOAD_FLOW)
         m_loadRate = v;
@@ -865,7 +921,7 @@ void MachineController::onExtFloat(quint8 sub, float v)
     emit tablesChanged();
 }
 
-void MachineController::onExtU8(quint8 sub, quint8 v)
+void MachineController::onExtU8(int sub, int v)
 {
     const bool flowCmd = (sub == QinFine::PES_FLOW_CMD);
     const bool pressCmd = (sub == QinFine::PES_PRESS_CMD);

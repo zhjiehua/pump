@@ -100,6 +100,7 @@ void ConfigMcuPage::onSave()
         m_c->postLog(tr("Config saved (JSON + .bak)"));
     else
         m_c->postLog(tr("Config save failed"));
+    m_c->reloadFromSettings();
 }
 
 void ConfigMcuPage::loadFromSettings()

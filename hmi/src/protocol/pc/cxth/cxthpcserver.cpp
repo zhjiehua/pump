@@ -1,5 +1,8 @@
 #include "protocol/pc/cxth/cxthpcserver.h"
-#include "core/machinecontroller.h"
+#include "app/cmdinvoke.h"
+#include "app/cmdsource.h"
+#include "app/pumpcommand.h"
+#include "domain/pumpsession.h"
 #include "protocol/pc/cxth/cxthpccodec.h"
 #include "protocol/pc/cxth/cxthpcids.h"
 #include "utils/eventlog.h"
@@ -11,8 +14,6 @@ CxthPcServer::CxthPcServer(QObject *parent)
 
 void CxthPcServer::sendPressure(double mpa)
 {
-    if (!m_settings || !m_ctrl)
-        return;
     const quint32 v = quint32(qAbs(mpa) * 100.0 + 0.5);
     sendBytes(CxthPcCodec::encode(CxthPc::PFC_READ_PRESS, v));
 }
@@ -33,44 +34,46 @@ void CxthPcServer::handleFrame(const QByteArray &frame)
 {
     quint8 cmd = 0, add = 0;
     quint32 arg = 0;
-    if (!CxthPcCodec::decode(frame, &cmd, &arg, &add) || !m_ctrl)
+    if (!CxthPcCodec::decode(frame, &cmd, &arg, &add) || !m_cmd)
         return;
     EventLog::key(QStringLiteral("PC-RX"),
                   QStringLiteral("CXTH %1 arg=%2 add=%3")
                       .arg(EventLog::pcCxthCmdName(cmd))
                       .arg(arg)
                       .arg(add));
+    const PumpSession::Snap snap = m_session ? m_session->copy() : PumpSession::Snap();
+    const int remote = CmdSource::Remote;
     switch (cmd)
     {
     case CxthPc::PFC_SET_FLOW1:
-        m_ctrl->enterPcControl();
-        m_ctrl->setPercent(add);
-        m_ctrl->setFlow(arg / 1000.0);
+        CmdInvoke::callBool(m_cmd, "enterPcControlCmd", remote);
+        CmdInvoke::callBool(m_cmd, "setPercentCmd", double(add), remote);
+        CmdInvoke::callBool(m_cmd, "setFlowCmd", arg / 1000.0, remote);
         break;
     case CxthPc::PFC_SET_MAXPRESS:
-        m_ctrl->setPressLimits(m_ctrl->settings()->pressMin, arg / 100.0);
+        CmdInvoke::callBool(m_cmd, "setPressLimitsCmd", snap.pressMin, arg / 100.0, remote);
         break;
     case CxthPc::PFC_SET_MINPRESS:
-        m_ctrl->setPressLimits(arg / 100.0, m_ctrl->settings()->pressMax);
+        CmdInvoke::callBool(m_cmd, "setPressLimitsCmd", arg / 100.0, snap.pressMax, remote);
         break;
     case CxthPc::PFC_START:
-        m_ctrl->start();
+        CmdInvoke::callBool(m_cmd, "startCmd", remote);
         break;
     case CxthPc::PFC_STOP:
-        m_ctrl->stop();
+        CmdInvoke::callBool(m_cmd, "stopCmd", remote);
         break;
     case CxthPc::PFC_PURGE:
-        m_ctrl->purge();
+        CmdInvoke::callBool(m_cmd, "purgeCmd", remote);
         break;
     case CxthPc::PFC_HOLD:
-        m_ctrl->pause();
+        CmdInvoke::callBool(m_cmd, "pauseCmd", remote);
         break;
     case CxthPc::PFC_READ_PRESS:
-        m_ctrl->replyPressureToPc();
+        CmdInvoke::callVoid(m_cmd, "replyPressureToPc");
         break;
     case CxthPc::PFC_TIME_SYNC:
-        if (m_ctrl->stat() == MachineController::Stat::Stop)
-            m_ctrl->start();
+        if (snap.stat == 0)
+            CmdInvoke::callBool(m_cmd, "startCmd", remote);
         break;
     default:
         break;

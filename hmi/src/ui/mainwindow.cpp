@@ -9,6 +9,7 @@
 #include "utils/qtwidgetsutil.h"
 #include "core/machinecontroller.h"
 #include "core/alarmservice.h"
+#include "domain/uicapabilities.h"
 #include "ui/topbar.h"
 #include "ui/bottombar.h"
 #include "ui/pages/logopage.h"
@@ -114,6 +115,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_ctrl, SIGNAL(statusChanged()), this, SLOT(onStatusChanged()));
     connect(m_ctrl, SIGNAL(alarmChanged()), this, SLOT(onAlarmChanged()));
     connect(m_ctrl, SIGNAL(probationExpired()), this, SLOT(onProbationExpired()));
+    connect(m_ctrl, SIGNAL(commandRejected(QString)), this, SLOT(onCommandRejected(QString)));
     connect(m_stack, SIGNAL(currentChanged(int)), this, SLOT(onStackPageChanged(int)));
 
     rebuildScale();
@@ -711,6 +713,8 @@ void MainWindow::tryLogin(const QString &pwd)
 
 void MainWindow::goGradientTable()
 {
+    if (!m_ctrl->capabilities().has(UiPageKey::kLocalGradient))
+        return;
     if (m_gradTable)
         m_gradTable->reload();
     go(GradientTable);
@@ -759,13 +763,20 @@ void MainWindow::onLogLine(const QString &s)
 
 void MainWindow::onStatusChanged()
 {
-    m_bottom->setLinkOk(m_ctrl->linkOk());
+    const PumpSession::Snap snap = m_ctrl->session()->copy();
+    m_bottom->setLinkOk(snap.linkOk);
 }
 
 void MainWindow::onAlarmChanged()
 {
-    m_bottom->setLinkOk(m_ctrl->linkOk());
-    m_bottom->setPressWarn(m_ctrl->alarms()->pressWarnLevel());
+    const PumpSession::Snap snap = m_ctrl->session()->copy();
+    m_bottom->setLinkOk(snap.linkOk);
+    m_bottom->setPressWarn(snap.pressWarnLevel);
+}
+
+void MainWindow::onCommandRejected(const QString &reason)
+{
+    MsgBox::warning(this, tr("Warning"), reason);
 }
 
 void MainWindow::onProbationExpired()

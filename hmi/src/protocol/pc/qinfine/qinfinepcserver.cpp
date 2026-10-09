@@ -1,5 +1,8 @@
 #include "protocol/pc/qinfine/qinfinepcserver.h"
-#include "core/machinecontroller.h"
+#include "app/cmdinvoke.h"
+#include "app/cmdsource.h"
+#include "app/pumpcommand.h"
+#include "domain/pumpsession.h"
 #include "utils/eventlog.h"
 
 QinFinePcServer::QinFinePcServer(QObject *parent)
@@ -9,7 +12,7 @@ QinFinePcServer::QinFinePcServer(QObject *parent)
 
 quint8 QinFinePcServer::addr() const
 {
-    return m_settings ? m_settings->mcuAddress : 0x01;
+    return m_mcuAddress;
 }
 
 void QinFinePcServer::ack(bool ok)
@@ -56,28 +59,25 @@ void QinFinePcServer::sendLoadFloat(quint8 sub, float v)
 
 void QinFinePcServer::dumpFlowTable()
 {
-    if (!m_ctrl)
-        return;
-    for (const auto &p : m_ctrl->flowTable())
+    const PumpSession::Snap snap = m_session ? m_session->copy() : PumpSession::Snap();
+    for (const auto &p : snap.flowTable)
         sendExtPoint(QinFine::PES_FLOW_DATA, float(p.rpm), float(p.rate));
-    sendExtFloat(QinFine::PES_LOAD_FLOW, float(m_ctrl->loadRate()));
-    sendExtFloat(QinFine::PES_LOAD_REAL, float(m_ctrl->loadReal()));
-    sendExtFloat(QinFine::PES_LOAD_PRESS, float(m_ctrl->loadPress()));
+    sendExtFloat(QinFine::PES_LOAD_FLOW, float(snap.loadRate));
+    sendExtFloat(QinFine::PES_LOAD_REAL, float(snap.loadReal));
+    sendExtFloat(QinFine::PES_LOAD_PRESS, float(snap.loadPress));
 }
 
 void QinFinePcServer::dumpPressTable()
 {
-    if (!m_ctrl)
-        return;
-    for (const auto &p : m_ctrl->pressTable())
+    const PumpSession::Snap snap = m_session ? m_session->copy() : PumpSession::Snap();
+    for (const auto &p : snap.pressTable)
         sendExtPoint(QinFine::PES_PRESS_DATA, float(p.adc), float(p.pressure));
 }
 
 void QinFinePcServer::dumpPulseTable()
 {
-    if (!m_ctrl)
-        return;
-    for (const auto &p : m_ctrl->pulseTable())
+    const PumpSession::Snap snap = m_session ? m_session->copy() : PumpSession::Snap();
+    for (const auto &p : snap.pulseTable)
         sendExtPoint(QinFine::PES_PULSE_DATA, float(p.position), float(p.factor));
 }
 
@@ -110,7 +110,7 @@ void QinFinePcServer::handle(const QByteArray &chunk)
 
 void QinFinePcServer::handleFrame(const QinFine::Frame &f)
 {
-    if (!f.ok || !m_ctrl || !m_settings)
+    if (!f.ok || !m_cmd)
     {
         ack(false);
         return;
@@ -129,93 +129,97 @@ void QinFinePcServer::handlePfc(quint8 pfc, bool isSet, const QByteArray &data)
                       .arg(isSet)
                       .arg(data.size()));
 
+    const PumpSession::Snap snap = m_session ? m_session->copy() : PumpSession::Snap();
+    const int remote = CmdSource::Remote;
+
     switch (pfc)
     {
     case QinFine::PFC_FLOW:
         if (isSet)
         {
-            m_ctrl->enterPcControl();
-            m_ctrl->setFlow(double(QinFine::beFloat(data)));
+            CmdInvoke::callBool(m_cmd, "enterPcControlCmd", remote);
+            CmdInvoke::callBool(m_cmd, "setFlowCmd", double(QinFine::beFloat(data)), remote);
             ack(true);
         }
         else
-            sendFloat(QinFine::PFC_FLOW, float(m_ctrl->flow()));
+            sendFloat(QinFine::PFC_FLOW, float(snap.flow));
         break;
     case QinFine::PFC_PERCENT:
         if (isSet)
         {
-            m_ctrl->setPercent(double(QinFine::beU8(data)));
+            CmdInvoke::callBool(m_cmd, "setPercentCmd", double(QinFine::beU8(data)), remote);
             ack(true);
         }
         else
-            sendU8(QinFine::PFC_PERCENT, quint8(m_ctrl->percent()));
+            sendU8(QinFine::PFC_PERCENT, quint8(snap.percent));
         break;
     case QinFine::PFC_PMIN:
         if (isSet)
         {
-            m_ctrl->setPressLimits(double(QinFine::beFloat(data)), m_ctrl->settings()->pressMax);
+            CmdInvoke::callBool(m_cmd, "setPressLimitsCmd", double(QinFine::beFloat(data)),
+                                snap.pressMax, remote);
             ack(true);
         }
         else
-            sendFloat(QinFine::PFC_PMIN, float(m_ctrl->settings()->pressMin));
+            sendFloat(QinFine::PFC_PMIN, float(snap.pressMin));
         break;
     case QinFine::PFC_PMAX:
         if (isSet)
         {
-            m_ctrl->setPressLimits(m_ctrl->settings()->pressMin, double(QinFine::beFloat(data)));
+            CmdInvoke::callBool(m_cmd, "setPressLimitsCmd", snap.pressMin,
+                                double(QinFine::beFloat(data)), remote);
             ack(true);
         }
         else
-            sendFloat(QinFine::PFC_PMAX, float(m_ctrl->settings()->pressMax));
+            sendFloat(QinFine::PFC_PMAX, float(snap.pressMax));
         break;
     case QinFine::PFC_START_STOP:
         if (isSet)
         {
             if (QinFine::beU8(data))
-                m_ctrl->start();
+                CmdInvoke::callBool(m_cmd, "startCmd", remote);
             else
-                m_ctrl->stop();
+                CmdInvoke::callBool(m_cmd, "stopCmd", remote);
             ack(true);
         }
         else
-            sendU8(QinFine::PFC_START_STOP,
-                   m_ctrl->stat() == MachineController::Stat::Stop ? 0 : 1);
+            sendU8(QinFine::PFC_START_STOP, snap.stat == 0 ? 0 : 1);
         break;
     case QinFine::PFC_PAUSE:
         if (isSet)
         {
-            m_ctrl->pause();
+            CmdInvoke::callBool(m_cmd, "pauseCmd", remote);
             ack(true);
         }
         break;
     case QinFine::PFC_PURGE:
         if (isSet)
         {
-            m_ctrl->purge();
+            CmdInvoke::callBool(m_cmd, "purgeCmd", remote);
             ack(true);
         }
         break;
     case QinFine::PFC_PRESS_ZERO:
         if (isSet)
         {
-            m_ctrl->pressZero();
+            CmdInvoke::callBool(m_cmd, "pressZeroCmd", remote);
             ack(true);
         }
         break;
     case QinFine::PFC_PRESS_COMPEN:
         if (isSet)
         {
-            m_ctrl->setPressCompen(QinFine::beU8(data));
+            CmdInvoke::callBoolU8(m_cmd, "setPressCompenCmd", int(QinFine::beU8(data)), remote);
             ack(true);
         }
         else
-            sendU8(QinFine::PFC_PRESS_COMPEN, m_ctrl->pressCompen());
+            sendU8(QinFine::PFC_PRESS_COMPEN, snap.pressCompen);
         break;
     case QinFine::PFC_PRESS:
         if (isSet)
             ack(true);
         else
-            sendPressure(m_ctrl->pressure());
+            sendPressure(snap.pressure);
         break;
     case QinFine::PFC_TICK:
         ack(true);
@@ -241,32 +245,33 @@ void QinFinePcServer::handleExt(bool isSet, const QByteArray &data)
     const QByteArray payload = data.mid(1);
     if (isSet)
     {
-        m_ctrl->applyQinFineExtSet(sub, payload);
+        CmdInvoke::callVoid(m_cmd, "applyQinFineExtSet", int(sub), payload);
         ack(true);
         return;
     }
+    const PumpSession::Snap snap = m_session ? m_session->copy() : PumpSession::Snap();
     switch (sub)
     {
     case QinFine::PES_FLOW_CMD:
     case QinFine::PES_FLOW_DATA:
-        m_ctrl->requestQinFineDump(1);
+        CmdInvoke::callVoid(m_cmd, "requestQinFineDump", 1);
         break;
     case QinFine::PES_PRESS_CMD:
     case QinFine::PES_PRESS_DATA:
-        m_ctrl->requestQinFineDump(2);
+        CmdInvoke::callVoid(m_cmd, "requestQinFineDump", 2);
         break;
     case QinFine::PES_PULSE_CMD:
     case QinFine::PES_PULSE_DATA:
-        m_ctrl->requestQinFineDump(3);
+        CmdInvoke::callVoid(m_cmd, "requestQinFineDump", 3);
         break;
     case QinFine::PES_LOAD_FLOW:
-        sendLoadFloat(sub, float(m_ctrl->loadRate()));
+        sendLoadFloat(sub, float(snap.loadRate));
         break;
     case QinFine::PES_LOAD_REAL:
-        sendLoadFloat(sub, float(m_ctrl->loadReal()));
+        sendLoadFloat(sub, float(snap.loadReal));
         break;
     case QinFine::PES_LOAD_PRESS:
-        sendLoadFloat(sub, float(m_ctrl->loadPress()));
+        sendLoadFloat(sub, float(snap.loadPress));
         break;
     case QinFine::PES_WORKMODE:
         break;

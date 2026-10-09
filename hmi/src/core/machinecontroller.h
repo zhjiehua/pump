@@ -6,29 +6,33 @@
 #include <QPair>
 #include <QByteArray>
 
-class QTimer;
+#include "app/pumpcommand.h"
+#include "app/controlauthority.h"
 #include "core/appsettings.h"
 #include "core/runstatemachine.h"
 #include "core/alarmservice.h"
 #include "core/authservice.h"
 #include "core/gradientengine.h"
 #include "core/usagetracker.h"
-#include "core/commworker.h"
 #include "core/i18nmanager.h"
 #include "core/recordstore.h"
+#include "domain/pumpsession.h"
+#include "domain/uicapabilities.h"
+#include "domain/ipumpbackend.h"
 
-class QinFineClient;
-class CxthMcuClient;
-class PcServer;
-class QinFinePcServer;
+class QTimer;
+class QThread;
+class McuPortAgent;
+class PcPortAgent;
 
-class MachineController : public QObject
+class MachineController : public PumpCommand
 {
     Q_OBJECT
 public:
     using Stat = RunStateMachine::Stat;
 
     explicit MachineController(QObject *parent = nullptr);
+    ~MachineController() override;
 
     AppSettings *settings() { return &m_settings; }
     AlarmService *alarms() { return &m_alarms; }
@@ -37,11 +41,9 @@ public:
     UsageTracker *usage() { return &m_usage; }
     I18nManager *i18n() { return &m_i18n; }
     RecordStore *records() { return &m_records; }
-    QinFineClient *qinFine() { return m_qinFine; }
-    CxthMcuClient *cxthMcu() { return m_cxthMcu; }
-    bool usingQinFine() const { return m_settings.mcuProtocol == AppSettings::QinFine; }
-    bool usingCxthMcu() const { return !usingQinFine(); }
-    bool usingQinFinePc() const { return m_settings.pcProtocol == AppSettings::QinFinePc; }
+    PumpSession *session() { return &m_session; }
+    ControlAuthority *authority() { return &m_authority; }
+    UiCapabilities capabilities() const;
 
     Stat stat() const { return m_runState.stat(); }
     double flow() const { return m_flow; }
@@ -65,16 +67,11 @@ public:
     bool connectPc();
     void disconnectPc();
 
-    void setFlow(double mlMin, bool sendMcu = true);
+    using PumpCommand::setFlow;
+    void setFlow(double mlMin, bool sendMcu);
     void setPercent(double percent, bool sendMcu = true);
     void setPressLimits(double pmin, double pmax, bool sendMcu = true);
     void setStat(Stat s);
-    void enterPcControl();
-    void start();
-    void stop();
-    void pause();
-    void purge();
-    void pump();
     void pressZero();
     void setPressCompen(quint8 on);
     void setLoadParams(double rate, double real, double press);
@@ -90,16 +87,26 @@ public:
     void requestPressTable();
     void requestPulseTable();
 
-    void applyQinFineExtSet(quint8 sub, const QByteArray &payload);
-    void requestQinFineDump(int kind);
-    void armDump(int kind);
-    void replyPressureToPc();
-    void dumpFlowToPc();
-    void dumpPressToPc();
-    void dumpPulseToPc();
     void postLog(const QString &line) { emit logLine(line); }
     bool importJsonConfig(const QString &path);
     void reloadFromSettings();
+
+public slots:
+    bool startCmd(int source) override;
+    bool stopCmd(int source) override;
+    bool pauseCmd(int source) override;
+    bool purgeCmd(int source) override;
+    bool pumpCmd(int source) override;
+    bool setFlowCmd(double mlMin, int source) override;
+    bool setPercentCmd(double percent, int source) override;
+    bool setPressLimitsCmd(double pmin, double pmax, int source) override;
+    bool pressZeroCmd(int source) override;
+    bool enterPcControlCmd(int source) override;
+    bool setPressCompenCmd(int on, int source) override;
+
+    void applyQinFineExtSet(int sub, const QByteArray &payload);
+    void requestQinFineDump(int kind);
+    void replyPressureToPc();
 
 signals:
     void statusChanged();
@@ -108,6 +115,7 @@ signals:
     void logLine(const QString &line);
     void alarmChanged();
     void probationExpired();
+    void capabilitiesChanged();
 
 private slots:
     void onMcuConnectedChanged(bool on);
@@ -116,19 +124,26 @@ private slots:
     void onPollTick();
     void onSecondTick();
     void onQinFinePressure(float mpa);
-    void onCxthPressureRaw(quint32 raw);
-    void onExtPoint(quint8 sub, float a, float b);
-    void onExtFloat(quint8 sub, float v);
-    void onExtU8(quint8 sub, quint8 v);
+    void onCxthPressureRaw(uint raw);
+    void onExtPoint(int sub, float a, float b);
+    void onExtFloat(int sub, float v);
+    void onExtU8(int sub, int v);
     void autoConnectStartup();
+    void syncSession();
 
 private:
+    bool gate(int source);
+    void recreateBackend();
+    bool backendQinFine() const;
     void applyStatToMcu(Stat s);
     void sendFlowToMcu(double mlMin);
     void sendStopToMcu();
-    bool qinFineReady() const;
+    void armDump(int kind);
+    void dumpFlowToPc();
+    void dumpPressToPc();
+    void dumpPulseToPc();
     void updatePressureAlarms();
-    PcServer *activePc() const;
+    QVariantMap pcLinkConfig() const;
 
     AppSettings m_settings;
     RunStateMachine m_runState;
@@ -136,14 +151,16 @@ private:
     AuthService m_auth;
     GradientEngine m_gradient;
     UsageTracker m_usage;
-    CommWorker m_commWorker;
     I18nManager m_i18n;
     RecordStore m_records;
-    QinFineClient *m_qinFine = nullptr;
-    CxthMcuClient *m_cxthMcu = nullptr;
-    PcServer *m_cxthPc = nullptr;
-    PcServer *m_clarityPc = nullptr;
-    QinFinePcServer *m_qinFinePc = nullptr;
+    PumpSession m_session;
+    ControlAuthority m_authority;
+
+    QThread *m_ioThread = nullptr;
+    McuPortAgent *m_mcuAgent = nullptr;
+    PcPortAgent *m_pcAgent = nullptr;
+    IPumpBackend *m_backend = nullptr;
+
     double m_flow = 1.0;
     double m_percent = 100.0;
     double m_pressure = 0;

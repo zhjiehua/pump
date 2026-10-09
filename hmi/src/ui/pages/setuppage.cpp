@@ -1,5 +1,7 @@
 #include "ui/pages/setuppage.h"
+#include "core/machinecontroller.h"
 #include "core/picturemanager.h"
+#include "domain/uicapabilities.h"
 #include "ui/mainwindow.h"
 #include "ui/widgets/btnctrl.h"
 #include "ui/widgets/pagescroll.h"
@@ -79,6 +81,8 @@ SetupPage::SetupPage(MainWindow *main, QWidget *parent)
     connect(m_net, SIGNAL(clicked()), this, SLOT(goNet()));
     connect(m_grid, SIGNAL(clicked()), this, SLOT(goGradient()));
     connect(m_glp, SIGNAL(clicked()), this, SLOT(goGlp()));
+    connect(m_main->controller(), SIGNAL(capabilitiesChanged()), this, SLOT(applyCapabilities()));
+    applyCapabilities();
 }
 
 void SetupPage::retranslateUi()
@@ -93,20 +97,33 @@ void SetupPage::retranslateUi()
     m_netLabel->setText(tr("Net"));
 }
 
+void SetupPage::applyCapabilities()
+{
+    const bool grad = m_main->controller()->capabilities().has(UiPageKey::kLocalGradient);
+    m_grid->setVisible(grad);
+    if (m_gridLabel)
+        m_gridLabel->setVisible(grad);
+    initFocusList();
+}
+
 void SetupPage::initFocusList()
 {
+    xList.clear();
+    yList.clear();
     xList.append(m_lang);
     xList.append(m_cal);
     xList.append(m_perm);
     xList.append(m_glp);
     xList.append(m_clock);
-    xList.append(m_grid);
+    if (m_grid->isVisible())
+        xList.append(m_grid);
     xList.append(m_msg);
     xList.append(m_net);
     yList.append(m_lang);
     yList.append(m_clock);
     yList.append(m_cal);
-    yList.append(m_grid);
+    if (m_grid->isVisible())
+        yList.append(m_grid);
     yList.append(m_perm);
     yList.append(m_msg);
     yList.append(m_glp);

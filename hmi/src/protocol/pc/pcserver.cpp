@@ -1,4 +1,6 @@
 #include "protocol/pc/pcserver.h"
+#include "app/pumpcommand.h"
+#include "domain/pumpsession.h"
 #include "utils/eventlog.h"
 
 PcServer::PcServer(QObject *parent)
@@ -9,34 +11,52 @@ PcServer::PcServer(QObject *parent)
     connect(&m_tcp, SIGNAL(newConnection()), this, SLOT(onNewConnection()));
 }
 
-bool PcServer::start(AppSettings *s)
+void PcServer::setFacade(PumpCommand *cmd, PumpSession *session)
+{
+    m_cmd = cmd;
+    m_session = session;
+}
+
+bool PcServer::start(const QVariantMap &cfg)
 {
     stop();
-    m_settings = s;
+    m_machineCode = quint8(cfg.value(QStringLiteral("machineCode")).toInt());
+    m_mcuAddress = quint8(cfg.value(QStringLiteral("mcuAddress"), 1).toInt());
+    const int portKind = cfg.value(QStringLiteral("pcPort")).toInt();
     QString how;
-    switch (s->pcPort)
+    switch (portKind)
     {
-    case AppSettings::Serial:
-        if (!m_serial.open(s->pcSerialPort, s->pcSerialBaud))
+    case 0: // Serial
+    {
+        const QString port = cfg.value(QStringLiteral("pcSerialPort")).toString();
+        const int baud = cfg.value(QStringLiteral("pcSerialBaud"), 9600).toInt();
+        if (!m_serial.open(port, baud))
             return false;
-        how = QStringLiteral("started serial %1 @ %2").arg(s->pcSerialPort).arg(s->pcSerialBaud);
+        how = QStringLiteral("started serial %1 @ %2").arg(port).arg(baud);
         break;
-    case AppSettings::TcpServer:
-        if (!m_tcp.listen(QHostAddress::Any, s->localPort))
+    }
+    case 2: // TcpServer
+    {
+        const quint16 localPort = quint16(cfg.value(QStringLiteral("localPort")).toUInt());
+        if (!m_tcp.listen(QHostAddress::Any, localPort))
             return false;
-        how = QStringLiteral("started TCP server local:%1").arg(s->localPort);
+        how = QStringLiteral("started TCP server local:%1").arg(localPort);
         break;
-    case AppSettings::Udp:
+    }
+    case 1: // Udp
     default:
-        if (!m_udp.bind(QHostAddress::Any, s->localPort))
+    {
+        const quint16 localPort = quint16(cfg.value(QStringLiteral("localPort")).toUInt());
+        if (!m_udp.bind(QHostAddress::Any, localPort))
             return false;
-        m_peer = QHostAddress(s->remoteIp);
-        m_peerPort = s->remotePort;
+        m_peer = QHostAddress(cfg.value(QStringLiteral("remoteIp")).toString());
+        m_peerPort = quint16(cfg.value(QStringLiteral("remotePort")).toUInt());
         how = QStringLiteral("started UDP local:%1 remote:%2:%3")
-                  .arg(s->localPort)
-                  .arg(s->remoteIp)
-                  .arg(s->remotePort);
+                  .arg(localPort)
+                  .arg(cfg.value(QStringLiteral("remoteIp")).toString())
+                  .arg(m_peerPort);
         break;
+    }
     }
     m_running = true;
     EventLog::key(QStringLiteral("PC"), how);
