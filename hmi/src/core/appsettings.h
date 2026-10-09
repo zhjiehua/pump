@@ -92,9 +92,9 @@ public:
     PcPort pcPort = Udp;
     QString pcSerialPort;
     int pcSerialBaud = 9600;
-    quint16 localPort = 8080;
-    QString remoteIp = QStringLiteral("127.0.0.1");
-    quint16 remotePort = 8081;
+    quint16 localPort = 6666;
+    QString remoteIp = QStringLiteral("192.168.1.115");
+    quint16 remotePort = 7777;
 
     bool dhcp = false;
     QString localIp = QStringLiteral("192.168.1.100");
@@ -119,7 +119,7 @@ public:
     QString license = QStringLiteral("1111111111");
     QString serial = QStringLiteral("0000000000");
     QString adminPwd = QStringLiteral("173895");
-    QString userPwd = QStringLiteral("111111");
+    QString userPwd = QStringLiteral("222222");
     bool bActive = false;
     int tryDay = 14;
     quint32 serialId = 0;
