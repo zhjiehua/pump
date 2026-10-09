@@ -37,11 +37,10 @@ class AppSettings : public QObject
     Q_OBJECT
 public:
     enum McuProtocol {
-        Cxth = 0,     ///< CXTH MCU, legacy 0x80 UART
-        QinFine = 1,  ///< QinFine MCU (reserved)
-        Legacy = Cxth ///< historical name
+        Cxth = 0,    ///< CXTH MCU, legacy 0x80 UART
+        QinFine = 1  ///< QinFine MCU (reserved)
     };
-    enum PcProtocol { LegacyPc = 0, Clarity = 1, QinFinePc = 2 };
+    enum PcProtocol { CxthPc = 0, Clarity = 1, QinFinePc = 2 };
     enum PcPort { Serial = 0, Udp = 1, TcpServer = 2 };
     enum Language { English = 0, Chinese = 1 };
 

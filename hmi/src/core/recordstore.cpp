@@ -127,6 +127,12 @@ void RecordStore::clear(Kind kind)
     saveKind(kind);
 }
 
+void RecordStore::clearAll()
+{
+    for (int k = 0; k < KindCount; ++k)
+        clear(Kind(k));
+}
+
 QString RecordStore::filePath(Kind kind) const
 {
     return QDir(ConfigPaths::recordsDir())

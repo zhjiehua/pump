@@ -644,6 +644,16 @@ used time</source>
 使用时间</translation>
     </message>
     <message>
+        <source>Clear all
+records</source>
+        <translation>清除所有
+记录</translation>
+    </message>
+    <message>
+        <source>Clear all records?</source>
+        <translation>确认清除全部记录?</translation>
+    </message>
+    <message>
         <source>Tips</source>
         <translation>温馨提示</translation>
     </message>

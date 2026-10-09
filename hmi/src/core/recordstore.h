@@ -30,6 +30,7 @@ public:
     void append(Kind kind, const QString &category, const QString &message);
     QVector<Entry> records(Kind kind) const;
     void clear(Kind kind);
+    void clearAll();
     void load();
     bool save() const;
     QByteArray exportJson() const;

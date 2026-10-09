@@ -29,7 +29,7 @@ ConfigCdsPage::ConfigCdsPage(MachineController *c, MainWindow *main, QWidget *pa
 
     m_cdsProtoLabel = new QLabel;
     m_pcProto = new ComboCtrl;
-    m_pcProto->addItem(QStringLiteral("CXTH"), int(AppSettings::LegacyPc));
+    m_pcProto->addItem(QStringLiteral("CXTH"), int(AppSettings::CxthPc));
     m_pcProto->addItem(QStringLiteral("Clarity"), int(AppSettings::Clarity));
     m_pcProto->addItem(QStringLiteral("QinFine"), int(AppSettings::QinFinePc));
     m_cdsLinkLabel = new QLabel;

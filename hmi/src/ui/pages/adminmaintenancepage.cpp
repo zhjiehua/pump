@@ -9,6 +9,7 @@
 #include "ui/widgets/msgbox.h"
 #include "ui/widgets/pagescroll.h"
 
+#include <QGridLayout>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QVBoxLayout>
@@ -84,18 +85,23 @@ AdminMaintenancePage::AdminMaintenancePage(MachineController *c, MainWindow *mai
     vl->addLayout(saveRow, 1);
     vl->addStretch(1);
 
-    auto *actions = new QHBoxLayout;
+    auto *actions = new QGridLayout;
+    actions->setHorizontalSpacing(6);
+    actions->setVerticalSpacing(6);
     m_cancelActive = new BtnCtrl;
     m_clearSys = new BtnCtrl;
     m_clearPump = new BtnCtrl;
+    m_clearRecords = new BtnCtrl;
     expand(m_cancelActive);
     expand(m_clearSys);
     expand(m_clearPump);
-    actions->addWidget(m_cancelActive, 1);
-    actions->addWidget(m_clearSys, 1);
-    actions->addWidget(m_clearPump, 1);
-    vl->addLayout(actions, 1);
-    vl->addStretch(3);
+    expand(m_clearRecords);
+    actions->addWidget(m_cancelActive, 0, 0);
+    actions->addWidget(m_clearSys, 0, 1);
+    actions->addWidget(m_clearPump, 1, 0);
+    actions->addWidget(m_clearRecords, 1, 1);
+    vl->addLayout(actions, 2);
+    vl->addStretch(2);
 
     installPageScroll(this, inner);
     retranslateUi();
@@ -112,6 +118,7 @@ AdminMaintenancePage::AdminMaintenancePage(MachineController *c, MainWindow *mai
     connect(m_cancelActive, SIGNAL(clicked()), this, SLOT(onCancelActive()));
     connect(m_clearSys, SIGNAL(clicked()), this, SLOT(onClearSys()));
     connect(m_clearPump, SIGNAL(clicked()), this, SLOT(onClearPump()));
+    connect(m_clearRecords, SIGNAL(clicked()), this, SLOT(onClearRecords()));
 }
 
 void AdminMaintenancePage::initFocusList()
@@ -123,14 +130,16 @@ void AdminMaintenancePage::initFocusList()
     xList.append(m_cancelActive);
     xList.append(m_clearSys);
     xList.append(m_clearPump);
+    xList.append(m_clearRecords);
 
     yList.append(m_repairYear);
     yList.append(m_save);
     yList.append(m_cancelActive);
+    yList.append(m_clearPump);
     yList.append(m_repairMonth);
     yList.append(m_clearSys);
+    yList.append(m_clearRecords);
     yList.append(m_repairDay);
-    yList.append(m_clearPump);
 
     loadFromSettings();
 }
@@ -142,6 +151,7 @@ void AdminMaintenancePage::retranslateUi()
     m_cancelActive->setText(tr("Deactive"));
     m_clearSys->setText(tr("Clear system\nused time"));
     m_clearPump->setText(tr("Clear pump\nused time"));
+    m_clearRecords->setText(tr("Clear all\nrecords"));
 }
 
 void AdminMaintenancePage::onSave()
@@ -211,4 +221,12 @@ void AdminMaintenancePage::onClearPump()
         return;
     m_c->usage()->clearPumpTime();
     EventLog::key(QStringLiteral("MAINT"), QStringLiteral("clear pump used time"));
+}
+
+void AdminMaintenancePage::onClearRecords()
+{
+    if (MsgBox::question(this, tr("Tips"), tr("Clear all records?"))
+        != MsgBox::Yes)
+        return;
+    m_c->records()->clearAll();
 }

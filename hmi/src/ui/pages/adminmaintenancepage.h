@@ -25,6 +25,7 @@ private slots:
     void onCancelActive();
     void onClearSys();
     void onClearPump();
+    void onClearRecords();
 
 private:
     void loadFromSettings();
@@ -41,6 +42,7 @@ private:
     BtnCtrl *m_cancelActive = nullptr;
     BtnCtrl *m_clearSys = nullptr;
     BtnCtrl *m_clearPump = nullptr;
+    BtnCtrl *m_clearRecords = nullptr;
 };
 
 #endif

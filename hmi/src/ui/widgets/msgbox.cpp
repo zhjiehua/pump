@@ -6,10 +6,32 @@
 #include <QKeyEvent>
 #include <QShowEvent>
 
+namespace {
+
+void applyButtonFocusStyle(QMessageBox *box)
+{
+    const QString style = QStringLiteral(
+        "QPushButton{outline:0;}"
+        "QPushButton:focus{border:2px solid blue;outline:0;}");
+    box->setStyleSheet(style);
+    const QList<QAbstractButton *> btns = box->buttons();
+    for (int i = 0; i < btns.size(); ++i)
+    {
+        if (QAbstractButton *b = btns.at(i))
+        {
+            b->setFocusPolicy(Qt::StrongFocus);
+            b->setStyleSheet(style);
+        }
+    }
+}
+
+} // namespace
+
 MsgBox::MsgBox(QWidget *parent, const QString &title, const QString &text,
                StandardButtons buttons)
     : QMessageBox(QMessageBox::Information, title, text, buttons, parent)
 {
+    applyButtonFocusStyle(this);
 }
 
 int MsgBox::question(QWidget *parent, const QString &title, const QString &text)
@@ -55,6 +77,7 @@ void MsgBox::keyPressEvent(QKeyEvent *event)
 void MsgBox::showEvent(QShowEvent *event)
 {
     QMessageBox::showEvent(event);
+    applyButtonFocusStyle(this);
     const QList<QAbstractButton *> btns = buttons();
     for (int i = 0; i < btns.size(); ++i)
     {
