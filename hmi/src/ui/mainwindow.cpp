@@ -213,7 +213,9 @@ void MainWindow::navigatorPageAt(int index, bool force)
 {
     if (index < 0 || index >= m_navigatorCnt)
         return;
-    if (!checkNavPermission() && !force)
+    // Run is always reachable (weiduodianzi machineStatChanged force=true).
+    // Param/Setup stay gated on Stop so settings cannot change while running.
+    if (index != 0 && !checkNavPermission() && !force)
         return;
 
     m_currentNavigator = index;
@@ -765,6 +767,14 @@ void MainWindow::onStatusChanged()
 {
     const PumpSession::Snap snap = m_ctrl->session()->copy();
     m_bottom->setLinkOk(snap.linkOk);
+    if (snap.stat == m_lastNavStat)
+        return;
+    m_lastNavStat = snap.stat;
+    // weiduodianzi BaseMainPage::machineStatChanged: any run-state change
+    // while not on Run jumps back so Param/Setup cannot trap the UI in PcCtrl.
+    const Page p = Page(m_stack->currentIndex());
+    if (p != Run && p != Logo)
+        navigatorPageAt(0, true);
 }
 
 void MainWindow::onAlarmChanged()

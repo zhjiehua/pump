@@ -126,6 +126,7 @@ private:
     bool m_navigatorMode = true;
     int m_navigatorCnt = 3;
     int m_currentNavigator = 0;
+    int m_lastNavStat = 0;
 };
 
 #endif
