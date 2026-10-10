@@ -3,9 +3,11 @@
 #include "utils/hmiconfig.h"
 #include "utils/version.h"
 
+#include <QByteArray>
 #include <QCoreApplication>
 #include <QDateTime>
 #include <QDir>
+#include <QStringList>
 #include <QSysInfo>
 #include <QtGlobal>
 
@@ -13,6 +15,8 @@
 #include "log/crashhandler.h"
 #endif
 
+#include <cstdio>
+#include <cstring>
 #include <memory>
 #include <string>
 
@@ -28,28 +32,58 @@ std::string g_logFile;
 #if QT_VERSION >= 0x050000
 QtMessageHandler g_prevQtHandler = 0;
 
+// Match application: [file:line][func()] with a truncated path and 5-digit line.
+QByteArray formatLogContext(const QMessageLogContext &context)
+{
+    QString func;
+    if (context.function && context.function[0] != '\0')
+    {
+        const QStringList segments = QString::fromUtf8(context.function).split(QLatin1Char(' '));
+        for (int i = 0; i < segments.size(); ++i)
+        {
+            const QString &s = segments.at(i);
+            const int paren = s.indexOf(QLatin1Char('('));
+            if (paren >= 0)
+            {
+                func = s.left(paren) + QStringLiteral("()");
+                func = func.split(QStringLiteral("::")).last();
+                break;
+            }
+        }
+    }
+
+    const char *file = (context.file && context.file[0] != '\0') ? context.file : "unknown";
+    const size_t fileLength = std::strlen(file);
+    const char *fileShown = (fileLength >= 30) ? (file + (fileLength - 30)) : file;
+    const QByteArray funcUtf8 = func.toUtf8();
+
+    char buf[160];
+    std::snprintf(buf, sizeof(buf), "[%.30s:%05d][%.20s]",
+                  fileShown, context.line, funcUtf8.constData());
+    return QByteArray(buf);
+}
+
 void qtMessageHandler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     const std::string text = msg.toUtf8().constData();
-    const char *file = context.file ? context.file : "";
-    const int line = context.line;
+    const QByteArray ctx = formatLogContext(context);
 
     switch (type)
     {
     case QtDebugMsg:
-        spdlog::debug("{}:{} {}", file, line, text);
+        spdlog::debug("{} -> {}", ctx.constData(), text);
         break;
     case QtInfoMsg:
-        spdlog::info("{}:{} {}", file, line, text);
+        spdlog::info("{} -> {}", ctx.constData(), text);
         break;
     case QtWarningMsg:
-        spdlog::warn("{}:{} {}", file, line, text);
+        spdlog::warn("{} -> {}", ctx.constData(), text);
         break;
     case QtCriticalMsg:
-        spdlog::error("{}:{} {}", file, line, text);
+        spdlog::error("{} -> {}", ctx.constData(), text);
         break;
     case QtFatalMsg:
-        spdlog::critical("{}:{} {}", file, line, text);
+        spdlog::critical("{} -> {}", ctx.constData(), text);
         break;
     }
 
@@ -110,7 +144,7 @@ void Log::init()
     logger->set_level(spdlog::level::debug);
     logger->flush_on(spdlog::level::info);
     spdlog::set_default_logger(logger);
-    spdlog::set_pattern(QStringLiteral("[%Y-%m-%d %H:%M:%S.%e] [%^%l%$] [%t] %v").toUtf8().constData());
+    spdlog::set_pattern(QStringLiteral("[%Y-%m-%d %H:%M:%S.%e][%^%l%$][%t]%v").toUtf8().constData());
 
 #if QT_VERSION >= 0x050000
     g_prevQtHandler = qInstallMessageHandler(qtMessageHandler);

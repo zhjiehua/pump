@@ -13,13 +13,13 @@ bool QinFineClient::open(const QString &port, int baud, quint8 addr)
     m_addr = addr;
     if (!m_port.open(port, baud))
     {
-        EventLog::key(QStringLiteral("MCU"),
+        EventLog_key(QStringLiteral("MCU"),
                       QStringLiteral("QinFine open failed %1: %2").arg(port, m_port.errorString()));
         emit errorText(m_port.errorString());
         emit connectedChanged(false);
         return false;
     }
-    EventLog::key(QStringLiteral("MCU"),
+    EventLog_key(QStringLiteral("MCU"),
                   QStringLiteral("QinFine opened %1 @ %2 addr=%3").arg(port).arg(baud).arg(addr));
     emit connectedChanged(true);
     return true;
@@ -29,7 +29,7 @@ void QinFineClient::close()
 {
     if (m_port.isOpen())
     {
-        EventLog::key(QStringLiteral("MCU"), QStringLiteral("QinFine closed"));
+        EventLog_key(QStringLiteral("MCU"), QStringLiteral("QinFine closed"));
         m_port.close();
     }
     m_rx.clear();
@@ -146,7 +146,7 @@ void QinFineClient::onReadyRead()
         }
         if (m_rx.at(0) == QinFine::kNack)
         {
-            EventLog::key(QStringLiteral("MCU-RX"), QStringLiteral("QinFine NACK"));
+            EventLog_key(QStringLiteral("MCU-RX"), QStringLiteral("QinFine NACK"));
             emit ackReceived(false);
             m_rx.remove(0, 1);
             continue;

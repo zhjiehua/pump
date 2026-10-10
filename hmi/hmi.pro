@@ -13,6 +13,12 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 TEMPLATE = app
 TARGET = pump
 
+# Keep file/line/function in QMessageLogContext for release builds (same as application).
+# -include so the define is visible before Qt headers; DEFINES alone is not enough
+# if object files were compiled before the flag was added.
+DEFINES += QT_MESSAGELOGCONTEXT
+QMAKE_CXXFLAGS += -include $$PWD/utils/qtlogcontext.h
+
 DESTDIR = $$PWD/bin
 
 # Intermediate files under the build directory (OUT_PWD), not next to sources.

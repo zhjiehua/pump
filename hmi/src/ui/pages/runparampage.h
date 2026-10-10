@@ -23,9 +23,11 @@ private slots:
     void onMinCommitted(const QString &value);
     void onCoeffCommitted(const QString &value);
     void onGradientActivated(int index);
+    void refresh();
 
 private:
     void loadFromSettings();
+    bool editorsBusy() const;
     void applyPressLimits(double pmin, double pmax);
     double effectivePmaxCap() const;
 

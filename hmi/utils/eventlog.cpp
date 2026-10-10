@@ -11,9 +11,13 @@ void setKeySink(KeySink sink)
     g_keySink = sink;
 }
 
-void key(const QString &category, const QString &msg)
+void Key::operator()(const QString &category, const QString &msg) const
 {
-    qInfo() << "[EVENT]" << category << msg;
+#if QT_VERSION >= 0x050000
+    QMessageLogger(m_file, m_line, m_function).info() << "[EVENT]" << category << msg;
+#else
+    qDebug() << "[EVENT]" << category << msg;
+#endif
     if (g_keySink)
         g_keySink(category, msg);
 }

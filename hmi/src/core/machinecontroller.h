@@ -103,6 +103,9 @@ public slots:
     bool pressZeroCmd(int source) override;
     bool enterPcControlCmd(int source) override;
     bool setPressCompenCmd(int on, int source) override;
+    bool pcApplyFlowCmd(double mlMin, double percent, int source) override;
+    bool pcPumpStartCmd(int source) override;
+    bool pcTimeSyncCmd(int ticks, int source) override;
 
     void applyQinFineExtSet(int sub, const QByteArray &payload);
     void requestQinFineDump(int kind);
@@ -130,6 +133,7 @@ private slots:
     void onExtU8(int sub, int v);
     void autoConnectStartup();
     void syncSession();
+    void onPcSyncTimedOut();
 
 private:
     bool gate(int source);
@@ -163,6 +167,8 @@ private:
 
     double m_flow = 1.0;
     double m_percent = 100.0;
+    double m_pcFlow = 0;
+    bool m_pcPumpOn = false;
     double m_pressure = 0;
     quint32 m_lastPressRaw = 0;
     bool m_mcuOpen = false;

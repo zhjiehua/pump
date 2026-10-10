@@ -16,9 +16,17 @@ void RunStateMachine::setStat(Stat s)
     emit runTimeChanged(m_runSec);
 }
 
+void RunStateMachine::setRunSeconds(quint32 sec)
+{
+    if (m_runSec == sec)
+        return;
+    m_runSec = sec;
+    emit runTimeChanged(m_runSec);
+}
+
 void RunStateMachine::tickSecond()
 {
-    if (m_stat == Stop || m_stat == Pause)
+    if (m_stat == Stop || m_stat == Pause || m_stat == PcCtrl)
         return;
     ++m_runSec;
     emit runTimeChanged(m_runSec);

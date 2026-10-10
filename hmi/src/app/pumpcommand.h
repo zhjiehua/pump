@@ -34,6 +34,9 @@ public slots:
     virtual bool pressZeroCmd(int source) = 0;
     virtual bool enterPcControlCmd(int source) = 0;
     virtual bool setPressCompenCmd(int on, int source) = 0;
+    virtual bool pcApplyFlowCmd(double mlMin, double percent, int source) = 0;
+    virtual bool pcPumpStartCmd(int source) = 0;
+    virtual bool pcTimeSyncCmd(int ticks, int source) = 0;
 
 signals:
     void commandRejected(const QString &reason);

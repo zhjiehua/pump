@@ -38,7 +38,7 @@ MachineController::MachineController(QObject *parent)
     m_gradient.reload();
     m_i18n.applyFromSettings();
     m_records.bindToEventLog();
-    EventLog::key(QStringLiteral("BOOT"), QStringLiteral("HMI ready"));
+    EventLog_key(QStringLiteral("BOOT"), QStringLiteral("HMI ready"));
 
     m_ioThread = new QThread(this);
     m_ioThread->setObjectName(QStringLiteral("hmi_io"));
@@ -72,6 +72,7 @@ MachineController::MachineController(QObject *parent)
     connect(&m_runState, SIGNAL(runTimeChanged(quint32)), this, SIGNAL(statusChanged()));
     connect(&m_alarms, SIGNAL(alarmChanged()), this, SIGNAL(alarmChanged()));
     connect(&m_authority, SIGNAL(changed()), this, SIGNAL(statusChanged()));
+    connect(&m_authority, SIGNAL(timedOut()), this, SLOT(onPcSyncTimedOut()));
     connect(this, SIGNAL(statusChanged()), this, SLOT(syncSession()));
     connect(this, SIGNAL(pressureChanged()), this, SLOT(syncSession()));
     connect(this, SIGNAL(tablesChanged()), this, SLOT(syncSession()));
@@ -136,21 +137,15 @@ UiCapabilities MachineController::capabilities() const
 
 bool MachineController::gate(int source)
 {
-    if (!m_authority.allows(source))
-    {
-        emit commandRejected(tr("Remote control active"));
-        return false;
-    }
-    if (source == CmdSource::Remote)
-        m_authority.noteRemoteCommand();
-    return true;
+    // weiduodianzi: local shortcuts silently ignore while bSyncFlag.
+    return m_authority.allows(source);
 }
 
 void MachineController::onMcuConnectedChanged(bool on)
 {
     m_mcuOpen = on;
     m_alarms.setAlarm(AlarmService::CommunicationErr, !on && m_settings.autoConnect);
-    EventLog::key(QStringLiteral("MCU"),
+    EventLog_key(QStringLiteral("MCU"),
                   on ? QStringLiteral("connected") : QStringLiteral("disconnected"));
     emit statusChanged();
     emit alarmChanged();
@@ -201,9 +196,20 @@ void MachineController::onPollTick()
 void MachineController::onSecondTick()
 {
     m_runState.tickSecond();
+    m_authority.tickSecond(m_settings.pcProtocol == AppSettings::Clarity);
     m_usage.tick(m_runState.isPumpRunning());
     if (m_auth.checkProbationExpired())
         emit probationExpired();
+}
+
+void MachineController::onPcSyncTimedOut()
+{
+    EventLog_key(QStringLiteral("STATE"), QStringLiteral("PC time-sync timeout -> Pause"));
+    // CDS ended while still in PcCtrl: keep last flow (weiduodianzi Pause).
+    // Explicit STOP already parked the pump; do not revive it as Pause.
+    if (stat() != Stat::PcCtrl)
+        return;
+    setStat(Stat::Pause);
 }
 
 void MachineController::syncSession()
@@ -229,6 +235,7 @@ void MachineController::syncSession()
     s.pressCompen = m_pressCompen;
     s.machineCode = m_settings.machineCode;
     s.mcuAddress = m_settings.mcuAddress;
+    s.pumpType = m_settings.pumpType;
     s.pressWarnLevel = m_alarms.pressWarnLevel();
     m_session.update(s);
 }
@@ -294,13 +301,13 @@ bool MachineController::connectMcu()
     if (ok)
         emit logLine(backendQinFine() ? tr("MCU QinFine connected") : tr("MCU CXTH connected"));
     else
-        EventLog::key(QStringLiteral("MCU"), QStringLiteral("connect failed %1").arg(m_settings.mcuPort));
+        EventLog_key(QStringLiteral("MCU"), QStringLiteral("connect failed %1").arg(m_settings.mcuPort));
     return ok;
 }
 
 void MachineController::disconnectMcu()
 {
-    EventLog::key(QStringLiteral("MCU"), QStringLiteral("disconnect requested"));
+    EventLog_key(QStringLiteral("MCU"), QStringLiteral("disconnect requested"));
     if (m_backend)
         m_backend->close();
     m_mcuOpen = false;
@@ -327,14 +334,14 @@ bool MachineController::connectPc()
     disconnectPc();
     m_pcStarted = IoCall::blockingBool(m_pcAgent, "startLink", pcLinkConfig());
     if (!m_pcStarted)
-        EventLog::key(QStringLiteral("PC"), QStringLiteral("connect failed"));
+        EventLog_key(QStringLiteral("PC"), QStringLiteral("connect failed"));
     emit statusChanged();
     return m_pcStarted;
 }
 
 void MachineController::disconnectPc()
 {
-    EventLog::key(QStringLiteral("PC"), QStringLiteral("disconnect requested"));
+    EventLog_key(QStringLiteral("PC"), QStringLiteral("disconnect requested"));
     IoCall::blockingVoid(m_pcAgent, "stopLink");
     m_pcStarted = false;
     m_authority.leaveRemote();
@@ -347,8 +354,10 @@ void MachineController::setFlow(double mlMin, bool sendMcu)
 {
     m_flow = mlMin;
     m_settings.flowSet = mlMin;
-    EventLog::key(QStringLiteral("FLOW"),
-                  QStringLiteral("set %.3f mL/min sendMcu=%1").arg(mlMin, 0, 'f', 3).arg(sendMcu));
+    EventLog_key(QStringLiteral("FLOW"),
+                  QStringLiteral("set %1 mL/min sendMcu=%2")
+                      .arg(mlMin, 0, 'f', 3)
+                      .arg(int(sendMcu)));
     if (sendMcu && m_mcuOpen && stat() != Stat::Stop && stat() != Stat::Pause)
         sendFlowToMcu(mlMin);
     emit statusChanged();
@@ -358,8 +367,10 @@ void MachineController::setPercent(double percent, bool sendMcu)
 {
     m_percent = percent;
     m_settings.percent = percent;
-    EventLog::key(QStringLiteral("FLOW"),
-                  QStringLiteral("percent %.1f%% sendMcu=%1").arg(percent, 0, 'f', 1).arg(sendMcu));
+    EventLog_key(QStringLiteral("FLOW"),
+                  QStringLiteral("percent %1%% sendMcu=%2")
+                      .arg(percent, 0, 'f', 1)
+                      .arg(int(sendMcu)));
     if (sendMcu && m_mcuOpen && m_backend)
         m_backend->applyPercent(percent);
     emit statusChanged();
@@ -369,13 +380,14 @@ void MachineController::setPressLimits(double pmin, double pmax, bool sendMcu)
 {
     m_settings.pressMin = pmin;
     m_settings.pressMax = pmax;
-    EventLog::key(QStringLiteral("PRESS"),
-                  QStringLiteral("limits min=%.2f max=%.2f sendMcu=%1")
+    EventLog_key(QStringLiteral("PRESS"),
+                  QStringLiteral("limits min=%1 max=%2 sendMcu=%3")
                       .arg(pmin, 0, 'f', 2)
                       .arg(pmax, 0, 'f', 2)
-                      .arg(sendMcu));
+                      .arg(int(sendMcu)));
     if (sendMcu && m_mcuOpen && m_backend)
         m_backend->applyPressLimits(pmin, pmax);
+    m_settings.save();
     emit statusChanged();
 }
 
@@ -394,6 +406,11 @@ void MachineController::applyStatToMcu(Stat s)
         const double flow = m_gradient.flowAtElapsed(0);
         m_backend->applyRun(flow > 0 ? flow : m_flow, m_percent);
     }
+    else if (s == Stat::PcCtrl)
+    {
+        // weiduodianzi pcCtrlMachine: switch UI/gradient, do not command motor.
+        return;
+    }
     else
         m_backend->applyRun(m_flow, m_percent);
     if (s == Stat::Running)
@@ -407,7 +424,7 @@ void MachineController::setStat(Stat s)
 {
     const Stat prev = stat();
     if (prev != s)
-        EventLog::key(QStringLiteral("STATE"),
+        EventLog_key(QStringLiteral("STATE"),
                       QStringLiteral("%1 -> %2").arg(EventLog::runStatName(prev), EventLog::runStatName(s)));
     m_runState.setStat(s);
     applyStatToMcu(s);
@@ -426,6 +443,9 @@ bool MachineController::stopCmd(int source)
 {
     if (!gate(source))
         return false;
+    if (source == CmdSource::Remote)
+        m_pcPumpOn = false;
+    m_authority.leaveRemote();
     setStat(Stat::Stop);
     return true;
 }
@@ -490,9 +510,48 @@ bool MachineController::enterPcControlCmd(int source)
 {
     if (!gate(source))
         return false;
-    EventLog::key(QStringLiteral("STATE"), QStringLiteral("enter PC control"));
+    EventLog_key(QStringLiteral("STATE"), QStringLiteral("enter PC control"));
     m_settings.currentGradient = 10;
     setStat(Stat::PcCtrl);
+    return true;
+}
+
+bool MachineController::pcApplyFlowCmd(double mlMin, double percent, int source)
+{
+    if (!gate(source))
+        return false;
+    m_pcFlow = mlMin;
+    m_flow = mlMin;
+    m_percent = percent;
+    if (m_pcPumpOn)
+        sendFlowToMcu(m_pcFlow);
+    emit statusChanged();
+    return true;
+}
+
+bool MachineController::pcPumpStartCmd(int source)
+{
+    if (!gate(source))
+        return false;
+    m_pcPumpOn = true;
+    if (stat() != Stat::PcCtrl)
+    {
+        setStat(Stat::Purge);
+        sendFlowToMcu(m_pcFlow);
+    }
+    return true;
+}
+
+bool MachineController::pcTimeSyncCmd(int ticks, int source)
+{
+    if (!gate(source))
+        return false;
+    m_authority.noteTimeSync();
+    const bool overpress = m_alarms.primaryAlarm() == AlarmService::OverpressErr;
+    if (stat() != Stat::PcCtrl && !overpress)
+        enterPcControlCmd(source);
+    m_runState.setRunSeconds(quint32(ticks * 0.6 + 0.5));
+    emit statusChanged();
     return true;
 }
 
@@ -668,7 +727,7 @@ void MachineController::requestPulseTable()
 void MachineController::applyQinFineExtSet(int subIn, const QByteArray &payload)
 {
     const quint8 sub = quint8(subIn);
-    EventLog::key(QStringLiteral("CALIB"),
+    EventLog_key(QStringLiteral("CALIB"),
                   QStringLiteral("QinFine sub=0x%1 len=%2").arg(sub, 2, 16, QLatin1Char('0')).arg(payload.size()));
     switch (sub)
     {
@@ -839,9 +898,9 @@ void MachineController::updatePressureAlarms()
     if (m_alarms.primaryAlarm() == AlarmService::OverpressErr)
     {
         if (!hadOverpress)
-            EventLog::key(QStringLiteral("PRESS"),
-                          QStringLiteral("over-limit %.3f MPa, auto stop").arg(m_pressure, 0, 'f', 3));
-        stopCmd(m_authority.isRemote() ? CmdSource::Remote : CmdSource::Local);
+            EventLog_key(QStringLiteral("PRESS"),
+                          QStringLiteral("over-limit %1 MPa, auto stop").arg(m_pressure, 0, 'f', 3));
+        stopCmd(m_authority.isSyncLocked() ? CmdSource::Remote : CmdSource::Local);
     }
     emit alarmChanged();
 }

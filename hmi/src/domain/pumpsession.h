@@ -35,6 +35,7 @@ public:
         quint8 pressCompen = 0;
         quint8 machineCode = 0;
         quint8 mcuAddress = 1;
+        int pumpType = 0;
         int pressWarnLevel = 0;
     };
 

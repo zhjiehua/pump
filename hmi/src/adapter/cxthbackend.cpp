@@ -35,7 +35,7 @@ void CxthPumpBackend::sendFlowWord(double mlMin, bool calibActive)
     double out = mlMin;
     if (!calibActive)
         out = CalibInterp::commandFlowFromTable(m_flowTable, mlMin);
-    EventLog::key(QStringLiteral("MCU-TX"),
+    EventLog_key(QStringLiteral("MCU-TX"),
                   QStringLiteral("set flow %1 mL/min (cmd %2)")
                       .arg(mlMin, 0, 'f', 3)
                       .arg(out, 0, 'f', 3));
@@ -50,7 +50,7 @@ void CxthPumpBackend::applyFlow(double mlMin, bool flowCalibActive)
 
 void CxthPumpBackend::applyStop()
 {
-    EventLog::key(QStringLiteral("MCU-TX"), QStringLiteral("stop motor"));
+    EventLog_key(QStringLiteral("MCU-TX"), QStringLiteral("stop motor"));
     IoCall::queued(m_agent, "cxthStopMotor");
 }
 

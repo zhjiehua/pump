@@ -31,7 +31,7 @@ void logRepairDateIfChanged(const QString &oldDate, const AppSettings *s)
     const QString newDate = repairDateText(s);
     if (oldDate == newDate)
         return;
-    EventLog::key(QStringLiteral("MAINT"),
+    EventLog_key(QStringLiteral("MAINT"),
                   QStringLiteral("last repair date %1").arg(newDate));
 }
 
@@ -202,7 +202,7 @@ void AdminMaintenancePage::onCancelActive()
     s->bActive = false;
     s->sysUsedSec = 0;
     s->save();
-    EventLog::key(QStringLiteral("MAINT"), QStringLiteral("deactivate"));
+    EventLog_key(QStringLiteral("MAINT"), QStringLiteral("deactivate"));
 }
 
 void AdminMaintenancePage::onClearSys()
@@ -211,7 +211,7 @@ void AdminMaintenancePage::onClearSys()
         != MsgBox::Yes)
         return;
     m_c->usage()->clearSystemTime();
-    EventLog::key(QStringLiteral("MAINT"), QStringLiteral("clear system used time"));
+    EventLog_key(QStringLiteral("MAINT"), QStringLiteral("clear system used time"));
 }
 
 void AdminMaintenancePage::onClearPump()
@@ -220,7 +220,7 @@ void AdminMaintenancePage::onClearPump()
         != MsgBox::Yes)
         return;
     m_c->usage()->clearPumpTime();
-    EventLog::key(QStringLiteral("MAINT"), QStringLiteral("clear pump used time"));
+    EventLog_key(QStringLiteral("MAINT"), QStringLiteral("clear pump used time"));
 }
 
 void AdminMaintenancePage::onClearRecords()

@@ -7,6 +7,7 @@ HEADERS += \
     $$PWD/qtwidgetsutil.h \
     $$PWD/spatialfocus.h \
     $$PWD/eventlog.h \
+    $$PWD/qtlogcontext.h \
     $$PWD/securepack.h \
     $$PWD/md5hash.h \
     $$PWD/hmiconfig.h \

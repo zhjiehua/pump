@@ -59,7 +59,7 @@ bool PcServer::start(const QVariantMap &cfg)
     }
     }
     m_running = true;
-    EventLog::key(QStringLiteral("PC"), how);
+    EventLog_key(QStringLiteral("PC"), how);
     return true;
 }
 
@@ -76,7 +76,7 @@ void PcServer::closeTcpClient()
 void PcServer::stop()
 {
     if (m_running)
-        EventLog::key(QStringLiteral("PC"), QStringLiteral("stopped"));
+        EventLog_key(QStringLiteral("PC"), QStringLiteral("stopped"));
     if (m_serial.isOpen())
         m_serial.close();
     m_udp.close();

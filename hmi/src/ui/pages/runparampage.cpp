@@ -82,6 +82,7 @@ RunParamPage::RunParamPage(MachineController *c, MainWindow *main, QWidget *pare
     outer->addLayout(col, 15);
     outer->addStretch(1);
 
+    connect(m_c->session(), SIGNAL(snapshotChanged()), this, SLOT(refresh()));
     loadFromSettings();
 }
 
@@ -95,6 +96,20 @@ void RunParamPage::initFocusList()
     yList.append(m_min);
     yList.append(m_gradient);
     yList.append(m_coeff);
+    loadFromSettings();
+}
+
+bool RunParamPage::editorsBusy() const
+{
+    return m_max->isEditing() || m_min->isEditing() || m_coeff->isEditing()
+        || m_gradient->isPopupOpen();
+}
+
+void RunParamPage::refresh()
+{
+    if (editorsBusy())
+        return;
+    loadFromSettings();
 }
 
 void RunParamPage::onMaxCommitted(const QString &value)

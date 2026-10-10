@@ -99,7 +99,7 @@ void AdminDataPage::onSaveFactory()
     }
     if (s->saveFactorySnapshot())
     {
-        EventLog::key(QStringLiteral("MAINT"), QStringLiteral("save factory data"));
+        EventLog_key(QStringLiteral("MAINT"), QStringLiteral("save factory data"));
         MsgBox::information(this, tr("Tips"), tr("success!"));
     }
     else
@@ -124,7 +124,7 @@ void AdminDataPage::onRestoreFactory()
     }
     m_c->reloadFromSettings();
     m_c->connectPc();
-    EventLog::key(QStringLiteral("MAINT"), QStringLiteral("restore factory settings"));
+    EventLog_key(QStringLiteral("MAINT"), QStringLiteral("restore factory settings"));
     MsgBox::information(this, tr("Tips"), tr("success!"));
 }
 
@@ -142,7 +142,7 @@ void AdminDataPage::onRestoreDefaults()
     }
     m_c->reloadFromSettings();
     m_c->connectPc();
-    EventLog::key(QStringLiteral("MAINT"), QStringLiteral("restore default data"));
+    EventLog_key(QStringLiteral("MAINT"), QStringLiteral("restore default data"));
     MsgBox::information(this, tr("Tips"), tr("success!"));
 }
 
@@ -165,7 +165,7 @@ void AdminDataPage::onExportData()
             MsgBox::warning(this, tr("Tips"), tr("failed!"));
         return;
     }
-    EventLog::key(QStringLiteral("MAINT"), QStringLiteral("export data"));
+    EventLog_key(QStringLiteral("MAINT"), QStringLiteral("export data"));
     MsgBox::information(this, tr("Tips"),
                              tr("Exported to %1").arg(DataExchange::configPackPath()));
 }
@@ -189,7 +189,7 @@ void AdminDataPage::onImportData()
     }
     m_c->reloadFromSettings();
     m_c->connectPc();
-    EventLog::key(QStringLiteral("MAINT"), QStringLiteral("import data"));
+    EventLog_key(QStringLiteral("MAINT"), QStringLiteral("import data"));
     MsgBox::information(this, tr("Tips"), tr("success!"));
 }
 
@@ -209,7 +209,7 @@ void AdminDataPage::onExportRecords()
             MsgBox::warning(this, tr("Tips"), tr("failed!"));
         return;
     }
-    EventLog::key(QStringLiteral("MAINT"), QStringLiteral("export records"));
+    EventLog_key(QStringLiteral("MAINT"), QStringLiteral("export records"));
     MsgBox::information(this, tr("Tips"),
                              tr("Exported to %1").arg(DataExchange::recordsPackPath()));
 }

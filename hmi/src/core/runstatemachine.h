@@ -15,6 +15,7 @@ public:
     Stat stat() const { return m_stat; }
     void setStat(Stat s);
     quint32 runSeconds() const { return m_runSec; }
+    void setRunSeconds(quint32 sec);
     void tickSecond();
     bool isPumpRunning() const;
 

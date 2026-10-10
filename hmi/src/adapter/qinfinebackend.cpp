@@ -27,14 +27,14 @@ void QinFinePumpBackend::close()
 
 void QinFinePumpBackend::applyFlow(double mlMin, bool)
 {
-    EventLog::key(QStringLiteral("MCU-TX"),
+    EventLog_key(QStringLiteral("MCU-TX"),
                   QStringLiteral("set flow %1 mL/min").arg(mlMin, 0, 'f', 3));
     IoCall::queued(m_agent, "qfSetFlow", mlMin);
 }
 
 void QinFinePumpBackend::applyStop()
 {
-    EventLog::key(QStringLiteral("MCU-TX"), QStringLiteral("stop motor"));
+    EventLog_key(QStringLiteral("MCU-TX"), QStringLiteral("stop motor"));
     IoCall::queued(m_agent, "qfSetStartStop", false);
     IoCall::queued(m_agent, "qfSetPurge", false);
 }

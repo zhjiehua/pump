@@ -111,20 +111,19 @@ void RunPage::initFocusList()
 
 void RunPage::onFlowCommitted(const QString &value)
 {
-    m_c->setFlow(value.toDouble());
+    using Stat = MachineController::Stat;
+    const Stat s = m_c->stat();
+    if (s == Stat::Pump || s == Stat::Purge)
+        m_c->setFlow(value.toDouble());
+    else
+        refresh();
 }
 
 void RunPage::onStatActivated(int i)
 {
-    if (m_c->authority()->isRemote())
-    {
-        refresh();
-        return;
-    }
     if (i == 5)
-        m_c->enterPcControl();
-    else
-        m_c->setStat(MachineController::Stat(i));
+        m_c->settings()->currentGradient = 10;
+    m_c->setStat(MachineController::Stat(i));
 }
 
 void RunPage::updateTimeLabel(quint32 sec)

@@ -4,7 +4,8 @@
 #include <QString>
 
 // After Log::init(), use Qt logging APIs (qDebug/qInfo/qWarning/qCritical).
-// Messages are forwarded to the rotating log file via spdlog.
+// Messages are forwarded to the rotating log file via spdlog, with
+// [file:line][func()] context.
 
 namespace Log {
 

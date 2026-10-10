@@ -202,6 +202,11 @@ bool MainWindow::checkNavPermission() const
     return m_ctrl->stat() == Stat::Stop;
 }
 
+bool MainWindow::pcSyncLocked() const
+{
+    return m_ctrl && !m_ctrl->authority()->allowsPanelKeys();
+}
+
 void MainWindow::setNavigatorMode(bool mode)
 {
     m_navigatorMode = mode;
@@ -361,7 +366,7 @@ void MainWindow::focusNextLeftChild()
 {
     if (moveModalMsgBoxFocus())
         return;
-    if (m_stack->currentIndex() == int(Logo))
+    if (pcSyncLocked() || m_stack->currentIndex() == int(Logo))
         return;
 
     if (isNavigatorMode())
@@ -388,7 +393,7 @@ void MainWindow::focusNextRightChild()
 {
     if (moveModalMsgBoxFocus())
         return;
-    if (m_stack->currentIndex() == int(Logo))
+    if (pcSyncLocked() || m_stack->currentIndex() == int(Logo))
         return;
 
     if (isNavigatorMode())
@@ -415,7 +420,7 @@ void MainWindow::focusNextUpChild()
 {
     if (moveModalMsgBoxFocus())
         return;
-    if (!panelKeysEnabled() || m_stack->currentIndex() == int(Logo))
+    if (pcSyncLocked() || !panelKeysEnabled() || m_stack->currentIndex() == int(Logo))
         return;
 
     FocusPage *page = currentFocusPage();
@@ -434,7 +439,7 @@ void MainWindow::focusNextDownChild()
 {
     if (moveModalMsgBoxFocus())
         return;
-    if (!panelKeysEnabled() || m_stack->currentIndex() == int(Logo))
+    if (pcSyncLocked() || !panelKeysEnabled() || m_stack->currentIndex() == int(Logo))
         return;
 
     FocusPage *page = currentFocusPage();
@@ -451,7 +456,7 @@ void MainWindow::focusNextDownChild()
 
 void MainWindow::shortCutPumpStop()
 {
-    if (!panelKeysEnabled())
+    if (pcSyncLocked() || !panelKeysEnabled())
         return;
     using Stat = MachineController::Stat;
     if (m_ctrl->stat() != Stat::Stop)
@@ -462,7 +467,7 @@ void MainWindow::shortCutPumpStop()
 
 void MainWindow::shortCutStartHold()
 {
-    if (!panelKeysEnabled())
+    if (pcSyncLocked() || !panelKeysEnabled())
         return;
     using Stat = MachineController::Stat;
     const Stat cur = m_ctrl->stat();
@@ -474,7 +479,7 @@ void MainWindow::shortCutStartHold()
 
 void MainWindow::shortCutPurge()
 {
-    if (!panelKeysEnabled())
+    if (pcSyncLocked() || !panelKeysEnabled())
         return;
     using Stat = MachineController::Stat;
     const Stat cur = m_ctrl->stat();
@@ -632,6 +637,9 @@ void MainWindow::goBack()
                 return;
         }
     }
+
+    if (pcSyncLocked())
+        return;
 
     const Page p = Page(m_stack->currentIndex());
     // Top-level nav pages: Backspace returns focus to the bottom bar

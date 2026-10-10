@@ -967,7 +967,7 @@ records</source>
     </message>
     <message>
         <source>Link</source>
-        <translation>连接</translation>
+        <translation>接口</translation>
     </message>
     <message>
         <source>Serial</source>
@@ -978,8 +978,32 @@ records</source>
         <translation>波特率</translation>
     </message>
     <message>
-        <source>Device code</source>
-        <translation>设备码</translation>
+        <source>Device code (hex)</source>
+        <translation>设备码（十六进制）</translation>
+    </message>
+    <message>
+        <source>CXTH</source>
+        <translation>CXTH</translation>
+    </message>
+    <message>
+        <source>Clarity</source>
+        <translation>Clarity</translation>
+    </message>
+    <message>
+        <source>QinFine</source>
+        <translation>QinFine</translation>
+    </message>
+    <message>
+        <source>RS232</source>
+        <translation>标准串口</translation>
+    </message>
+    <message>
+        <source>UDP</source>
+        <translation>UDP</translation>
+    </message>
+    <message>
+        <source>TCP Server</source>
+        <translation>TCP服务器</translation>
     </message>
     <message>
         <source>Save</source>

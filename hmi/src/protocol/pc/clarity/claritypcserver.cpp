@@ -5,6 +5,7 @@
 #include "domain/pumpsession.h"
 #include "protocol/pc/clarity/claritycodec.h"
 #include "protocol/pc/clarity/clarityids.h"
+#include "protocol/pc/pcflow.h"
 #include "utils/eventlog.h"
 
 ClarityPcServer::ClarityPcServer(QObject *parent)
@@ -54,12 +55,15 @@ void ClarityPcServer::handleFrame(const QByteArray &frame)
     const PumpSession::Snap snap = m_session ? m_session->copy() : PumpSession::Snap();
     const int remote = CmdSource::Remote;
 
-    EventLog::key(QStringLiteral("PC-RX"),
-                  QStringLiteral("Clarity %1 id=%2 ai=%3 val=%4")
-                      .arg(EventLog::pcClarityPfcName(pfc))
-                      .arg(id)
-                      .arg(ai)
-                      .arg(val));
+    if (pfc != ClarityPc::PFC_READ_PRESS
+        && pfc != ClarityPc::PFC_SYNCTIME) {
+        EventLog_key(QStringLiteral("PC-RX"),
+                    QStringLiteral("Clarity %1 id=%2 ai=%3 val=%4")
+                        .arg(EventLog::pcClarityPfcName(pfc))
+                        .arg(id)
+                        .arg(ai)
+                        .arg(val));
+    }
 
     switch (pfc)
     {
@@ -75,8 +79,8 @@ void ClarityPcServer::handleFrame(const QByteArray &frame)
         break;
     }
     case ClarityPc::PFC_SET_FLOW:
-        CmdInvoke::callBool(m_cmd, "enterPcControlCmd", remote);
-        CmdInvoke::callBool(m_cmd, "setFlowCmd", val / 1000.0, remote);
+        CmdInvoke::callBool(m_cmd, "pcApplyFlowCmd",
+                            PcFlow::fromArg(snap.pumpType, val, true), snap.percent, remote);
         sendBytes(ClarityCodec::encodeAck(true));
         break;
     case ClarityPc::PFC_SET_PERCENT:
@@ -92,7 +96,7 @@ void ClarityPcServer::handleFrame(const QByteArray &frame)
         sendBytes(ClarityCodec::encodeAck(true));
         break;
     case ClarityPc::PFC_START:
-        CmdInvoke::callBool(m_cmd, "startCmd", remote);
+        CmdInvoke::callBool(m_cmd, "pcPumpStartCmd", remote);
         sendBytes(ClarityCodec::encodeAck(true));
         break;
     case ClarityPc::PFC_STOP:
@@ -108,8 +112,7 @@ void ClarityPcServer::handleFrame(const QByteArray &frame)
         sendBytes(ClarityCodec::encodeAck(true));
         break;
     case ClarityPc::PFC_SYNCTIME:
-        if (snap.stat == 0)
-            CmdInvoke::callBool(m_cmd, "startCmd", remote);
+        CmdInvoke::callBoolU8(m_cmd, "pcTimeSyncCmd", int(val), remote);
         sendBytes(ClarityCodec::encodeAck(true));
         break;
     case ClarityPc::PFC_PURGE:

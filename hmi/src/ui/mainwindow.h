@@ -104,6 +104,7 @@ private:
     void syncChrome(Page p);
     QString titleFor(Page p) const;
     bool checkNavPermission() const;
+    bool pcSyncLocked() const;
     bool isNavigatorMode() const { return m_navigatorMode; }
     void setNavigatorMode(bool mode);
     void enterNavigatorMode();

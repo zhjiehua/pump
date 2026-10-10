@@ -5,6 +5,7 @@
 #include "domain/pumpsession.h"
 #include "protocol/pc/cxth/cxthpccodec.h"
 #include "protocol/pc/cxth/cxthpcids.h"
+#include "protocol/pc/pcflow.h"
 #include "utils/eventlog.h"
 
 CxthPcServer::CxthPcServer(QObject *parent)
@@ -36,19 +37,24 @@ void CxthPcServer::handleFrame(const QByteArray &frame)
     quint32 arg = 0;
     if (!CxthPcCodec::decode(frame, &cmd, &arg, &add) || !m_cmd)
         return;
-    EventLog::key(QStringLiteral("PC-RX"),
-                  QStringLiteral("CXTH %1 arg=%2 add=%3")
-                      .arg(EventLog::pcCxthCmdName(cmd))
-                      .arg(arg)
-                      .arg(add));
+
+    if (cmd != CxthPc::PFC_READ_PRESS
+        && cmd != CxthPc::PFC_TIME_SYNC) {
+        EventLog_key(QStringLiteral("PC-RX"),
+                    QStringLiteral("CXTH %1 arg=%2 add=%3")
+                        .arg(EventLog::pcCxthCmdName(cmd))
+                        .arg(arg)
+                        .arg(add));
+    }
+
     const PumpSession::Snap snap = m_session ? m_session->copy() : PumpSession::Snap();
     const int remote = CmdSource::Remote;
     switch (cmd)
     {
     case CxthPc::PFC_SET_FLOW1:
-        CmdInvoke::callBool(m_cmd, "enterPcControlCmd", remote);
-        CmdInvoke::callBool(m_cmd, "setPercentCmd", double(add), remote);
-        CmdInvoke::callBool(m_cmd, "setFlowCmd", arg / 1000.0, remote);
+        CmdInvoke::callBool(m_cmd, "pcApplyFlowCmd",
+                            PcFlow::fromArg(snap.pumpType, arg, false),
+                            PcFlow::cxthPercent(add), remote);
         break;
     case CxthPc::PFC_SET_MAXPRESS:
         CmdInvoke::callBool(m_cmd, "setPressLimitsCmd", snap.pressMin, arg / 100.0, remote);
@@ -57,7 +63,7 @@ void CxthPcServer::handleFrame(const QByteArray &frame)
         CmdInvoke::callBool(m_cmd, "setPressLimitsCmd", arg / 100.0, snap.pressMax, remote);
         break;
     case CxthPc::PFC_START:
-        CmdInvoke::callBool(m_cmd, "startCmd", remote);
+        CmdInvoke::callBool(m_cmd, "pcPumpStartCmd", remote);
         break;
     case CxthPc::PFC_STOP:
         CmdInvoke::callBool(m_cmd, "stopCmd", remote);
@@ -72,8 +78,7 @@ void CxthPcServer::handleFrame(const QByteArray &frame)
         CmdInvoke::callVoid(m_cmd, "replyPressureToPc");
         break;
     case CxthPc::PFC_TIME_SYNC:
-        if (snap.stat == 0)
-            CmdInvoke::callBool(m_cmd, "startCmd", remote);
+        CmdInvoke::callBoolU8(m_cmd, "pcTimeSyncCmd", int(arg), remote);
         break;
     default:
         break;

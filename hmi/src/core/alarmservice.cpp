@@ -14,7 +14,7 @@ void AlarmService::setAlarm(Kind kind, bool active)
         if (m_active.contains(id))
             return;
         m_active.insert(id);
-        EventLog::key(QStringLiteral("ALARM"),
+        EventLog_key(QStringLiteral("ALARM"),
                       QStringLiteral("raised %1").arg(EventLog::alarmName(id)));
     }
     else
@@ -23,7 +23,7 @@ void AlarmService::setAlarm(Kind kind, bool active)
             return;
         if (kind == OverpressErr)
             m_pressWarn = 0;
-        EventLog::key(QStringLiteral("ALARM"),
+        EventLog_key(QStringLiteral("ALARM"),
                       QStringLiteral("cleared %1").arg(EventLog::alarmName(id)));
     }
     emit alarmChanged();
@@ -36,7 +36,7 @@ void AlarmService::clearAll()
     m_active.clear();
     m_pressWarn = 0;
     m_overPress = 0;
-    EventLog::key(QStringLiteral("ALARM"), QStringLiteral("cleared all"));
+    EventLog_key(QStringLiteral("ALARM"), QStringLiteral("cleared all"));
     emit alarmChanged();
 }
 

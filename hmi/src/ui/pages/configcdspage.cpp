@@ -95,8 +95,14 @@ void ConfigCdsPage::retranslateUi()
     m_cdsLinkLabel->setText(tr("Link"));
     m_pcSerialLabel->setText(tr("Serial"));
     m_pcBaudLabel->setText(tr("Baud"));
-    m_machineCodeLabel->setText(tr("Device code"));
+    m_machineCodeLabel->setText(tr("Device code (hex)"));
     m_save->setText(tr("Save"));
+    m_pcProto->setItemText(0, tr("CXTH"));
+    m_pcProto->setItemText(1, tr("Clarity"));
+    m_pcProto->setItemText(2, tr("QinFine"));
+    m_pcPortType->setItemText(0, tr("RS232"));
+    m_pcPortType->setItemText(1, tr("UDP"));
+    m_pcPortType->setItemText(2, tr("TCP Server"));
 }
 
 void ConfigCdsPage::onPcProtocolChanged(int)

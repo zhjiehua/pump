@@ -4,24 +4,32 @@
 #include <QObject>
 #include "app/cmdsource.h"
 
-/** Local panel vs CDS remote gate (aligned with MCU App_AllowsLocal/RemoteControl). */
+/**
+ * weiduodianzi bSyncFlag: panel keys lock only during CDS time-sync.
+ * CXTH drops the lock ~2s after the last TIME_SYNC; Clarity holds until disconnect.
+ */
 class ControlAuthority : public QObject
 {
     Q_OBJECT
 public:
     explicit ControlAuthority(QObject *parent = nullptr);
 
-    bool isRemote() const { return m_remote; }
+    bool isRemote() const { return m_sync; }
+    bool isSyncLocked() const { return m_sync; }
     bool allows(int source) const;
-    /** First Remote command while local takes over. */
-    void noteRemoteCommand();
+    bool allowsPanelKeys() const { return !m_sync; }
+
+    void noteTimeSync();
     void leaveRemote();
+    void tickSecond(bool holdUntilDisconnect);
 
 signals:
     void changed();
+    void timedOut();
 
 private:
-    bool m_remote = false;
+    bool m_sync = false;
+    int m_missed = 0;
 };
 
 #endif

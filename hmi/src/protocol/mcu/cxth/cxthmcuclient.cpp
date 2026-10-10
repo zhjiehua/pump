@@ -13,13 +13,13 @@ bool CxthMcuClient::open(const QString &port, int baud)
     close();
     if (!m_port.open(port, baud))
     {
-        EventLog::key(QStringLiteral("MCU"),
+        EventLog_key(QStringLiteral("MCU"),
                       QStringLiteral("open failed %1: %2").arg(port, m_port.errorString()));
         emit errorText(m_port.errorString());
         emit connectedChanged(false);
         return false;
     }
-    EventLog::key(QStringLiteral("MCU"), QStringLiteral("opened %1 @ %2").arg(port).arg(baud));
+    EventLog_key(QStringLiteral("MCU"), QStringLiteral("opened %1 @ %2").arg(port).arg(baud));
     emit connectedChanged(true);
     return true;
 }
@@ -28,7 +28,7 @@ void CxthMcuClient::close()
 {
     if (m_port.isOpen())
     {
-        EventLog::key(QStringLiteral("MCU"), QStringLiteral("closed"));
+        EventLog_key(QStringLiteral("MCU"), QStringLiteral("closed"));
         m_port.close();
     }
     m_rx.clear();
@@ -51,7 +51,7 @@ void CxthMcuClient::sendCmd(quint8 cmd, quint32 arg)
 {
     if (cmd != CxthMcu::CMD_READ_AU_VAL && cmd != CxthMcu::CMD_READ_AU_VALB
         && cmd != CxthMcu::CMD_WAVEADD_MOTOR && cmd != CxthMcu::CMD_WAVEDEC_MOTOR)
-        EventLog::key(QStringLiteral("MCU-TX"),
+        EventLog_key(QStringLiteral("MCU-TX"),
                       QStringLiteral("%1 arg=%2").arg(EventLog::mcuCxthCmdName(cmd)).arg(arg));
     send(CxthMcu::encodeCmd(cmd, arg));
 }
@@ -80,7 +80,7 @@ void CxthMcuClient::onReadyRead()
         if (f.cmd == CxthMcu::CMD_READ_AU_VAL || f.cmd == CxthMcu::CMD_READ_AU_VALB)
             emit pressureRaw(f.arg);
         else
-            EventLog::key(QStringLiteral("MCU-RX"),
+            EventLog_key(QStringLiteral("MCU-RX"),
                           QStringLiteral("%1 arg=%2").arg(EventLog::mcuCxthCmdName(f.cmd)).arg(f.arg));
     }
 }

@@ -123,7 +123,7 @@ void QinFinePcServer::handleFrame(const QinFine::Frame &f)
 
 void QinFinePcServer::handlePfc(quint8 pfc, bool isSet, const QByteArray &data)
 {
-    EventLog::key(QStringLiteral("PC-RX"),
+    EventLog_key(QStringLiteral("PC-RX"),
                   QStringLiteral("QinFine pfc=0x%1 set=%2 len=%3")
                       .arg(pfc, 2, 16, QLatin1Char('0'))
                       .arg(isSet)
@@ -137,8 +137,8 @@ void QinFinePcServer::handlePfc(quint8 pfc, bool isSet, const QByteArray &data)
     case QinFine::PFC_FLOW:
         if (isSet)
         {
-            CmdInvoke::callBool(m_cmd, "enterPcControlCmd", remote);
-            CmdInvoke::callBool(m_cmd, "setFlowCmd", double(QinFine::beFloat(data)), remote);
+            CmdInvoke::callBool(m_cmd, "pcApplyFlowCmd", double(QinFine::beFloat(data)),
+                                snap.percent, remote);
             ack(true);
         }
         else
