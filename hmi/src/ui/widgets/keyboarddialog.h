@@ -4,9 +4,11 @@
 #include <QDialog>
 
 class QLineEdit;
+class QPushButton;
+class QResizeEvent;
 class QShowEvent;
 
-/** On-screen numeric keyboard (weiduodianzi KeyBoardDialog). */
+/** On-screen numeric keyboard (touch). Equal-size 4x4 key grid. */
 class KeyboardDialog : public QDialog
 {
     Q_OBJECT
@@ -20,21 +22,26 @@ public:
     static bool prompt(QWidget *parent, const QString &initial, QString *out);
 
 private slots:
-    void onKeyClicked();
-    void onPlus();
-    void onMinus();
+    void onDigitOrDot();
+    void onClear();
+    void onBackspace();
+    void onToggleSign();
     void onOk();
 
 protected:
     void showEvent(QShowEvent *event) override;
+    void resizeEvent(QResizeEvent *event) override;
 
 private:
+    enum KeyRole { Digit, Func, Ok, Cancel };
+
     static QWidget *hostWidget(QWidget *context);
     void placeWithinHost(QWidget *host);
-    void applyCompactStyle();
+    void applyStyle();
+    void syncKeyMetrics();
 
+    QPushButton *makeKey(const QString &text, KeyRole role);
     void appendChar(const QString &ch);
-    void toggleSign(bool positive);
 
     QLineEdit *m_edit = nullptr;
     QString m_result;

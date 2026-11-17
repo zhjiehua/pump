@@ -7,7 +7,7 @@ class MainWindow;
 class BtnCtrl;
 class QLabel;
 
-/** Maintenance area hub (sub-pages like Setup). Enter via Ctrl+Up + admin password. */
+/** Maintenance area hub (sub-pages like Setup). Enter via Setup Maint or Ctrl+Up + admin password. */
 class MaintenancePage : public FocusPage
 {
     Q_OBJECT

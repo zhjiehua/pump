@@ -678,10 +678,6 @@ void MainWindow::goBack()
 
 void MainWindow::requestMaintenanceAccess()
 {
-#if !HMI_EMBEDDED
-    go(Maintenance);
-    return;
-#endif
     requestPasswordThen(Maintenance, true);
 }
 

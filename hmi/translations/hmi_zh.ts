@@ -271,12 +271,8 @@
         <translation>网络</translation>
     </message>
     <message>
-        <source>Admin</source>
-        <translation>管理员</translation>
-    </message>
-    <message>
-        <source>Internal</source>
-        <translation>内部</translation>
+        <source>Maint</source>
+        <translation>维护</translation>
     </message>
 </context>
 <context>

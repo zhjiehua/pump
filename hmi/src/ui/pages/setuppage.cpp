@@ -46,6 +46,7 @@ SetupPage::SetupPage(MainWindow *main, QWidget *parent)
 {
     // Row0: Lang, Calib, Permit, GLP  (weiduodianzi SetupPage.ui)
     // Row1: Time, Grad, About, Net
+    // Row2: Maint (password-gated)
     auto *inner = new QWidget;
     auto *g = new QGridLayout(inner);
     g->setContentsMargins(8, 6, 8, 6);
@@ -60,6 +61,7 @@ SetupPage::SetupPage(MainWindow *main, QWidget *parent)
     m_net = iconBtn(PictureManager::NetConfig, PictureManager::NetConfigFocus);
     m_grid = iconBtn(PictureManager::Grid, PictureManager::GridFocus);
     m_glp = iconBtn(PictureManager::GlpInfo, PictureManager::GlpInfoFocus);
+    m_maint = iconBtn(PictureManager::Key, PictureManager::KeyFocus);
 
     g->addWidget(iconCell(m_lang, &m_langLabel), 0, 0);
     g->addWidget(iconCell(m_cal, &m_calLabel), 0, 1);
@@ -69,6 +71,7 @@ SetupPage::SetupPage(MainWindow *main, QWidget *parent)
     g->addWidget(iconCell(m_grid, &m_gridLabel), 1, 1);
     g->addWidget(iconCell(m_msg, &m_msgLabel), 1, 2);
     g->addWidget(iconCell(m_net, &m_netLabel), 1, 3);
+    g->addWidget(iconCell(m_maint, &m_maintLabel), 2, 0);
 
     installPageScroll(this, inner);
     retranslateUi();
@@ -81,6 +84,7 @@ SetupPage::SetupPage(MainWindow *main, QWidget *parent)
     connect(m_net, SIGNAL(clicked()), this, SLOT(goNet()));
     connect(m_grid, SIGNAL(clicked()), this, SLOT(goGradient()));
     connect(m_glp, SIGNAL(clicked()), this, SLOT(goGlp()));
+    connect(m_maint, SIGNAL(clicked()), this, SLOT(goMaint()));
     connect(m_main->controller(), SIGNAL(capabilitiesChanged()), this, SLOT(applyCapabilities()));
     applyCapabilities();
 }
@@ -95,6 +99,7 @@ void SetupPage::retranslateUi()
     m_gridLabel->setText(tr("Grad"));
     m_msgLabel->setText(tr("About"));
     m_netLabel->setText(tr("Net"));
+    m_maintLabel->setText(tr("Maint"));
 }
 
 void SetupPage::applyCapabilities()
@@ -119,8 +124,10 @@ void SetupPage::initFocusList()
         xList.append(m_grid);
     xList.append(m_msg);
     xList.append(m_net);
+    xList.append(m_maint);
     yList.append(m_lang);
     yList.append(m_clock);
+    yList.append(m_maint);
     yList.append(m_cal);
     if (m_grid->isVisible())
         yList.append(m_grid);
@@ -138,3 +145,4 @@ void SetupPage::goMsg() { m_main->go(MainWindow::Msg); }
 void SetupPage::goNet() { m_main->go(MainWindow::Net); }
 void SetupPage::goGradient() { m_main->goGradientTable(); }
 void SetupPage::goGlp() { m_main->go(MainWindow::Glp); }
+void SetupPage::goMaint() { m_main->requestMaintenanceAccess(); }
