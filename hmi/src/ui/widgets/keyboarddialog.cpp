@@ -74,7 +74,8 @@ void KeyboardDialog::applyStyle()
         "QLineEdit#kbdDisplay{"
         "  background-color:#0f1720;color:#f8fafc;"
         "  border:1px solid #334155;border-radius:4px;"
-        "  padding:0 8px;min-height:0;}"
+        "  padding:0 8px;min-height:0;"
+        "  selection-background-color:#2563eb;selection-color:#ffffff;}"
         "QPushButton{"
         "  min-width:0;min-height:0;padding:0;margin:0;"
         "  border:1px solid #334155;border-radius:4px;"
@@ -119,6 +120,8 @@ void KeyboardDialog::showEvent(QShowEvent *event)
         setGeometry(QRect(QPoint(0, 0), host->size()));
     syncKeyMetrics();
     QDialog::showEvent(event);
+    // Select after show so replace/BS act on the whole initial value.
+    m_edit->selectAll();
 }
 
 void KeyboardDialog::resizeEvent(QResizeEvent *event)
@@ -239,6 +242,7 @@ KeyboardDialog::KeyboardDialog(QWidget *parent)
 void KeyboardDialog::setInitialText(const QString &text)
 {
     m_edit->setText(text);
+    m_edit->selectAll();
 }
 
 void KeyboardDialog::onDigitOrDot()
@@ -256,7 +260,22 @@ void KeyboardDialog::onClear()
 
 void KeyboardDialog::onBackspace()
 {
-    m_edit->backspace();
+    if (m_edit->hasSelectedText())
+    {
+        const int start = m_edit->selectionStart();
+        QString t = m_edit->text();
+        t.remove(start, m_edit->selectedText().size());
+        m_edit->setText(t);
+        m_edit->setCursorPosition(start);
+        return;
+    }
+    const int pos = m_edit->cursorPosition();
+    if (pos <= 0)
+        return;
+    QString t = m_edit->text();
+    t.remove(pos - 1, 1);
+    m_edit->setText(t);
+    m_edit->setCursorPosition(pos - 1);
 }
 
 void KeyboardDialog::onToggleSign()
@@ -286,10 +305,17 @@ void KeyboardDialog::onOk()
 
 void KeyboardDialog::appendChar(const QString &ch)
 {
-    if (ch == QStringLiteral("."))
+    QString t = m_edit->text();
+    int start = m_edit->cursorPosition();
+    int len = 0;
+    if (m_edit->hasSelectedText())
     {
-        if (m_edit->text().contains(QLatin1Char('.')))
-            return;
+        start = m_edit->selectionStart();
+        len = m_edit->selectedText().size();
     }
-    m_edit->insert(ch);
+    const QString after = t.left(start) + ch + t.mid(start + len);
+    if (ch == QStringLiteral(".") && after.count(QLatin1Char('.')) > 1)
+        return;
+    m_edit->setText(after);
+    m_edit->setCursorPosition(start + ch.size());
 }

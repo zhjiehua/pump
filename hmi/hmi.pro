@@ -26,7 +26,7 @@ OBJECTS_DIR = $$OUT_PWD/.obj
 MOC_DIR     = $$OUT_PWD/.moc
 RCC_DIR     = $$OUT_PWD/.rcc
 
-# CONFIG += touch
+CONFIG += touch
 
 # Feature flags: see utils/hmiconfig.h
 embedded {
