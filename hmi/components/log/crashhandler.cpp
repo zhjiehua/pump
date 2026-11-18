@@ -3,12 +3,23 @@
 #endif
 
 #include "log/crashhandler.h"
+#include "utils/hmiconfig.h"
 
 #include <cxxabi.h>
 #include <dlfcn.h>
 #include <execinfo.h>
 #include <signal.h>
+#include <sys/resource.h>
+#include <sys/stat.h>
 #include <unistd.h>
+
+#if defined(__linux__)
+#  include <sys/prctl.h>
+#endif
+
+#if HMI_EMBEDDED
+#  include <fcntl.h>
+#endif
 
 #include <cstdio>
 #include <cstdlib>
@@ -132,7 +143,56 @@ void catchSignal(int sig, void (*handler)(int), int flags)
     sigaction(sig, &sa, 0);
 }
 
+#if HMI_EMBEDDED
+bool tryWriteCorePattern(const char *pattern)
+{
+    if (!pattern || !pattern[0])
+        return false;
+
+    const int fd = ::open("/proc/sys/kernel/core_pattern", O_WRONLY | O_TRUNC);
+    if (fd < 0)
+        return false;
+
+    size_t n = 0;
+    while (pattern[n])
+        ++n;
+    const ssize_t written = ::write(fd, pattern, n);
+    ::close(fd);
+    return written == static_cast<ssize_t>(n);
+}
+#endif
+
 } // namespace
+
+bool CrashHandler::enableCoreDump(const char *coreDir)
+{
+    // Same idea as infusion_new run.sh: ulimit -c unlimited
+    struct rlimit lim;
+    lim.rlim_cur = RLIM_INFINITY;
+    lim.rlim_max = RLIM_INFINITY;
+    const bool ok = (::setrlimit(RLIMIT_CORE, &lim) == 0);
+
+#if defined(__linux__)
+    // Ensure the process is dumpable (e.g. after setuid / sandbox quirks).
+    ::prctl(PR_SET_DUMPABLE, 1);
+#endif
+
+    if (coreDir && coreDir[0])
+        ::mkdir(coreDir, 0755);
+
+#if HMI_EMBEDDED
+    // Mirror infusion_new: echo "<path>" > /proc/sys/kernel/core_pattern
+    // Use a unique name per crash so successive dumps are not overwritten.
+    if (coreDir && coreDir[0])
+    {
+        char pattern[640];
+        snprintf(pattern, sizeof(pattern), "%s/core-%%e-%%p-%%t", coreDir);
+        tryWriteCorePattern(pattern);
+    }
+#endif
+
+    return ok;
+}
 
 void CrashHandler::install(const char *appPath, const char *backtracePath)
 {
@@ -142,6 +202,7 @@ void CrashHandler::install(const char *appPath, const char *backtracePath)
     catchSignal(SIGUSR1, debugHandler, SA_RESTART);
     catchSignal(SIGUSR2, debugHandler, SA_RESTART);
 
+    // SA_RESETHAND + re-raise in crashHandler so the kernel still writes a core.
     const int fatalFlags = SA_RESETHAND | SA_RESTART;
     catchSignal(SIGILL, crashHandler, fatalFlags);
     catchSignal(SIGBUS, crashHandler, fatalFlags);

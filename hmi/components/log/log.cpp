@@ -153,6 +153,11 @@ void Log::init()
 #endif
 
 #if defined(Q_OS_LINUX) && !defined(__SANITIZE_ADDRESS__)
+    const QString crashesDir = QDir(logDirPath).filePath(QStringLiteral("crashes"));
+    QDir().mkpath(crashesDir);
+    const QByteArray crashesPath = crashesDir.toUtf8();
+    CrashHandler::enableCoreDump(crashesPath.constData());
+
     const QByteArray appPath = QCoreApplication::applicationFilePath().toUtf8();
     const QByteArray btPath = QDir(logDirPath)
                                   .filePath(QStringLiteral("backtrace"))
@@ -208,7 +213,11 @@ void Log::writeBootBanner()
     const QByteArray btFile = QDir(directory())
                                   .filePath(QStringLiteral("backtrace"))
                                   .toUtf8();
+    const QByteArray coreDir = QDir(directory())
+                                   .filePath(QStringLiteral("crashes"))
+                                   .toUtf8();
     SPDLOG_INFO("  Backtrace: {}  (kill -USR1 <pid>)", btFile.constData());
+    SPDLOG_INFO("  Coredump : {}  (RLIMIT_CORE=unlimited)", coreDir.constData());
 #endif
     SPDLOG_INFO("============================================================");
     SPDLOG_INFO("BOOT OK — Pump HMI ready");
